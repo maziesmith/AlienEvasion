@@ -6,10 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import edu.neu.madcourse.adamgressen.sudoku.Sudoku;
+import edu.neu.madcourse.adamgressen.boggle.Boggle;
 import edu.neu.mobileClass.*;
 
 public class Main extends Activity implements OnClickListener {
@@ -24,7 +25,7 @@ public class Main extends Activity implements OnClickListener {
         // Set up click listeners for buttons
         View teamButton = findViewById(R.id.team_button);
         teamButton.setOnClickListener(this);
-        View sudokuButton = findViewById(R.id.sudoku_button);
+        View sudokuButton = findViewById(R.id.boggle_button);
         sudokuButton.setOnClickListener(this);
         View errorButton = findViewById(R.id.error_button);
         errorButton.setOnClickListener(this);
@@ -53,8 +54,12 @@ public class Main extends Activity implements OnClickListener {
 				e.printStackTrace();
 				version = "";
 			}
+        	
+        	TelephonyManager TelephonyMgr = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+            String phoneId = TelephonyMgr.getDeviceId();
+        	
 			new AlertDialog.Builder(this)
-			.setMessage("Name: Adam Gressen\nEmail: gressen.a@husky.neu.edu\nVersion: "+version)
+			.setMessage("Name: Adam Gressen\nEmail: gressen.a@husky.neu.edu\nVersion: "+version+"\nPhone ID: "+phoneId)
 			.setTitle("Team Members")
 			.setCancelable(true)
 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {  
@@ -63,9 +68,9 @@ public class Main extends Activity implements OnClickListener {
 				}
 			}).show();
         	break;
-        // Sudoku button click event
-        case R.id.sudoku_button:
-           Intent j = new Intent(this, Sudoku.class);
+        // Boggle button click event
+        case R.id.boggle_button:
+           Intent j = new Intent(this, Boggle.class);
            startActivity(j);
            break;
         // Error button click event

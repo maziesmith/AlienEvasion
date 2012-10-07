@@ -25,7 +25,7 @@ import android.view.animation.AnimationUtils;
 import edu.neu.madcourse.adamgressen.R;
 
 
-public class PuzzleView extends View {
+public class SudokuPuzzleView extends View {
    
    private static final String TAG = "Sudoku";
 
@@ -42,12 +42,12 @@ public class PuzzleView extends View {
    private int selY;       // Y index of selection
    private final Rect selRect = new Rect();
 
-   private final Game game;
+   private final SudokuGame sudokuGame;
    
-   public PuzzleView(Context context) {
+   public SudokuPuzzleView(Context context) {
       
       super(context);
-      this.game = (Game) context;
+      this.sudokuGame = (SudokuGame) context;
       setFocusable(true);
       setFocusableInTouchMode(true);
       
@@ -148,13 +148,13 @@ public class PuzzleView extends View {
       float y = height / 2 - (fm.ascent + fm.descent) / 2;
       for (int i = 0; i < 9; i++) {
          for (int j = 0; j < 9; j++) {
-            canvas.drawText(this.game.getTileString(i, j), i
+            canvas.drawText(this.sudokuGame.getTileString(i, j), i
                   * width + x, j * height + y, foreground);
          }
       }
 
       
-      if (Prefs.getHints(getContext())) {
+      if (SudokuPrefs.getHints(getContext())) {
          // Draw the hints...
          
          // Pick a hint color based on #moves left
@@ -165,7 +165,7 @@ public class PuzzleView extends View {
          Rect r = new Rect();
          for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-               int movesleft = 9 - game.getUsedTiles(i, j).length;
+               int movesleft = 9 - sudokuGame.getUsedTiles(i, j).length;
                if (movesleft < c.length) {
                   getRect(i, j, r);
                   hint.setColor(c[movesleft]);
@@ -192,7 +192,7 @@ public class PuzzleView extends View {
 
       select((int) (event.getX() / width),
             (int) (event.getY() / height));
-      game.showKeypadOrError(selX, selY);
+      sudokuGame.showKeypadOrError(selX, selY);
       Log.d(TAG, "onTouchEvent: x " + selX + ", y " + selY);
       return true;
    }
@@ -227,7 +227,7 @@ public class PuzzleView extends View {
       case KeyEvent.KEYCODE_9:     setSelectedTile(9); break;
       case KeyEvent.KEYCODE_ENTER:
       case KeyEvent.KEYCODE_DPAD_CENTER:
-         game.showKeypadOrError(selX, selY);
+         sudokuGame.showKeypadOrError(selX, selY);
          break;
       default:
          return super.onKeyDown(keyCode, event);
@@ -236,12 +236,12 @@ public class PuzzleView extends View {
    }
 
    public void setSelectedTile(int tile) {
-      if (game.setTileIfValid(selX, selY, tile)) {
+      if (sudokuGame.setTileIfValid(selX, selY, tile)) {
          invalidate();// may change hints
       } else {
          // Number is not valid for this tile
          Log.d(TAG, "setSelectedTile: invalid: " + tile);
-         startAnimation(AnimationUtils.loadAnimation(game,
+         startAnimation(AnimationUtils.loadAnimation(sudokuGame,
                R.anim.sudoku_shake));
       }
    }

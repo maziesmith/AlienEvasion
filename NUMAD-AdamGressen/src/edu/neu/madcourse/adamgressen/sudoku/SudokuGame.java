@@ -16,7 +16,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 import edu.neu.madcourse.adamgressen.R;
 
-public class Game extends Activity {
+public class SudokuGame extends Activity {
    private static final String TAG = "Sudoku";
 
    public static final String KEY_DIFFICULTY =
@@ -42,7 +42,7 @@ public class Game extends Activity {
       "000000700706040102004000000" +
       "000720903090301080000000600";
 
-   private PuzzleView puzzleView;
+   private SudokuPuzzleView sudokuPuzzleView;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +54,9 @@ public class Game extends Activity {
       puzzle = getPuzzle(diff);
       calculateUsedTiles();
 
-      puzzleView = new PuzzleView(this);
-      setContentView(puzzleView);
-      puzzleView.requestFocus();
+      sudokuPuzzleView = new SudokuPuzzleView(this);
+      setContentView(sudokuPuzzleView);
+      sudokuPuzzleView.requestFocus();
 
       // ...
       // If the activity is restarted, do a continue next time
@@ -66,14 +66,14 @@ public class Game extends Activity {
    @Override
    protected void onResume() {
       super.onResume();
-      Music.play(this, R.raw.game);
+      SudokuMusic.play(this, R.raw.game);
    }
 
    @Override
    protected void onPause() {
       super.onPause();
       Log.d(TAG, "onPause");
-      Music.stop(this);
+      SudokuMusic.stop(this);
       // Save the current puzzle
       getPreferences(MODE_PRIVATE).edit().putString(PREF_PUZZLE,
             toPuzzleString(puzzle)).commit();
@@ -164,7 +164,7 @@ public class Game extends Activity {
          toast.show();
       } else {
          Log.d(TAG, "showKeypad: used=" + toPuzzleString(tiles));
-         Dialog v = new Keypad(this, tiles, puzzleView);
+         Dialog v = new SudokuKeypad(this, tiles, sudokuPuzzleView);
          v.show();
       }
    }

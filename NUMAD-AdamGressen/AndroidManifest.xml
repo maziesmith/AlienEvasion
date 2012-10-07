@@ -23,20 +23,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".sudoku.Sudoku"
-            android:label="Sudoku">
+            android:name=".boggle.Boggle"
+            android:label="Boggle">
         </activity>
         <activity
-            android:name=".sudoku.About"
+            android:name=".boggle.BoggleAbout"
             android:label="@string/about_title"
             android:theme="@android:style/Theme.Dialog">
         </activity>
         <activity
-            android:name=".sudoku.Prefs"
+            android:name=".boggle.BogglePrefs"
             android:label="@string/settings_title">
         </activity>
         <activity
-            android:name=".sudoku.Game"
+            android:name=".boggle.BoggleGame"
             android:label="@string/game_title"/>
     </application>
 

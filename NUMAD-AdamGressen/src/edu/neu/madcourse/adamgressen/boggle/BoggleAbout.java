@@ -6,16 +6,16 @@
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/eband3 for more book information.
 ***/
-package edu.neu.madcourse.adamgressen.sudoku;
+package edu.neu.madcourse.adamgressen.boggle;
 
 import android.app.Activity;
 import android.os.Bundle;
 import edu.neu.madcourse.adamgressen.R;
 
-public class About extends Activity {
+public class BoggleAbout extends Activity {
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.sudoku_about);
+      setContentView(R.layout.boggle_about);
    }
 }

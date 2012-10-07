@@ -15,7 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import edu.neu.madcourse.adamgressen.R;
 
-public class Keypad extends Dialog {
+public class SudokuKeypad extends Dialog {
 
    protected static final String TAG = "Sudoku";
 
@@ -23,12 +23,12 @@ public class Keypad extends Dialog {
    private View keypad;
 
    private final int useds[];
-   private final PuzzleView puzzleView;
+   private final SudokuPuzzleView sudokuPuzzleView;
 
-   public Keypad(Context context, int useds[], PuzzleView puzzleView) {
+   public SudokuKeypad(Context context, int useds[], SudokuPuzzleView sudokuPuzzleView) {
       super(context);
       this.useds = useds;
-      this.puzzleView = puzzleView;
+      this.sudokuPuzzleView = sudokuPuzzleView;
    }
 
    @Override
@@ -72,7 +72,7 @@ public class Keypad extends Dialog {
 
    /** Return the chosen tile to the caller */
    private void returnResult(int tile) {
-      puzzleView.setSelectedTile(tile);
+      sudokuPuzzleView.setSelectedTile(tile);
       dismiss();
    }
 

@@ -11,7 +11,7 @@ package edu.neu.madcourse.adamgressen.sudoku;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-public class Music {
+public class SudokuMusic {
    private static MediaPlayer mp = null;
 
    /** Stop old song and start new one */
@@ -20,7 +20,7 @@ public class Music {
       stop(context);
 
       // Start music only if not disabled in preferences
-      if (Prefs.getMusic(context)) {
+      if (SudokuPrefs.getMusic(context)) {
          mp = MediaPlayer.create(context, resource);
          mp.setLooping(true);
          mp.start();

@@ -13,20 +13,20 @@
         android:text="@string/team_button" />
 
     <Button
-        android:id="@+id/sudoku_button"
+        android:id="@+id/boggle_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/team_button"
         android:layout_marginTop="26dp"
-        android:text="@string/sudoku_button" />
+        android:text="@string/boggle_button" />
 
     <Button
         android:id="@+id/error_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/sudoku_button"
+        android:layout_below="@+id/boggle_button"
         android:layout_marginTop="22dp"
         android:text="@string/error_button" />
 

@@ -6,14 +6,13 @@
  * We make no guarantees that this code is fit for any purpose. 
  * Visit http://www.pragmaticprogrammer.com/titles/eband3 for more book information.
 ***/
-package edu.neu.madcourse.adamgressen.sudoku;
+package edu.neu.madcourse.adamgressen.boggle;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,14 +20,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import edu.neu.madcourse.adamgressen.R;
 
-public class Sudoku extends Activity implements OnClickListener {
-   private static final String TAG = "Sudoku";
-   
+public class Boggle extends Activity implements OnClickListener {
    /** Called when the activity is first created. */
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.sudoku_main);
+      setContentView(R.layout.boggle_main);
 
       // Set up click listeners for all the buttons
       View continueButton = findViewById(R.id.continue_button);
@@ -44,23 +41,23 @@ public class Sudoku extends Activity implements OnClickListener {
    @Override
    protected void onResume() {
       super.onResume();
-      SudokuMusic.play(this, R.raw.main);
+      BoggleMusic.play(this, R.raw.main);
    }
 
    @Override
    protected void onPause() {
       super.onPause();
-      SudokuMusic.stop(this);
+      BoggleMusic.stop(this);
    }
 
    public void onClick(View v) {
       switch (v.getId()) {
       case R.id.continue_button:
-         startGame(SudokuGame.DIFFICULTY_CONTINUE);
+         startGame();
          break;
          // ...
       case R.id.about_button:
-         Intent i = new Intent(this, SudokuAbout.class);
+         Intent i = new Intent(this, BoggleAbout.class);
          startActivity(i);
          break;
       // More buttons go here (if any) ...
@@ -77,7 +74,7 @@ public class Sudoku extends Activity implements OnClickListener {
    public boolean onCreateOptionsMenu(Menu menu) {
       super.onCreateOptionsMenu(menu);
       MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.sudoku_menu, menu);
+      inflater.inflate(R.menu.boggle_menu, menu);
       return true;
    }
 
@@ -85,7 +82,7 @@ public class Sudoku extends Activity implements OnClickListener {
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
       case R.id.settings:
-         startActivity(new Intent(this, SudokuPrefs.class));
+         startActivity(new Intent(this, BogglePrefs.class));
          return true;
       // More items go here (if any) ...
       }
@@ -94,23 +91,24 @@ public class Sudoku extends Activity implements OnClickListener {
 
    /** Ask the user what difficulty level they want */
    private void openNewGameDialog() {
-      new AlertDialog.Builder(this)
-           .setTitle(R.string.new_game_title)
-           .setItems(R.array.difficulty,
-            new DialogInterface.OnClickListener() {
-               public void onClick(DialogInterface dialoginterface,
-                     int i) {
-                  startGame(i);
-               }
-            })
-           .show();
+	   new AlertDialog.Builder(this)
+	   		.setTitle(R.string.new_game_title)
+	   		.setMessage(R.string.new_game_message)
+	   		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	   			public void onClick(DialogInterface arg0, int arg1) {
+	   				startGame();
+	   			}
+	   		})
+	   		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+	   			public void onClick(DialogInterface arg0, int arg1) {
+	   			}
+	   		})
+	   .show();
    }
 
-   /** Start a new game with the given difficulty level */
-   private void startGame(int i) {
-      Log.d(TAG, "clicked on " + i);
-      Intent intent = new Intent(this, SudokuGame.class);
-      intent.putExtra(SudokuGame.KEY_DIFFICULTY, i);
+   /** Start a new game */
+   private void startGame() {
+      Intent intent = new Intent(this, BoggleGame.class);
       startActivity(intent);
    }
 }

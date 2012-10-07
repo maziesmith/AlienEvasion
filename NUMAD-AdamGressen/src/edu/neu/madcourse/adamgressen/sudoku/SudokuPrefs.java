@@ -13,7 +13,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import edu.neu.madcourse.adamgressen.R;
 
-public class Prefs extends PreferenceActivity {
+public class SudokuPrefs extends PreferenceActivity {
    // Option names and default values
    private static final String OPT_MUSIC = "music";
    private static final boolean OPT_MUSIC_DEF = true;
