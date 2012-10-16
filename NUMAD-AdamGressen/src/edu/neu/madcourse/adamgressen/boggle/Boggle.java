@@ -21,6 +21,12 @@ import android.view.View.OnClickListener;
 import edu.neu.madcourse.adamgressen.R;
 
 public class Boggle extends Activity implements OnClickListener {
+	private static final String BOARD_PREFS = "board-prefs";
+	private static final String STORED_BOARD = "board";
+	private static final String SCORE_KEY = "score";
+	private static final String USED_WORDS_KEY = "used-words";
+	private static final String TIME_KEY = "time";
+	
    /** Called when the activity is first created. */
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +90,6 @@ public class Boggle extends Activity implements OnClickListener {
       case R.id.settings:
          startActivity(new Intent(this, BogglePrefs.class));
          return true;
-      // More items go here (if any) ...
       }
       return false;
    }
@@ -96,6 +101,7 @@ public class Boggle extends Activity implements OnClickListener {
 	   		.setMessage(R.string.new_game_message)
 	   		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 	   			public void onClick(DialogInterface arg0, int arg1) {
+	   				getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).edit().clear().commit();
 	   				startGame();
 	   			}
 	   		})

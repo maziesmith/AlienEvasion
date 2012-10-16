@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import edu.neu.madcourse.adamgressen.boggle.Boggle;
+import edu.neu.madcourse.adamgressen.sudoku.Sudoku;
 import edu.neu.mobileClass.*;
 
 public class Main extends Activity implements OnClickListener {
@@ -25,8 +26,10 @@ public class Main extends Activity implements OnClickListener {
         // Set up click listeners for buttons
         View teamButton = findViewById(R.id.team_button);
         teamButton.setOnClickListener(this);
-        View sudokuButton = findViewById(R.id.boggle_button);
+        View sudokuButton = findViewById(R.id.sudoku_button);
         sudokuButton.setOnClickListener(this);
+        View boggleButton = findViewById(R.id.boggle_button);
+        boggleButton.setOnClickListener(this);
         View errorButton = findViewById(R.id.error_button);
         errorButton.setOnClickListener(this);
         View exitButton = findViewById(R.id.exit_button);
@@ -67,6 +70,11 @@ public class Main extends Activity implements OnClickListener {
 					dialog.dismiss();
 				}
 			}).show();
+        	break;
+        // Sudoku button click event
+        case R.id.sudoku_button:
+        	Intent l = new Intent(this, Sudoku.class);
+        	startActivity(l);
         	break;
         // Boggle button click event
         case R.id.boggle_button:

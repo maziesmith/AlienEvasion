@@ -10,6 +10,7 @@
 	<uses-permission android:name="android.permission.READ_PHONE_DATA" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -23,21 +24,43 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".sudoku.Sudoku"
+            android:label="Sudoku">
+        </activity>
+        <activity
+            android:name=".sudoku.SudokuAbout"
+            android:label="@string/sudoku_about_title"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
+        <activity
+            android:name=".sudoku.SudokuPrefs"
+            android:label="@string/settings_title">
+        </activity>
+        <activity
+            android:name=".sudoku.SudokuGame"
+            android:label="@string/game_title">
+        </activity>
+        <activity
             android:name=".boggle.Boggle"
-            android:label="Boggle">
+            android:label="Boggle"
+            android:screenOrientation="landscape">
         </activity>
         <activity
             android:name=".boggle.BoggleAbout"
             android:label="@string/about_title"
-            android:theme="@android:style/Theme.Dialog">
+            android:theme="@android:style/Theme.Dialog"
+            android:screenOrientation="landscape">
         </activity>
         <activity
             android:name=".boggle.BogglePrefs"
-            android:label="@string/settings_title">
+            android:label="@string/settings_title"
+            android:screenOrientation="landscape">
         </activity>
         <activity
             android:name=".boggle.BoggleGame"
-            android:label="@string/game_title"/>
+            android:label="@string/game_title"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>
