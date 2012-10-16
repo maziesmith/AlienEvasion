@@ -8,32 +8,43 @@
 ***/
 package edu.neu.madcourse.adamgressen.boggle;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import android.content.Context;
 import android.media.MediaPlayer;
 
 public class BoggleMusic {
-   private static MediaPlayer mp = null;
+   private static List<MediaPlayer> mp = new LinkedList<MediaPlayer>();
 
    /** Stop old song and start new one */
    
+   public static void play(Context context, int resource, boolean loop) {
+	   // Start music only if not disabled in preferences
+	   if (BogglePrefs.getMusic(context)) {
+		   MediaPlayer newMp = MediaPlayer.create(context, resource); 
+		   newMp.setLooping(loop);
+		   mp.add(newMp);
+		   newMp.start();
+	  }
+   }
+   
    public static void play(Context context, int resource) {
-      stop(context);
-
-      // Start music only if not disabled in preferences
-      if (BogglePrefs.getMusic(context)) {
-         mp = MediaPlayer.create(context, resource);
-         mp.setLooping(true);
-         mp.start();
-      }
+	   stop(context);
+	   
+	   play(context, resource, true);
    }
    
 
    /** Stop the music */
    public static void stop(Context context) { 
       if (mp != null) {
-         mp.stop();
-         mp.release();
-         mp = null;
+    	  for (MediaPlayer m : mp) {
+    		  m.stop();
+    		  m.release();
+    		  m = null;
+    	  }
       }
+      mp.clear();
    }
 }

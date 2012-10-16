@@ -40,7 +40,10 @@ public class BoggleGame extends Activity {
    private TimerTask task;
    int delay = 1000; //milliseconds
    private int time;
+   public int retrieveTime() { return this.time; }
    private boolean paused = false;
+   private boolean gameOver = false;
+   public boolean getGameOver() { return this.gameOver; }
    
    private static final String STORED_BOARD = "board";
    private static final String BOARD_PREFS = "board-prefs";
@@ -77,6 +80,7 @@ public class BoggleGame extends Activity {
 				   die12,die13,die14,die15,die16));
    
    private int score;
+   public int retrieveScore() { return this.score; }
 
    private BogglePuzzleView bogglePuzzleView;
    private SharedPreferences prefs;
@@ -88,27 +92,31 @@ public class BoggleGame extends Activity {
       super.onCreate(savedInstanceState);
       Log.d(TAG, "onCreate");
 
-      prefs = getSharedPreferences(BOARD_PREFS, MODE_PRIVATE);
+      this.prefs = getSharedPreferences(BOARD_PREFS, MODE_PRIVATE);
       
-      board = getBoard();
-      score = getScore();
-      usedWords = getUsedWords();
-      time = getTime();
-      
-      task = new TimerTask() {
-          public void run() {
-        	  if (!paused)
-        		  time--;
-          }
-      };
+      this.board = getBoard();
+      this.score = getScore();
+      this.usedWords = getUsedWords();
+      this.time = getTime();
       
       bogglePuzzleView = new BogglePuzzleView(this);
       setContentView(bogglePuzzleView);
       bogglePuzzleView.requestFocus();
-   }
-   
-   protected void onLoad() {
-	   timer.schedule(task, 0, delay);
+      
+      this.task = new TimerTask() {
+          public void run() {
+        	  if (!paused) {
+        		  time--;
+        		  Log.d("time left: ", String.valueOf(time));
+        		  if (time <= 0) {
+        			  time = 0;
+        			  gameOver = true;
+        			  task.cancel();
+        		  }
+        	  }
+          }
+      };
+      timer.schedule(this.task, 0, delay);
    }
 
    /** Return game state (paused) */
@@ -185,13 +193,11 @@ public class BoggleGame extends Activity {
 	   Random rand = new Random();
 	   for (int i = 0; i < (ROWS * ROWS); i++) {
 		   int size = remainingDie.size()-1;
-		   Log.d("size: ", String.valueOf(size));
 		   if (size > 0)
 			   // The selected die index
 			   dieIndex = rand.nextInt(size);
 		   else
 			   dieIndex = 0;
-		   Log.d("dieIndex: ", String.valueOf(dieIndex));
 		   // Choose letter
 		   char chosenChar = chooseLetter(dieIndex, remainingDie);
 		   // Remove die from remainingDie list 
@@ -327,14 +333,18 @@ public class BoggleGame extends Activity {
    /** Submit word */
    private void submitWord(String word) {
 	   if (isValidWord(word)) {
-		   score += calculateScore(word);
-		   getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).edit().putInt(SCORE_KEY, score).commit();
+		   this.score += calculateScore(word);
+		   bogglePuzzleView.setScore(this.score);
+		   getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).edit().putInt(SCORE_KEY, this.score).commit();
 		   
 		   usedWords.add(word.trim().toLowerCase());
 		   String value = gson.toJson(usedWords);
 		   getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).edit().putString(USED_WORDS_KEY, value).commit();
+		   BoggleMusic.play(this, R.raw.reward, false);
 	   }
-	   Log.d("Score: ", String.valueOf(score));
+	   else
+		   BoggleMusic.play(this, R.raw.fail, false);
+	   Log.d("Score: ", String.valueOf(this.score));
 	   selected.clear();
    }
    

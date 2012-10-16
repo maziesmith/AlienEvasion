@@ -25,10 +25,6 @@ import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
-import android.widget.TextView;
 import edu.neu.madcourse.adamgressen.R;
 
 public class BogglePuzzleView extends View {
@@ -40,7 +36,7 @@ public class BogglePuzzleView extends View {
 	private static final String VIEW_STATE = "viewState";
 	private static final int ID = 42;
 
-	private int boardWidth = 0;									// width of game board
+	private int boardWidth = 0;									    // width of game board
 	private int boardHeight = 0;									// height of game board
 	private float width;    										// width of one tile
 	private float height;   										// height of one tile
@@ -48,11 +44,36 @@ public class BogglePuzzleView extends View {
 	private ArrayList<Integer> selY = new ArrayList<Integer>(); // Y index of selection
 	private final List<Rect> selRect = new LinkedList<Rect>(Arrays.asList(new Rect()));
 
-	private RelativeLayout relativeLayout;
-	private Button pauseBut;
+	private String time = "Time: 120";
+	public void setTime(int t) {
+		this.time = "Time: "+String.valueOf(t);
+		invalidate(timeRect);
+	}
+	private String score = "Score: 0";
+	public void setScore(int s) {
+		this.score = "Score: "+String.valueOf(s);
+		invalidate(scoreRect);
+	}
+	
+	Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	
+	private Rect pauseBut;
+	private int pauseTextX;
+	private int pauseTextY;
+	private String pauseText = "Pause";
+	private Rect quitBut;
+	private int quitTextX;
+	private int quitTextY;
+	private String quitText = "Exit";
 	private int buttonMargin = 0;
 	private int buttonWidth = 0;
 	private int buttonHeight = 0;
+	private int scoreX;
+	private int scoreY;
+	private Rect scoreRect = new Rect();
+	private int timeX;
+	private int timeY;
+	private Rect timeRect = new Rect();
 
 	private final BoggleGame boggleGame;
 	private int rows;
@@ -66,23 +87,6 @@ public class BogglePuzzleView extends View {
 		this.rows = this.boggleGame.getRows();
 		setFocusable(true);
 		setFocusableInTouchMode(true);
-		
-		relativeLayout = new RelativeLayout(boggleGame);
-		pauseBut = new Button(boggleGame);
-		pauseBut.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Log.d("pauseBut: ","clicked");
-				if (boggleGame.getState()) {
-					boggleGame.resumeGame();
-					pauseBut.setText("Pause");
-				}
-				else {
-					boggleGame.pauseGame();
-					pauseBut.setText("Resume");
-				}
-			}
-		});
-		relativeLayout.addView(pauseBut);
 
 		setId(ID);
 	}
@@ -115,18 +119,37 @@ public class BogglePuzzleView extends View {
 
 		// Generate size of buttons
 		int diff = w-h;
-		buttonMargin = (int)(diff*0.1);
+		buttonMargin = (int)(diff*0.08);
 		buttonWidth = (int)(diff*0.8);
-		buttonHeight = (int)(h*0.3);
-		//pauseBut.measure(buttonWidth, buttonHeight);
+		buttonHeight = (int)(h*0.15);
 		
-		LayoutParams params = new LayoutParams(0, 0);
-		relativeLayout.setLayoutParams(params);
-		//relativeLayout.layout(h+buttonMargin, buttonMargin, 0, 0);
-		pauseBut.setHeight(buttonHeight);
-		pauseBut.setWidth(buttonWidth);
-		//pauseBut.layout(h+buttonMargin, buttonMargin, 0, 0);
-			//h+buttonMargin+buttonWidth, buttonMargin+buttonHeight);
+		// Define color and style for numbers
+		textPaint.setColor(getResources().getColor(
+				R.color.puzzle_foreground));
+		textPaint.setStyle(Style.FILL);
+		textPaint.setTextSize(buttonHeight * 0.5f);
+		textPaint.setTextScaleX(w / h);
+		textPaint.setTextAlign(Paint.Align.CENTER);
+		
+		timeX = h + buttonMargin + (buttonWidth / 2);
+		timeY = buttonMargin + (buttonHeight / 2);
+		timeRect = new Rect(h+buttonMargin, buttonMargin,
+				h+buttonMargin+buttonWidth, buttonMargin+buttonHeight);
+		
+		scoreX = h + buttonMargin + (buttonWidth / 2);
+		scoreY = (buttonMargin*2) + (buttonHeight*3/2);
+		scoreRect = new Rect(h+buttonMargin, (buttonMargin*2)+buttonHeight,
+				h+buttonMargin+buttonWidth, (buttonMargin*2)+(buttonHeight*2));
+		
+		pauseBut = new Rect(h+buttonMargin, (buttonMargin*3)+(buttonHeight*2),
+				h+buttonMargin+buttonWidth, (buttonMargin*3)+(buttonHeight*3));
+		pauseTextX = h + buttonMargin + (buttonWidth / 2);
+		pauseTextY = (buttonMargin*3) + (buttonHeight*5/2);
+		
+		quitBut = new Rect(h+buttonMargin, (buttonMargin*4)+(buttonHeight*3),
+				h+buttonMargin+buttonWidth, (buttonMargin*4)+(buttonHeight*4));
+		quitTextX = h + buttonMargin + (buttonWidth / 2);
+		quitTextY = (buttonMargin*4) + (buttonHeight*7/2);
 
 		// Generate size of letters
 		width = newSize / (float)rows;
@@ -139,6 +162,9 @@ public class BogglePuzzleView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		setTime(this.boggleGame.retrieveTime());
+		setScore(this.boggleGame.retrieveScore());
+		
 		// Draw the background...
 		Paint background = new Paint();
 		background.setColor(getResources().getColor(
@@ -165,20 +191,25 @@ public class BogglePuzzleView extends View {
 			canvas.drawLine(i * width + 1, 0, i * width + 1,
 					boardHeight, hilite);
 		}
+		
+		// Define color and style for numbers
+		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
+		foreground.setColor(getResources().getColor(
+				R.color.puzzle_foreground));
+		foreground.setStyle(Style.FILL);
+		foreground.setTextSize(height * 0.75f);
+		foreground.setTextScaleX(width / height);
+		foreground.setTextAlign(Paint.Align.CENTER);
+
+		// Draw the number in the center of the tile
+		FontMetrics fm = foreground.getFontMetrics();
+		
+		// Draw time and score
+		canvas.drawText(this.time, timeX, timeY, textPaint);
+		canvas.drawText(this.score, scoreX, scoreY, textPaint);
 
 		if (!this.boggleGame.getState()) {
 			// Draw the letters...
-			// Define color and style for numbers
-			Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
-			foreground.setColor(getResources().getColor(
-					R.color.puzzle_foreground));
-			foreground.setStyle(Style.FILL);
-			foreground.setTextSize(height * 0.75f);
-			foreground.setTextScaleX(width / height);
-			foreground.setTextAlign(Paint.Align.CENTER);
-
-			// Draw the number in the center of the tile
-			FontMetrics fm = foreground.getFontMetrics();
 			// Centering in X: use alignment (and X at midpoint)
 			float x = width / 2;
 			// Centering in Y: measure ascent/descent first
@@ -189,7 +220,7 @@ public class BogglePuzzleView extends View {
 							* width + x, j * height + y, foreground);
 				}
 			}
-
+			
 			// Draw the selection...
 			Log.d(TAG, "selRect=" + selRect);
 			Paint selected = new Paint();
@@ -201,7 +232,11 @@ public class BogglePuzzleView extends View {
 			}
 		}
 		
-		relativeLayout.draw(canvas);
+		// Draw buttons
+		canvas.drawRect(pauseBut, background);
+		canvas.drawText(pauseText, pauseTextX, pauseTextY, textPaint);
+		canvas.drawRect(quitBut, background);
+		canvas.drawText(quitText, quitTextX, quitTextY, textPaint);
 	}
 
 	@Override
@@ -212,11 +247,32 @@ public class BogglePuzzleView extends View {
 		float eventX = event.getX();
 		float eventY = event.getY();
 
-		if ((eventX < boardWidth) && (eventY < boardHeight)) {
+		boolean state = this.boggleGame.getState();
+		boolean gameOver = this.boggleGame.getGameOver();
+		
+		if ((eventX < boardWidth) && (eventY < boardHeight) &&
+				!state && !gameOver) {
 			select((int) (eventX / width),
 					(int) (eventY / height));
 		}
-
+		else if (eventX >= pauseBut.left && eventX <= pauseBut.right &&
+				eventY >= pauseBut.top && eventY <= pauseBut.bottom &&
+				!gameOver) {
+			if (state) {
+				this.boggleGame.resumeGame();
+				this.pauseText = "Pause";
+			}
+			else {
+				this.boggleGame.pauseGame();
+				this.pauseText = "Resume";
+			}
+			invalidate();
+		}
+		else if (eventX >= quitBut.left && eventX <= quitBut.right &&
+				eventY >= quitBut.top && eventY <= quitBut.bottom) {
+			this.boggleGame.finish();
+		}
+		
 		Log.d(TAG, "onTouchEvent: x " + selX + ", y " + selY);
 		return true;
 	}
