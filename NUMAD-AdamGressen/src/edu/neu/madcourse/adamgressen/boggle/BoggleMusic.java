@@ -13,6 +13,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 
 public class BoggleMusic {
    private static List<MediaPlayer> mp = new LinkedList<MediaPlayer>();
@@ -22,8 +23,14 @@ public class BoggleMusic {
    public static void play(Context context, int resource, boolean loop) {
 	   // Start music only if not disabled in preferences
 	   if (BogglePrefs.getMusic(context)) {
-		   MediaPlayer newMp = MediaPlayer.create(context, resource); 
+		   MediaPlayer newMp = MediaPlayer.create(context, resource);
 		   newMp.setLooping(loop);
+		   newMp.setOnCompletionListener(new OnCompletionListener() {
+			   public void onCompletion(MediaPlayer m) {
+				   m = null;
+				   mp.remove(m);
+			   }
+		   });
 		   mp.add(newMp);
 		   newMp.start();
 	  }
@@ -39,10 +46,11 @@ public class BoggleMusic {
    /** Stop the music */
    public static void stop(Context context) { 
       if (mp != null) {
-    	  for (MediaPlayer m : mp) {
-    		  m.stop();
-    		  m.release();
-    		  m = null;
+    	  for (int m = 0; m < mp.size(); m++) {
+    		  mp.get(m).stop();
+    		  mp.get(m).release();
+    		  mp.set(m, null);
+    		  mp.remove(m);
     	  }
       }
       mp.clear();

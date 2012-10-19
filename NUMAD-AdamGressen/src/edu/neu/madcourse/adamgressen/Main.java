@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import edu.neu.madcourse.adamgressen.boggle.Boggle;
+import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle;
 import edu.neu.madcourse.adamgressen.sudoku.Sudoku;
 import edu.neu.mobileClass.*;
 
@@ -30,6 +31,8 @@ public class Main extends Activity implements OnClickListener {
         sudokuButton.setOnClickListener(this);
         View boggleButton = findViewById(R.id.boggle_button);
         boggleButton.setOnClickListener(this);
+        View persistentButton = findViewById(R.id.persistent_boggle_button);
+        persistentButton.setOnClickListener(this);
         View errorButton = findViewById(R.id.error_button);
         errorButton.setOnClickListener(this);
         View exitButton = findViewById(R.id.exit_button);
@@ -62,7 +65,9 @@ public class Main extends Activity implements OnClickListener {
             String phoneId = TelephonyMgr.getDeviceId();
         	
 			new AlertDialog.Builder(this)
-			.setMessage("Name: Adam Gressen\nEmail: gressen.a@husky.neu.edu\nVersion: "+version+"\nPhone ID: "+phoneId)
+			.setMessage("Name: Adam Gressen\nEmail: gressen.a@husky.neu.edu\n"+
+					"Name: Vaibhav Mahindroo\nEmail: mahindroo.v@husky.neu.edu\nVersion: "+
+					version+"\nPhone ID: "+phoneId)
 			.setTitle("Team Members")
 			.setCancelable(true)
 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {  
@@ -81,6 +86,11 @@ public class Main extends Activity implements OnClickListener {
            Intent j = new Intent(this, Boggle.class);
            startActivity(j);
            break;
+        // Persistent Boggle button click event
+        case R.id.persistent_boggle_button:
+        	Intent u = new Intent(this, PersistentBoggle.class);
+        	startActivity(u);
+        	break;
         // Error button click event
         case R.id.error_button:
            String crash = null;

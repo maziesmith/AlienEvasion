@@ -11,6 +11,7 @@
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -60,6 +61,27 @@
         <activity
             android:name=".boggle.BoggleGame"
             android:label="@string/game_title"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".persistentboggle.PersistentBoggle"
+            android:label="Persistent Boggle"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".persistentboggle.PersistentBoggleAbout"
+            android:label="@string/persistent_about_title"
+            android:theme="@android:style/Theme.Dialog"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".persistentboggle.PersistentBogglePrefs"
+            android:label="@string/persistent_settings_title"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".persistentboggle.PersistentBoggleGame"
+            android:label="@string/persistent_title"
             android:screenOrientation="landscape">
         </activity>
     </application>
