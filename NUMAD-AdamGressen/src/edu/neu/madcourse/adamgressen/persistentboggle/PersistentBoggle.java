@@ -48,6 +48,9 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 	private static final String TEAM = "persistence";
 	private static final String PASSWORD = "p3rs1st3nc3";
 	
+	private static String opponent;
+	private static String OPP_BOARD_KEY;
+	
    /** Called when the activity is first created. */
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,10 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 		SERVER_OPP = userID+"opponent";
 		SERVER_ONLINE = userID+"online";
 		SERVER_GOOGLE_ID = userID+"id";
+		
+		opponent = KeyValueAPI.get(TEAM, PASSWORD, SERVER_OPP);
+		Log.d("Boggle", "opponent"+opponent);
+		OPP_BOARD_KEY = opponent+"board";
    }
 
    @Override
@@ -216,6 +223,7 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 	   KeyValueAPI.clearKey(TEAM, PASSWORD, SERVER_USED_WORDS_KEY);
 	   KeyValueAPI.clearKey(TEAM, PASSWORD, SERVER_TIME);
 	   KeyValueAPI.clearKey(TEAM, PASSWORD, SERVER_OPP);
+	   KeyValueAPI.clearKey(TEAM, PASSWORD, OPP_BOARD_KEY);
 	   KeyValueAPI.clearKey(TEAM, PASSWORD, SERVER_ONLINE);
    }
    

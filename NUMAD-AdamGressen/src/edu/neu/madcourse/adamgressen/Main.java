@@ -32,7 +32,7 @@ public class Main extends Activity implements OnClickListener {
         
         AccountManager accountManager = (AccountManager) getSystemService(ACCOUNT_SERVICE); //AccountManager.get(getApplicationContext());
         Account[] accounts = accountManager.getAccountsByType("com.google");
-    	if (accounts != null) {
+    	if (accounts.length > 0) {
     		Account account = accounts[0];
     		Log.d("google: ", "Google: "+account.name);
     		getSharedPreferences(USER_PREFS, MODE_PRIVATE).edit().putString(USER_ID, account.name).commit();

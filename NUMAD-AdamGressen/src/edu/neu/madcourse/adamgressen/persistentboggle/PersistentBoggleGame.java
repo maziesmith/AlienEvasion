@@ -204,7 +204,7 @@ public class PersistentBoggleGame extends Activity {
 	   String b = "";
 	   try {
 		   if (KeyValueAPI.isServerAvailable()) {// && (Integer.parseInt(KeyValueAPI.get(TEAM, PASSWORD, SERVER_TIME)) != 0)) {
-			   b = KeyValueAPI.get(TEAM, PASSWORD, OPP_BOARD_KEY);
+			   b = KeyValueAPI.get(TEAM, PASSWORD, SERVER_BOARD_KEY);
 			   Log.d(TAG, "board getboard: "+b);
 		   }
 		   else {
