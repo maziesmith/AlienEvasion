@@ -125,6 +125,7 @@ public class PersistentBoggleGame extends Activity {
       setKeys();
       
       this.prefs = getSharedPreferences(BOARD_PREFS, MODE_PRIVATE);
+      Log.d(TAG, "oncreate board: "+this.prefs.getString(STORED_BOARD, ""));
       
       this.board = getBoard();
       this.score = getScore();

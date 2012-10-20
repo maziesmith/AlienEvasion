@@ -43,7 +43,6 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 	private static String SERVER_TIME;
 	private static String SERVER_OPP;
 	private static String SERVER_ONLINE;
-	private static String SERVER_GOOGLE_ID;
 	
 	private static final String TEAM = "persistence";
 	private static final String PASSWORD = "p3rs1st3nc3";
@@ -83,7 +82,6 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 		SERVER_TIME = userID+"time";
 		SERVER_OPP = userID+"opponent";
 		SERVER_ONLINE = userID+"online";
-		SERVER_GOOGLE_ID = userID+"id";
 		
 		opponent = KeyValueAPI.get(TEAM, PASSWORD, SERVER_OPP);
 		Log.d("Boggle", "opponent"+opponent);
