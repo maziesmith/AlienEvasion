@@ -1,5 +1,7 @@
 package edu.neu.madcourse.adamgressen;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,12 +20,23 @@ import edu.neu.mobileClass.*;
 
 public class Main extends Activity implements OnClickListener {
 	
+	private static final String USER_PREFS = "persistent_user_prefs";
+	private static final String USER_ID = "id";
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
         setTitle("Adam Gressen");
+        
+        AccountManager accountManager = (AccountManager) getSystemService(ACCOUNT_SERVICE); //AccountManager.get(getApplicationContext());
+        Account[] accounts = accountManager.getAccountsByType("com.google");
+    	if (accounts != null) {
+    		Account account = accounts[0];
+    		Log.d("google: ", "Google: "+account.name);
+    		getSharedPreferences(USER_PREFS, MODE_PRIVATE).edit().putString(USER_ID, account.name).commit();
+    	}
         
         // Set up click listeners for buttons
         View teamButton = findViewById(R.id.team_button);

@@ -222,7 +222,7 @@ public class PersistentBogglePuzzleView extends View {
 			}
 			
 			// Draw the selection...
-			Log.d(TAG, "selRect=" + selRect);
+			//Log.d(TAG, "selRect=" + selRect);
 			Paint selected = new Paint();
 			selected.setColor(getResources().getColor(
 					R.color.puzzle_selected));
@@ -273,7 +273,7 @@ public class PersistentBogglePuzzleView extends View {
 			this.persistentBoggleGame.finish();
 		}
 		
-		Log.d(TAG, "onTouchEvent: x " + selX + ", y " + selY);
+		//Log.d(TAG, "onTouchEvent: x " + selX + ", y " + selY);
 		return true;
 	}
 

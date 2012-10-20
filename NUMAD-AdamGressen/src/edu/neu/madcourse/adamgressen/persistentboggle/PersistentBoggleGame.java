@@ -26,6 +26,7 @@ import com.google.gson.GsonBuilder;
 
 import edu.neu.mobileclass.apis.KeyValueAPI;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -50,6 +51,24 @@ public class PersistentBoggleGame extends Activity {
    private static final String SCORE_KEY = "score";
    private static final String TIME_KEY = "time";
    private static final String USED_WORDS_KEY = "used-words";
+   
+   private static final String USER_PREFS = "persistent_user_prefs";
+	private static final String USER_ID = "id";
+	private static String userID;
+	
+	private static String SERVER_BOARD_KEY;
+	private static String SERVER_SCORE_KEY;
+	private static String SERVER_USED_WORDS_KEY;
+	private static String SERVER_TIME;
+	private static String SERVER_OPP;
+	private static String SERVER_ONLINE;
+	private static String SERVER_GOOGLE_ID;
+	
+	private static final String TEAM = "persistence";
+	private static final String PASSWORD = "p3rs1st3nc3";
+	
+	private static String opponent;
+	private static String OPP_BOARD_KEY;
 
    private String board;
    private List<String> usedWords = new LinkedList<String>();
@@ -103,6 +122,8 @@ public class PersistentBoggleGame extends Activity {
       super.onCreate(savedInstanceState);
       Log.d(TAG, "onCreate");
 
+      setKeys();
+      
       this.prefs = getSharedPreferences(BOARD_PREFS, MODE_PRIVATE);
       
       this.board = getBoard();
@@ -118,7 +139,7 @@ public class PersistentBoggleGame extends Activity {
           public void run() {
         	  if (!paused) {
         		  time--;
-        		  Log.d("time left: ", String.valueOf(time));
+        		  //Log.d("time left: ", String.valueOf(time));
         		  if (time <= 0) {
         			  time = 0;
         			  gameOver = true;
@@ -130,6 +151,23 @@ public class PersistentBoggleGame extends Activity {
       timer.schedule(this.task, 0, delay);
    }
 
+   private void setKeys() {
+	   userID = getSharedPreferences(USER_PREFS, MODE_PRIVATE).getString(USER_ID, "");
+	   Log.d(TAG, "user id"+userID);
+		
+		SERVER_BOARD_KEY = userID+"board";
+		SERVER_SCORE_KEY = userID+"score";
+		SERVER_USED_WORDS_KEY = userID+"user-words";
+		SERVER_TIME = userID+"time";
+		SERVER_OPP = userID+"opponent";
+		SERVER_ONLINE = userID+"online";
+		SERVER_GOOGLE_ID = userID+"id";
+		
+		opponent = KeyValueAPI.get(TEAM, PASSWORD, SERVER_OPP);
+		Log.d(TAG, "opponent"+opponent);
+		OPP_BOARD_KEY = opponent+"board";
+   }
+   
    /** Return game state (paused) */
    public boolean getState() {
 	   return paused;
@@ -157,13 +195,23 @@ public class PersistentBoggleGame extends Activity {
    @Override
    protected void onPause() {
       super.onPause();
-      Log.d(TAG, "onPause");
+      //Log.d(TAG, "onPause");
       pauseGame();
    }
    
    /** Return the board or trigger createBoard */
    private String getBoard() {
-	   String b = prefs.getString(STORED_BOARD, "");
+	   String b = "";
+	   try {
+		   if (KeyValueAPI.isServerAvailable()) {// && (Integer.parseInt(KeyValueAPI.get(TEAM, PASSWORD, SERVER_TIME)) != 0)) {
+			   b = KeyValueAPI.get(TEAM, PASSWORD, OPP_BOARD_KEY);
+			   Log.d(TAG, "board getboard: "+b);
+		   }
+		   else {
+			   b = prefs.getString(STORED_BOARD, "");
+		   }
+	   }
+	   catch (Exception e) {}
 	   if (b == "")
 		   b = createBoard();
 	   return b;
@@ -218,6 +266,12 @@ public class PersistentBoggleGame extends Activity {
 	   }
 	   Log.d(TAG, "board generated: " + board);
 	   getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).edit().putString(STORED_BOARD, board).commit();
+	   if (KeyValueAPI.isServerAvailable()) {
+		   Log.d(TAG, "server board key"+SERVER_BOARD_KEY);
+		   KeyValueAPI.put(TEAM, PASSWORD, SERVER_BOARD_KEY, board);
+		   Log.d(TAG, "opp board key"+OPP_BOARD_KEY);
+		   KeyValueAPI.put(TEAM, PASSWORD, OPP_BOARD_KEY, board);
+	   }
 	   return board;
    }
    
@@ -355,7 +409,7 @@ public class PersistentBoggleGame extends Activity {
 	   }
 	   else
 		   PersistentBoggleMusic.playSound(this, R.raw.fail);
-	   Log.d("Score: ", String.valueOf(this.score));
+	   //Log.d("Score: ", String.valueOf(this.score));
 	   selected.clear();
    }
    
