@@ -54,6 +54,11 @@ public class PersistentBogglePuzzleView extends View {
 		this.score = "Score: "+String.valueOf(s);
 		invalidate(scoreRect);
 	}
+	private String opponentScore = "Opponent Score: 0";
+	public void setOpponentScore(String s) {
+		this.opponentScore = "Opponent Score: "+s;
+		invalidate(oppScoreRect);
+	}
 	
 	Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	
@@ -71,6 +76,9 @@ public class PersistentBogglePuzzleView extends View {
 	private int scoreX;
 	private int scoreY;
 	private Rect scoreRect = new Rect();
+	private int oppScoreX;
+	private int oppScoreY;
+	private Rect oppScoreRect = new Rect();
 	private int timeX;
 	private int timeY;
 	private Rect timeRect = new Rect();
@@ -83,7 +91,7 @@ public class PersistentBogglePuzzleView extends View {
 		super(context);
 
 		this.persistentBoggleGame = (PersistentBoggleGame) context;
-
+		
 		this.rows = this.persistentBoggleGame.getRows();
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -119,9 +127,9 @@ public class PersistentBogglePuzzleView extends View {
 
 		// Generate size of buttons
 		int diff = w-h;
-		buttonMargin = (int)(diff*0.08);
+		buttonMargin = (int)(diff*0.06);
 		buttonWidth = (int)(diff*0.8);
-		buttonHeight = (int)(h*0.15);
+		buttonHeight = (int)(h*0.11);
 		
 		// Define color and style for numbers
 		textPaint.setColor(getResources().getColor(
@@ -141,15 +149,20 @@ public class PersistentBogglePuzzleView extends View {
 		scoreRect = new Rect(h+buttonMargin, (buttonMargin*2)+buttonHeight,
 				h+buttonMargin+buttonWidth, (buttonMargin*2)+(buttonHeight*2));
 		
-		pauseBut = new Rect(h+buttonMargin, (buttonMargin*3)+(buttonHeight*2),
+		oppScoreX = h + buttonMargin + (buttonWidth / 2);
+		oppScoreY = (buttonMargin*3) + (buttonHeight*5/2);
+		oppScoreRect = new Rect(h+buttonMargin, (buttonMargin*3)+(buttonHeight*2),
 				h+buttonMargin+buttonWidth, (buttonMargin*3)+(buttonHeight*3));
-		pauseTextX = h + buttonMargin + (buttonWidth / 2);
-		pauseTextY = (buttonMargin*3) + (buttonHeight*5/2);
 		
-		quitBut = new Rect(h+buttonMargin, (buttonMargin*4)+(buttonHeight*3),
+		pauseBut = new Rect(h+buttonMargin, (buttonMargin*4)+(buttonHeight*3),
 				h+buttonMargin+buttonWidth, (buttonMargin*4)+(buttonHeight*4));
+		pauseTextX = h + buttonMargin + (buttonWidth / 2);
+		pauseTextY = (buttonMargin*4) + (buttonHeight*7/2);
+		
+		quitBut = new Rect(h+buttonMargin, (buttonMargin*5)+(buttonHeight*4),
+				h+buttonMargin+buttonWidth, (buttonMargin*5)+(buttonHeight*5));
 		quitTextX = h + buttonMargin + (buttonWidth / 2);
-		quitTextY = (buttonMargin*4) + (buttonHeight*7/2);
+		quitTextY = (buttonMargin*5) + (buttonHeight*9/2);
 
 		// Generate size of letters
 		width = newSize / (float)rows;
@@ -164,6 +177,7 @@ public class PersistentBogglePuzzleView extends View {
 	protected void onDraw(Canvas canvas) {
 		setTime(this.persistentBoggleGame.retrieveTime());
 		setScore(this.persistentBoggleGame.retrieveScore());
+		setOpponentScore(this.persistentBoggleGame.retrieveOpponentScore());
 		
 		// Draw the background...
 		Paint background = new Paint();
@@ -207,6 +221,7 @@ public class PersistentBogglePuzzleView extends View {
 		// Draw time and score
 		canvas.drawText(this.time, timeX, timeY, textPaint);
 		canvas.drawText(this.score, scoreX, scoreY, textPaint);
+		canvas.drawText(this.opponentScore, oppScoreX, oppScoreY, textPaint);
 
 		if (!this.persistentBoggleGame.getState()) {
 			// Draw the letters...

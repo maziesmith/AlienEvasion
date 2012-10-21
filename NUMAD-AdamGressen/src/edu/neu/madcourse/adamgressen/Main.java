@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 import edu.neu.madcourse.adamgressen.boggle.Boggle;
 import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle;
 import edu.neu.madcourse.adamgressen.sudoku.Sudoku;
@@ -30,12 +31,16 @@ public class Main extends Activity implements OnClickListener {
         
         setTitle("Adam Gressen");
         
-        AccountManager accountManager = (AccountManager) getSystemService(ACCOUNT_SERVICE); //AccountManager.get(getApplicationContext());
+        // Get Google Account
+        AccountManager accountManager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
         Account[] accounts = accountManager.getAccountsByType("com.google");
     	if (accounts.length > 0) {
     		Account account = accounts[0];
     		Log.d("google: ", "Google: "+account.name);
     		getSharedPreferences(USER_PREFS, MODE_PRIVATE).edit().putString(USER_ID, account.name).commit();
+    	}
+    	else {
+    		Toast.makeText(this,R.string.no_google_account, Toast.LENGTH_LONG).show();
     	}
         
         // Set up click listeners for buttons

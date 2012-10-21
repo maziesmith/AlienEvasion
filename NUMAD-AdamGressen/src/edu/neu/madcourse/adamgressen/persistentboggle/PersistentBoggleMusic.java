@@ -42,7 +42,6 @@ public class PersistentBoggleMusic {
    /** Stop the given media player */
    public static void stop(Context context, MediaPlayer m) { 
       if (m != null) {
-    	  m.stop();
     	  m.release();
     	  m = null;
       }
@@ -50,15 +49,7 @@ public class PersistentBoggleMusic {
    
    /** Stop both music and sound */
    public static void stop(Context context) {
-	   if (music != null) {
-		   music.stop();
-		   music.release();
-		   music = null;
-	   }
-	   if (sound != null) {
-		   sound.stop();
-		   sound.release();
-		   sound = null;
-	   }
+	   PersistentBoggleMusic.stop(context, music);
+	   PersistentBoggleMusic.stop(context, sound);
    }
 }

@@ -91,4 +91,9 @@
 	1 to 9 exactly once.
 	</string>
 	
+	<string name="no_google_account">
+	You must have a Google Account registered in order
+	to play Persistent Boggle.
+	</string>
+	
 </resources>
