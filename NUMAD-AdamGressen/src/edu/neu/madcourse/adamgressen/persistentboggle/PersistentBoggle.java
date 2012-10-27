@@ -9,12 +9,17 @@
 package edu.neu.madcourse.adamgressen.persistentboggle;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,9 +29,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import edu.neu.madcourse.adamgressen.R;
+import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle.BoggleFields;
 import edu.neu.mobileclass.apis.KeyValueAPI;
 
-public class PersistentBoggle extends Activity implements OnClickListener {
+public class PersistentBoggle extends Activity implements OnClickListener,PersistentBoggleInterface {
 	private static final String BOARD_PREFS = "persistent_board-prefs";
 	private static final String BOARD_KEY = "board";
 	private static final String SCORE_KEY = "score";
@@ -37,6 +43,15 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 
 	private static final String USER_PREFS = "persistent_user_prefs";
 	private static final String USER_ID_KEY = "id";
+	
+	public void setUserID(String userID) {
+		PersistentBoggle.userID = userID;
+	}
+
+	public void setOpponent(String opponent) {
+		PersistentBoggle.opponent = opponent;
+	}
+
 	private static String userID;
 
 	private static String SERVER_BOARD_KEY;
@@ -45,7 +60,7 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 	private static String SERVER_TIME_KEY;
 	private static String SERVER_OPP_KEY;
 	private static String SERVER_ONLINE_KEY;
-	private static String SERVER_WORLD_TIME_KEY;
+	public static String SERVER_WORLD_TIME_KEY;
 
 	private static final String TEAM = "persistence";
 	private static final String PASSWORD = "p3rs1st3nc3";
@@ -58,6 +73,10 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 	private static String OPP_ONLINE_KEY;
 	private static String OPP_OPP_KEY;
 	private static String OPP_WORLD_TIME_KEY;
+	
+	public static enum BoggleFields{
+		OPPONENT,USERID,BOARD,SCORE,REMOTETIME,SERVERTIME,USEDWORDS
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -66,6 +85,8 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 		setContentView(R.layout.persistent_boggle_main);
 
 		userID = getSharedPreferences(USER_PREFS, MODE_PRIVATE).getString(USER_ID_KEY, "");
+		
+		
 		setKeys(this);
 
 		// Set up click listeners for all the buttons
@@ -113,12 +134,14 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		PersistentBoggleMusic.playMusic(this, R.raw.main);
+		
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		PersistentBoggleMusic.stop(this);
+		
 	}
 
 	public void onClick(View v) {
@@ -263,18 +286,18 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 		setPref(getApplicationContext(), OPP_KEY, value);
 		setPref(getApplicationContext(), WORLD_TIME_KEY, time);
 		
-		setKeyValue(SERVER_OPP_KEY, value);
-		setKeyValue(SERVER_SCORE_KEY, "0");
-		setKeyValue(SERVER_USED_WORDS_KEY, "");
-		setKeyValue(SERVER_TIME_KEY, "120");
-		setKeyValue(SERVER_WORLD_TIME_KEY, String.valueOf(time));
-		setKeyValue(SERVER_ONLINE_KEY, String.valueOf(true));
+		setKeyValue(this,SERVER_OPP_KEY, value);
+		setKeyValue(this,SERVER_SCORE_KEY, "0");
+		setKeyValue(this,SERVER_USED_WORDS_KEY, "");
+		setKeyValue(this,SERVER_TIME_KEY, "120");
+		setKeyValue(this,SERVER_WORLD_TIME_KEY, String.valueOf(time));
+		setKeyValue(this,SERVER_ONLINE_KEY, String.valueOf(true));
 		
-		setKeyValue(OPP_SCORE_KEY, "0");
-		setKeyValue(OPP_USED_WORDS_KEY, "");
-		setKeyValue(OPP_TIME_KEY, "120");
-		setKeyValue(OPP_WORLD_TIME_KEY, String.valueOf(time));
-		setKeyValue(OPP_OPP_KEY, userID);
+		setKeyValue(this,OPP_SCORE_KEY, "0");
+		setKeyValue(this,OPP_USED_WORDS_KEY, "");
+		setKeyValue(this,OPP_TIME_KEY, "120");
+		setKeyValue(this,OPP_WORLD_TIME_KEY, String.valueOf(time));
+		setKeyValue(this,OPP_OPP_KEY, userID);
 	}
 
 	/** Set preferences */
@@ -294,11 +317,13 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 		context.getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).edit().putLong(key, val).commit();
 		context.getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).edit().putLong(WORLD_TIME_KEY, new Date().getTime()).commit();
 	}
-	public static void setKeyValue(String key, String val) {
-		if (KeyValueAPI.isServerAvailable()) {
-			KeyValueAPI.put(TEAM, PASSWORD, key, val);
-			KeyValueAPI.put(TEAM, PASSWORD, SERVER_WORLD_TIME_KEY, String.valueOf(new Date().getTime()));
-		}
+	public static void setKeyValue(PersistentBoggleInterface callable, String key, String val) {
+		KeyValueThread kvthreadobject = new KeyValueThread();
+		PersistentBoggleState state = new PersistentBoggleState();
+		
+		state.setMode(callable,key,val);
+		kvthreadobject.execute(state);
+		
 	}
 
 	/** Get preferences */
@@ -314,26 +339,98 @@ public class PersistentBoggle extends Activity implements OnClickListener {
 	public static Long getPref(Context context, String key, Long defVal) {
 		return context.getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).getLong(key, defVal);
 	}
-	public static String getKeyValue(String key, String defVal) {
-		try {
-			if (KeyValueAPI.isServerAvailable()) {
-				String val = KeyValueAPI.get(TEAM, PASSWORD, key);
-				if (val == "")
-					return defVal;
-				else
-					return val;
-			}
-			else
-				return defVal;
-		}
-		catch (Exception e) {
-			return defVal;
-		}
+	
+	public static void getKeyValue(PersistentBoggleInterface callable,String key, String defVal, BoggleFields field) {
+		KeyValueThread kvthreadobject = new KeyValueThread();
+		PersistentBoggleState state = new PersistentBoggleState();
+		
+		state.getMode(callable,key,defVal,field);
+		kvthreadobject.execute(state);
+		
+	}
+	
+	public static void getKeyValue(PersistentBoggleInterface callable,String key, String defVal, BoggleFields field, boolean bool){
+		KeyValueThread kvthreadobject = new KeyValueThread();
+		PersistentBoggleState state = new PersistentBoggleState();
+		
+		state.getMode(callable,key,defVal,field);
+		kvthreadobject.execute(state);
+		
 	}
 
 	// Clear a remote preference
 	public static void clearKeyValue(String key) {
-		if (KeyValueAPI.isServerAvailable())
-			KeyValueAPI.clearKey(TEAM, PASSWORD, key);
+		KeyValueThread kvthreadobject = new KeyValueThread();
+		PersistentBoggleState state = new PersistentBoggleState();
+		
+		state.clearMode(key);
+		kvthreadobject.execute(state);
 	}
+
+	
+	
+	public void setBoard(String board) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setScore(int score) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setRemoteTime(Long remotetime) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setTime(int time) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
+	public void setUsedWordString(String usedwords) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static String getKeyValuewait(String key, String defval) {
+		// TODO Auto-generated method stub
+		try {
+			if (KeyValueAPI.isServerAvailable()) {
+				String val = KeyValueAPI.get(TEAM, PASSWORD, key);
+				if (val == "" || val==null){
+					
+					return defval;
+				}
+				else{
+					return val;
+				}
+
+			}
+			else
+				return defval;
+		}
+		catch (Exception e) {
+			return defval;
+		}
+
+	}
+
+	public static void setKeyValuewait(String key, String value) {
+		// TODO Auto-generated method stub
+		try{
+			if (KeyValueAPI.isServerAvailable()) {
+				KeyValueAPI.put(TEAM, PASSWORD, key, value);
+				KeyValueAPI.put(TEAM, PASSWORD, PersistentBoggle.SERVER_WORLD_TIME_KEY, String.valueOf(new Date().getTime()));
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+
+
 }

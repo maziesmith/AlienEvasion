@@ -29,13 +29,15 @@ import edu.neu.mobileclass.apis.KeyValueAPI;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import edu.neu.madcourse.adamgressen.R;
+import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle.BoggleFields;
 
-public class PersistentBoggleGame extends Activity {
+public class PersistentBoggleGame extends Activity implements PersistentBoggleInterface {
 	private static final String TAG = "Boggle";
 	private static int ROWS = 5;
 
@@ -43,6 +45,15 @@ public class PersistentBoggleGame extends Activity {
 	private TimerTask task;
 	int delay = 1000; //milliseconds
 	private int time;
+	
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
 	public int retrieveTime() { return this.time; }
 	private boolean paused = false;
 	private boolean gameOver = false;
@@ -59,6 +70,9 @@ public class PersistentBoggleGame extends Activity {
 	private static final String USER_ID_KEY = "id";
 	private static String userID;
 
+	public void setUserID(String userID) {
+		PersistentBoggleGame.userID = userID;
+	}
 	private static String SERVER_BOARD_KEY;
 	private static String SERVER_SCORE_KEY;
 	private static String SERVER_USED_WORDS_KEY;
@@ -69,7 +83,7 @@ public class PersistentBoggleGame extends Activity {
 
 	private static final String TEAM = "persistence";
 	private static final String PASSWORD = "p3rs1st3nc3";
-
+ 
 	private static String opponent;
 	private static String OPP_BOARD_KEY;
 	private static String OPP_SCORE_KEY;
@@ -77,13 +91,47 @@ public class PersistentBoggleGame extends Activity {
 	private static String OPP_TIME_KEY;
 	private static String OPP_ONLINE_KEY;
 	private static String OPP_OPP_KEY;
+	private Long remoteTime =0L;
+	
+	public Long getRemoteTime() {
+		return remoteTime;
+	}
+
+	public void setRemoteTime(Long remoteTime) {
+		this.remoteTime = remoteTime;
+	}
 	public static String opponentScore = "0"; 
+	
+	public void setOpponent(String opponent) {
+		PersistentBoggleGame.opponent = opponent;
+	}
+
+	public static void setOpponentScore(String opponentScore) {
+		PersistentBoggleGame.opponentScore = opponentScore;
+	}
+
+	public void setBoard(String board) {
+		this.board = board;
+	}
+
 	public String retrieveOpponentScore() {
 		return opponentScore; 
 	}	
 	
 	private String board;
+	
 	private List<String> usedWords = new LinkedList<String>();
+	
+	private String usedWordString;
+	
+	
+	public String getUsedWordString() {
+		return usedWordString;
+	}
+
+	public void setUsedWordString(String usedWordString) {
+		this.usedWordString = usedWordString;
+	}
 	InputStream is;
 	BufferedReader br;
 
@@ -122,6 +170,10 @@ public class PersistentBoggleGame extends Activity {
 					die22,die23,die24,die25));
 
 	private int score;
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 	public int retrieveScore() { return this.score; }
 
 	private PersistentBogglePuzzleView persistentBogglePuzzleView;
@@ -136,8 +188,11 @@ public class PersistentBoggleGame extends Activity {
 		setKeys(this);
 
 		boolean useServer = false;
+		String remoteTimeString = PersistentBoggle.getKeyValuewait(SERVER_WORLD_TIME_KEY, "0");
+		remoteTime = Long.valueOf(remoteTimeString);
+		Log.d(TAG,"Setting the remote time to: "+ remoteTime);
 		Long localTime = PersistentBoggle.getPref(this, WORLD_TIME_KEY, (long) 0);
-		Long remoteTime = Long.valueOf(PersistentBoggle.getKeyValue(SERVER_WORLD_TIME_KEY, "0")).longValue();
+		
 		if (remoteTime == 0 && localTime != 0)
 			useServer = false;
 		else if (localTime == 0 && remoteTime != 0)
@@ -147,6 +202,7 @@ public class PersistentBoggleGame extends Activity {
 		else {
 			useServer = remoteTime > localTime;
 		}
+		Log.d(TAG,"UseServer:" + useServer);
 
 		this.board = getBoard(useServer);
 		this.score = getScore(useServer);
@@ -155,17 +211,17 @@ public class PersistentBoggleGame extends Activity {
 		
 		// Send board to prefs and server
 		PersistentBoggle.setPref(this, BOARD_KEY, board);
-		PersistentBoggle.setKeyValue(SERVER_BOARD_KEY, board);
-		PersistentBoggle.setKeyValue(OPP_BOARD_KEY, board);
+		PersistentBoggle.setKeyValuewait(SERVER_BOARD_KEY, board);
+		PersistentBoggle.setKeyValuewait(OPP_BOARD_KEY, board);
 		Log.d(TAG, "server board key"+SERVER_BOARD_KEY);
 		Log.d(TAG, "opp board key"+OPP_BOARD_KEY);
 		
 		PersistentBoggle.setPref(this, TIME_KEY, time);
-		PersistentBoggle.setKeyValue(SERVER_TIME_KEY, String.valueOf(time));
+		PersistentBoggle.setKeyValuewait(SERVER_TIME_KEY, String.valueOf(time));
 		PersistentBoggle.setPref(this, SCORE_KEY, score);
-		PersistentBoggle.setKeyValue(SERVER_SCORE_KEY, String.valueOf(score));
+		PersistentBoggle.setKeyValuewait(SERVER_SCORE_KEY, String.valueOf(score));
 		PersistentBoggle.setPref(this, USED_WORDS_KEY, this.serializeWords());
-		PersistentBoggle.setKeyValue(SERVER_USED_WORDS_KEY, this.serializeWords());
+		PersistentBoggle.setKeyValuewait(SERVER_USED_WORDS_KEY, this.serializeWords());
 		
 		persistentBogglePuzzleView = new PersistentBogglePuzzleView(this);
 		setContentView(persistentBogglePuzzleView);
@@ -180,8 +236,9 @@ public class PersistentBoggleGame extends Activity {
 						gameOver = true;
 						task.cancel();
 					}
-					else if (time % 5 == 0)
-						opponentScore = PersistentBoggle.getKeyValue(OPP_SCORE_KEY, "0");
+					
+					//else if (time % 5 == 0)
+						//PersistentBoggle.getKeyValue(getApplicationContext(),OPP_SCORE_KEY, "0",BoggleFields.OPPONENT);
 				}
 			}
 		};
@@ -212,7 +269,7 @@ public class PersistentBoggleGame extends Activity {
 		OPP_ONLINE_KEY = opponent+"online";
 		OPP_OPP_KEY = opponent+"opponent";
 		
-		opponentScore = PersistentBoggle.getKeyValue(OPP_SCORE_KEY, "0");
+		PersistentBoggle.getKeyValue(this,OPP_SCORE_KEY, "0",BoggleFields.OPPONENT);
 	}
 
 	/** Return game state (paused) */
@@ -224,15 +281,19 @@ public class PersistentBoggleGame extends Activity {
 	public void resumeGame() {
 		paused = false;
 		// Set player to be online
-		PersistentBoggle.setKeyValue(SERVER_ONLINE_KEY, String.valueOf(true));
+		PersistentBoggle.setKeyValue(this,SERVER_ONLINE_KEY, String.valueOf(true));
 		// Restart the music
 		PersistentBoggleMusic.playMusic(this, R.raw.game);
 	}
 
 	@Override
 	protected void onResume() {
+		if(isActivityVisible()){
+			
 		super.onResume();
 		resumeGame();
+		}
+		
 	}
 
 	/** Pause the game */
@@ -241,8 +302,8 @@ public class PersistentBoggleGame extends Activity {
 
 		// Store time value locally and remotely
 		PersistentBoggle.setPref(this, TIME_KEY, this.time);
-		PersistentBoggle.setKeyValue(SERVER_TIME_KEY, String.valueOf(this.time));
-		PersistentBoggle.setKeyValue(SERVER_ONLINE_KEY, String.valueOf(false));
+		PersistentBoggle.setKeyValue(this,SERVER_TIME_KEY, String.valueOf(this.time));
+		PersistentBoggle.setKeyValue(this,SERVER_ONLINE_KEY, String.valueOf(false));
 		PersistentBoggleMusic.stop(this);
 	}
 
@@ -258,7 +319,7 @@ public class PersistentBoggleGame extends Activity {
 		String b = "";
 		// Check server for value first
 		if (useServer) {
-			b = PersistentBoggle.getKeyValue(SERVER_BOARD_KEY, "");
+			b = PersistentBoggle.getKeyValuewait(SERVER_BOARD_KEY, "");
 			Log.d(TAG, "board getboard: "+b);
 		}
 		else
@@ -270,26 +331,28 @@ public class PersistentBoggleGame extends Activity {
 	private int getScore(boolean useServer) {
 		int s = 0;
 		if (useServer) {
-			String st = PersistentBoggle.getKeyValue(SERVER_SCORE_KEY, "0");
-			s = Integer.parseInt(PersistentBoggle.getKeyValue(SERVER_SCORE_KEY, "0"));
+			s = Integer.parseInt(PersistentBoggle.getKeyValuewait(SERVER_SCORE_KEY, "0"));
 		}
 		else
-			s = Integer.parseInt(PersistentBoggle.getPref(this, SCORE_KEY, "0"));
+			s = PersistentBoggle.getPref(this, SCORE_KEY, 0);
 		return s;
 	}
+	
 	private int getTime(boolean useServer) {
 		int t = 120;
 		if (useServer)
-			t = Integer.parseInt(PersistentBoggle.getKeyValue(SERVER_TIME_KEY, "120"));
+			t = Integer.parseInt(PersistentBoggle.getKeyValuewait(SERVER_TIME_KEY, "120"));
 		else
-			t = Integer.parseInt(PersistentBoggle.getPref(this, TIME_KEY, "120"));
+			t = PersistentBoggle.getPref(this, TIME_KEY, 120);
 		return t;
 	}
+	
 	private List<String> getUsedWords(boolean useServer) {
 		LinkedList<String> value = new LinkedList<String>();
 		if (useServer) {
-			String serverVal = PersistentBoggle.getKeyValue(SERVER_USED_WORDS_KEY, "");
-			if (serverVal != "") {
+			String serverVal = "";
+			serverVal = PersistentBoggle.getKeyValuewait(SERVER_USED_WORDS_KEY, "");
+			if (serverVal != "" && serverVal != null) {
 				String[] list = gson.fromJson(serverVal, String[].class);
 				for (String s : list)
 					value.add(s);
@@ -297,7 +360,7 @@ public class PersistentBoggleGame extends Activity {
 		}
 		else {
 			String serverVal = PersistentBoggle.getPref(this, USED_WORDS_KEY, "");
-			if (serverVal != "") {
+			if (serverVal != "" && serverVal != null ) {
 				String[] list = gson.fromJson(serverVal, String[].class);
 				for (String s : list)
 					value.add(s);
@@ -465,15 +528,15 @@ public class PersistentBoggleGame extends Activity {
 		if (isValidWord(word)) {
 			this.score += calculateScore(word);
 			persistentBogglePuzzleView.setScore(this.score);
-			PersistentBoggle.setKeyValue(SERVER_SCORE_KEY, String.valueOf(this.score));
+			PersistentBoggle.setKeyValue(this,SERVER_SCORE_KEY, String.valueOf(this.score));
 			PersistentBoggle.setPref(this, SCORE_KEY, this.score);
 
 			usedWords.add(word.trim().toLowerCase());
 			String value = this.serializeWords();
-			PersistentBoggle.setKeyValue(SERVER_USED_WORDS_KEY, value);
+			PersistentBoggle.setKeyValue(this,SERVER_USED_WORDS_KEY, value);
 			PersistentBoggle.setPref(this, USED_WORDS_KEY, value);
 			
-			PersistentBoggle.setKeyValue(SERVER_TIME_KEY, String.valueOf(this.time));
+			PersistentBoggle.setKeyValue(this,SERVER_TIME_KEY, String.valueOf(this.time));
 			PersistentBoggle.setPref(this, TIME_KEY, this.time);
 			
 			PersistentBoggleMusic.playSound(this, R.raw.reward);
@@ -482,6 +545,11 @@ public class PersistentBoggleGame extends Activity {
 			PersistentBoggleMusic.playSound(this, R.raw.fail);
 		selected.clear();
 	}
+	
+	public boolean isActivityVisible() {
+		KeyguardManager kgMgr = (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
+		return !(kgMgr.inKeyguardRestrictedInputMode());
+	}  
 
 	/** Return whether a tile is in range of the previously selected tile */
 	private boolean inRange(int selIndex) {
