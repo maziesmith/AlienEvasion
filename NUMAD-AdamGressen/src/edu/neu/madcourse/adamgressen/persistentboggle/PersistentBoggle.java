@@ -72,6 +72,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	private static String OPP_TIME_KEY;
 	private static String OPP_ONLINE_KEY;
 	private static String OPP_OPP_KEY;
+
 	private static String OPP_WORLD_TIME_KEY;
 	
 	public static enum BoggleFields{

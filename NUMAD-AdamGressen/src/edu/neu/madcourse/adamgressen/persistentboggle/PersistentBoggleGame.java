@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -29,11 +30,16 @@ import edu.neu.mobileclass.apis.KeyValueAPI;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.ViewDebug.FlagToString;
 import edu.neu.madcourse.adamgressen.R;
 import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle.BoggleFields;
 
@@ -70,6 +76,10 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static final String USER_ID_KEY = "id";
 	private static String userID;
 
+	public static String getUserID() {
+		return userID;
+	}
+
 	public void setUserID(String userID) {
 		PersistentBoggleGame.userID = userID;
 	}
@@ -89,8 +99,14 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static String OPP_SCORE_KEY;
 	private static String OPP_USED_WORDS_KEY;
 	private static String OPP_TIME_KEY;
+	public static String getOPP_TIME_KEY() {
+		return OPP_TIME_KEY;
+	}
 	private static String OPP_ONLINE_KEY;
 	private static String OPP_OPP_KEY;
+	public static String getOPP_OPP_KEY() {
+		return OPP_OPP_KEY;
+	}
 	private Long remoteTime =0L;
 	
 	public Long getRemoteTime() {
@@ -243,8 +259,24 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 			}
 		};
 		timer.schedule(this.task, 0, delay);
+		
+		startAlarmReceiver();
 	}
 	
+	private void startAlarmReceiver() {
+		// TODO Auto-generated method stub
+		
+		AlarmManager alarmmanager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(this,AlarmReceiver.class);
+		PendingIntent pIntent = PendingIntent.getBroadcast(this, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT );
+		
+		//Calendar calendar = Calendar.getInstance();
+		//calendar.add(Calendar.MILLISECOND,1000);
+		alarmmanager.setRepeating(AlarmManager.RTC_WAKEUP,
+			System.currentTimeMillis()+3000,20000, pIntent);
+		
+	}
+
 	private void setKeys(Context context) {
 		userID = context.getSharedPreferences(USER_PREFS, MODE_PRIVATE).getString(USER_ID_KEY, "");
 		Log.d("Persistent Boggle", "user id"+userID);
