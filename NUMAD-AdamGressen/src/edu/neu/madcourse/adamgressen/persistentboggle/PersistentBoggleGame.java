@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -22,6 +23,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -797,9 +800,16 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 
 			// If the server is available
 			if (KeyValueAPI.isServerAvailable()) {
-				// Get the leaderboard from the server
-				Leaderboard leaderboard = gson.fromJson(
-						PersistentBoggle.getKeyValuewait(LEADERBOARD, ""), Leaderboard.class);
+				String l = PersistentBoggle.getKeyValuewait(LEADERBOARD, "");
+				Leaderboard leaderboard;
+				if (l.equals(""))
+					leaderboard = new Leaderboard(new LinkedList<LeaderboardEntry>());
+				else {
+					// Get the leaderboard from the server
+					JsonReader reader = new JsonReader(new StringReader(l));
+					reader.setLenient(true);
+					leaderboard = gson.fromJson(reader, Leaderboard.class);
+				}
 				// Handle a null leaderboard
 				if (leaderboard == null)
 					leaderboard = new Leaderboard(new LinkedList<LeaderboardEntry>());
