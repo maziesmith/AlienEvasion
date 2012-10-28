@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -23,12 +24,18 @@ import java.util.TimerTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.ViewDebug.FlagToString;
 import android.view.Gravity;
 import android.widget.Toast;
 import edu.neu.madcourse.adamgressen.R;
@@ -74,6 +81,10 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static final String USER_ID_KEY = "id";
 	private static String userID;
 
+	public static String getUserID() {
+		return userID;
+	}
+
 	public void setUserID(String userID) {
 		PersistentBoggleGame.userID = userID;
 	}
@@ -92,9 +103,16 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static String OPP_BOARD_KEY;
 	private static String OPP_SCORE_KEY;
 	private static String OPP_TIME_KEY;
-	private static String OPP_USED_WORDS_KEY;
+	public static String getOPP_TIME_KEY() {
+		return OPP_TIME_KEY;
+	}
 	private static String OPP_ONLINE_KEY;
 	private static String OPP_OPP_KEY;
+	public static String getOPP_OPP_KEY() {
+		return OPP_OPP_KEY;
+	}
+	private static String OPP_USED_WORDS_KEY;
+
 	private static String OPP_OPP_SCORE_KEY;
 	private static String OPP_OPP_USED_WORDS_KEY;
 	public static String opponentScore = "0";
@@ -220,6 +238,8 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		// Determine whether to use the remote or local values
 		boolean useServer = false;
 		Long localTime = PersistentBoggle.getPref(this, WORLD_TIME_KEY, (long) 0);
+		Long remoteTime = Long.valueOf(PersistentBoggle.getKeyValuewait(SERVER_WORLD_TIME_KEY, "0")).longValue();
+
 		String remoteTimeString = PersistentBoggle.getKeyValuewait(SERVER_WORLD_TIME_KEY, "0");
 		remoteTime = Long.valueOf(remoteTimeString);
 		Log.d(TAG,"Setting the remote time to: "+ remoteTime);
@@ -315,6 +335,22 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 			}
 		};
 		timer.schedule(this.task, 0, delay);
+		
+		startAlarmReceiver();
+	}
+
+	
+	private void startAlarmReceiver() {
+		// TODO Auto-generated method stub
+		
+		AlarmManager alarmmanager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(this,AlarmReceiver.class);
+		PendingIntent pIntent = PendingIntent.getBroadcast(this, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT );
+		
+		//Calendar calendar = Calendar.getInstance();
+		//calendar.add(Calendar.MILLISECOND,1000);
+		alarmmanager.setRepeating(AlarmManager.RTC_WAKEUP,
+			System.currentTimeMillis()+3000,20000, pIntent);
 	}
 
 	/**
@@ -323,7 +359,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	 * */
 	private void showToast(final CharSequence state) {
 		PersistentBoggleGame.this.runOnUiThread(new Runnable() {
-			@Override
+			
 			public void run() {
 				Toast t = Toast.makeText(PersistentBoggleGame.this, state,
 						Toast.LENGTH_LONG);
@@ -331,6 +367,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 				t.show();
 			}
 		});
+
 	}
 
 	private void setKeys(Context context) {

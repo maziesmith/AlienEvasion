@@ -112,5 +112,11 @@
 	You must have a Google Account registered in order
 	to play Persistent Boggle.
 	</string>
+	<string name="Notification_Game_Ended">
+	    Your Opponent has finished the Game.
+	</string>
+	<string name="Notification_Game_Started">
+	    Your Opponent has started the Game.
+	</string>
 	
 </resources>
