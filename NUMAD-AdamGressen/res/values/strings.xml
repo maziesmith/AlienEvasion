@@ -41,21 +41,33 @@
 	
 	<string name="acknowledgements_label">Acknowledgements</string>
 	<string name="persistent_acknowledgements">
-	Here we will list acknowledgements. So far
-	we have nothing here.
+	We want to thank everyone who posted questions or advice on Piazza.\n
+	We also want to thank Stack Overflow which helped us correct 
+	bugs, add in functionality and generally work out the kinks.
 	</string>
 	<string name="rules_label">Rules</string>
 	<string name="persistent_rules">
-	When you press New Game you provide the email
-	of another user. If the user is available
-	then you will both be provided the same board.
+	Creating a new game:\n
+	Press New Game and provide the email of
+	another user.\n
+	If the user is available then you will both 
+	be provided the same board.\n
 	Both of you play a full game of Boggle at your
-	leisure, and the scores are compared after
-	you both finish.
-	\n
+	leisure.\n
+	While you play you will be updated with the
+	status of your opponent and you will be able
+	to see their score as well as your own.\n\n
+	Playing the game:\n
+	Select letters by clicking on them.\n
+	You can	undo a selection by clicking on a 
+	previously selected letter (other than the
+	letter you last selected).\n
+	Submit a word by selecting the letter you 
+	last selected.\n\n
 	Scoring:\n
-	Words of length 3-4 = 2\n
-	Words greater than length 4 = length-4+2
+	Words less than length 3 = 0 points\n
+	Words of length 3-4 = 2 points\n
+	Words greater than length 4 = length-2 points
 	</string>
 
 	<string name="new_game_title">Create New Game</string>
@@ -71,10 +83,12 @@
 	<string name="about_title">About Android Boggle</string>
 	<string name="persistent_about_title">About Persistent Boggle</string>
 	<string name="sudoku_about_title">About Android Sudoku</string>
-	<string name="about_text">\
-	Boggle is a fast paced word finding puzzle.
-	Starting with a 4x4 grid, the objective is to
-	find words of length 3 or more.
+	<string name="about_text">
+	Persistent Boggle is a fast paced word finding puzzle. 
+	Starting with a 5x5 grid, the objective is to 
+	find more words of length 3 or more than your 
+	opponent.\n\n
+	Created by Adam Gressen and Vaibhav Mahindroo.
 	</string>
 	<string name="persistent_about_text">
 	Persistent Boggle is a a variation on the
@@ -90,7 +104,10 @@
 	(also called <i>blocks</i>) contains the digits
 	1 to 9 exactly once.
 	</string>
-	
+	<string name="persistent_words_title">Used Words</string>
+	<string name="persistent_leaderboard_title">Leaderboard</string>
+	<string name="persistent_game_over_title">Game Over!</string>
+	    
 	<string name="no_google_account">
 	You must have a Google Account registered in order
 	to play Persistent Boggle.

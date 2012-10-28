@@ -61,11 +61,16 @@ public class PersistentBogglePuzzleView extends View {
 	}
 	
 	Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	Paint background = new Paint();
+	Paint dark = new Paint();
+	Paint hilite = new Paint();
+	Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
+	Paint selected = new Paint();
 	
 	private Rect pauseBut;
 	private int pauseTextX;
 	private int pauseTextY;
-	private String pauseText = "Pause";
+	private String pauseText;
 	private Rect quitBut;
 	private int quitTextX;
 	private int quitTextY;
@@ -85,12 +90,19 @@ public class PersistentBogglePuzzleView extends View {
 
 	private final PersistentBoggleGame persistentBoggleGame;
 	private int rows;
+	
+	private boolean triggeredGameOver = false;
 
 	/** Constructors */
 	public PersistentBogglePuzzleView(Context context) {
 		super(context);
 
 		this.persistentBoggleGame = (PersistentBoggleGame) context;
+		
+		if (this.persistentBoggleGame.getGameOver())
+			pauseText = "View Words";
+		else
+			pauseText = "Pause";
 		
 		this.rows = this.persistentBoggleGame.getRows();
 		setFocusable(true);
@@ -179,8 +191,14 @@ public class PersistentBogglePuzzleView extends View {
 		setScore(this.persistentBoggleGame.retrieveScore());
 		setOpponentScore(this.persistentBoggleGame.retrieveOpponentScore());
 		
+		if (!triggeredGameOver && this.persistentBoggleGame.getGameOver()) {
+			pauseText = "View Words";
+			invalidate(pauseBut);
+			this.persistentBoggleGame.handleGameOver();
+			triggeredGameOver = true;
+		}
+		
 		// Draw the background...
-		Paint background = new Paint();
 		background.setColor(getResources().getColor(
 				R.color.puzzle_background));
 		canvas.drawRect(0, 0, boardWidth, boardHeight, background);
@@ -188,10 +206,8 @@ public class PersistentBogglePuzzleView extends View {
 		// Draw the board...
 
 		// Define colors for the grid lines
-		Paint dark = new Paint();
 		dark.setColor(getResources().getColor(R.color.puzzle_dark));
 
-		Paint hilite = new Paint();
 		hilite.setColor(getResources().getColor(R.color.puzzle_hilite));
 
 		// Draw the grid lines
@@ -207,7 +223,6 @@ public class PersistentBogglePuzzleView extends View {
 		}
 		
 		// Define color and style for numbers
-		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		foreground.setColor(getResources().getColor(
 				R.color.puzzle_foreground));
 		foreground.setStyle(Style.FILL);
@@ -237,8 +252,6 @@ public class PersistentBogglePuzzleView extends View {
 			}
 			
 			// Draw the selection...
-			//Log.d(TAG, "selRect=" + selRect);
-			Paint selected = new Paint();
 			selected.setColor(getResources().getColor(
 					R.color.puzzle_selected));
 			// Draw all selected rectangles
@@ -262,8 +275,17 @@ public class PersistentBogglePuzzleView extends View {
 		float eventX = event.getX();
 		float eventY = event.getY();
 
+		// whether the game is paused or not
 		boolean state = this.persistentBoggleGame.getState();
+		// whether the game is over or not
 		boolean gameOver = this.persistentBoggleGame.getGameOver();
+		
+		// If the game is over, remove selected rectangles
+		if (gameOver && !selRect.isEmpty()) {
+			for (Rect r : selRect)
+				invalidate(r);
+			selRect.clear();
+		}
 		
 		if ((eventX < boardWidth) && (eventY < boardHeight) &&
 				!state && !gameOver) {
@@ -271,16 +293,19 @@ public class PersistentBogglePuzzleView extends View {
 					(int) (eventY / height));
 		}
 		else if (eventX >= pauseBut.left && eventX <= pauseBut.right &&
-				eventY >= pauseBut.top && eventY <= pauseBut.bottom &&
-				!gameOver) {
-			if (state) {
+				eventY >= pauseBut.top && eventY <= pauseBut.bottom) {
+			if (state && !gameOver) {
 				this.persistentBoggleGame.resumeGame();
 				this.pauseText = "Pause";
 			}
-			else {
+			else if (!gameOver) {
 				this.persistentBoggleGame.pauseGame();
 				this.pauseText = "Resume";
 			}
+			else {
+				this.persistentBoggleGame.showUsedWords();
+			}
+			// Invalidate the whole screen so the board can be hidden on pause
 			invalidate();
 		}
 		else if (eventX >= quitBut.left && eventX <= quitBut.right &&
@@ -294,7 +319,6 @@ public class PersistentBogglePuzzleView extends View {
 
 	private void select(int x, int y) {
 		Vibrator vb = (Vibrator) persistentBoggleGame.getSystemService(Context.VIBRATOR_SERVICE);
-        vb.vibrate(100);
 		int event = this.persistentBoggleGame.selectTile(x + (y * rows));
 		if (event == 1) {
 			//invalidate(selRect.get(selRect.size()-1));
@@ -308,14 +332,21 @@ public class PersistentBogglePuzzleView extends View {
 			// Add rectangle to selected list
 			selRect.add(rect);
 			invalidate(selRect.get(selRect.size()-1));
+			vb.vibrate(10);
 		}
 		else if (event == 2) {
 			selX.clear();
 			selY.clear();
-			for (Rect r : selRect) {
+			for (Rect r : selRect)
 				invalidate(r);
-			}
 			selRect.clear();
+		}
+		else if (event == 3) {
+			// Remove last selected
+			selX.remove(selX.size()-1);
+			selY.remove(selY.size()-1);
+			invalidate(selRect.get(selRect.size()-1));
+			selRect.remove(selRect.size()-1);
 		}
 	}
 
@@ -330,13 +361,4 @@ public class PersistentBogglePuzzleView extends View {
 				* width + width), (int) (y * height + height));
 		return rect;
 	}
-	/*
-   private void getRects(ArrayList<Integer> xs, ArrayList<Integer> ys, List<Rect> rects) {
-	   if (xs != null && ys != null) {
-		   for (int i=0; i<xs.size(); i++) {
-			   rects.set(i, new Rect());
-			   getRect(xs.get(i),ys.get(i),rects.get(i));
-		   }
-	   }
-   }*/
 }

@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -21,19 +20,18 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import edu.neu.mobileclass.apis.KeyValueAPI;
-
-import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 import edu.neu.madcourse.adamgressen.R;
+import edu.neu.mobileclass.apis.KeyValueAPI;
 
 public class PersistentBoggleGame extends Activity {
 	private static final String TAG = "Boggle";
@@ -41,12 +39,19 @@ public class PersistentBoggleGame extends Activity {
 
 	private Timer timer = new Timer();
 	private TimerTask task;
-	int delay = 1000; //milliseconds
+	int delay = 1000; // milliseconds
 	private int time;
-	public int retrieveTime() { return this.time; }
+
+	public int retrieveTime() {
+		return this.time;
+	}
+
 	private boolean paused = false;
 	private boolean gameOver = false;
-	public boolean getGameOver() { return this.gameOver; }
+
+	public boolean getGameOver() {
+		return this.gameOver;
+	}
 
 	private static final String BOARD_KEY = "board";
 	private static final String SCORE_KEY = "score";
@@ -54,6 +59,10 @@ public class PersistentBoggleGame extends Activity {
 	private static final String USED_WORDS_KEY = "used-words";
 	private static final String OPP_KEY = "opponent";
 	private static final String WORLD_TIME_KEY = "world-time";
+	private static final String LOCAL_OPP_ONLINE_KEY = "opp-online";
+	private static final String LOCAL_OPP_DONE_KEY = "opp-done";
+	private static final String LEADERBOARD = "leaderboard";
+	private static final String GAME_OVER = "game-over";
 
 	private static final String USER_PREFS = "persistent_user_prefs";
 	private static final String USER_ID_KEY = "id";
@@ -65,64 +74,92 @@ public class PersistentBoggleGame extends Activity {
 	private static String SERVER_TIME_KEY;
 	private static String SERVER_OPP_KEY;
 	private static String SERVER_ONLINE_KEY;
+	private static String SERVER_OPP_SCORE_KEY;
+	private static String SERVER_OPP_USED_WORDS_KEY;
 	private static String SERVER_WORLD_TIME_KEY;
-
-	private static final String TEAM = "persistence";
-	private static final String PASSWORD = "p3rs1st3nc3";
 
 	private static String opponent;
 	private static String OPP_BOARD_KEY;
 	private static String OPP_SCORE_KEY;
-	private static String OPP_USED_WORDS_KEY;
 	private static String OPP_TIME_KEY;
+	private static String OPP_USED_WORDS_KEY;
 	private static String OPP_ONLINE_KEY;
 	private static String OPP_OPP_KEY;
-	public static String opponentScore = "0"; 
+	private static String OPP_OPP_SCORE_KEY;
+	private static String OPP_OPP_USED_WORDS_KEY;
+	public static String opponentScore = "0";
+
 	public String retrieveOpponentScore() {
-		return opponentScore; 
-	}	
-	
+		return opponentScore;
+	}
+
 	private String board;
 	private List<String> usedWords = new LinkedList<String>();
 	InputStream is;
 	BufferedReader br;
 
-	private static final List<String> die1 = new LinkedList<String>(Arrays.asList("A", "A", "A", "F", "R", "S"));
-	private static final List<String> die2 = new LinkedList<String>(Arrays.asList("A", "A", "E", "E", "E", "E"));
-	private static final List<String> die3 = new LinkedList<String>(Arrays.asList("A", "A", "F", "I", "R", "S"));
-	private static final List<String> die4 = new LinkedList<String>(Arrays.asList("A", "D", "E", "N", "N", "N"));
-	private static final List<String> die5 = new LinkedList<String>(Arrays.asList("A", "E", "E", "E", "E", "M"));
-	private static final List<String> die6 = new LinkedList<String>(Arrays.asList("A", "E", "E", "G", "M", "U"));
-	private static final List<String> die7 = new LinkedList<String>(Arrays.asList("A", "E", "G", "M", "N", "N"));
-	private static final List<String> die8 = new LinkedList<String>(Arrays.asList("A", "F", "I", "R", "S", "Y"));
-	private static final List<String> die9 = new LinkedList<String>(Arrays.asList("B", "J", "K", "Q", "X", "Z"));
-	private static final List<String> die10 = new LinkedList<String>(Arrays.asList("C", "C", "N", "S", "T", "W"));
-	private static final List<String> die11 = new LinkedList<String>(Arrays.asList("C", "E", "I", "I", "L", "T"));
-	private static final List<String> die12 = new LinkedList<String>(Arrays.asList("C", "E", "I", "L", "P", "T"));
-	private static final List<String> die13 = new LinkedList<String>(Arrays.asList("C", "E", "I", "P", "S", "T"));
-	private static final List<String> die14 = new LinkedList<String>(Arrays.asList("D", "D", "L", "N", "O", "R"));
-	private static final List<String> die15 = new LinkedList<String>(Arrays.asList("D", "H", "H", "L", "O", "R"));
-	private static final List<String> die16 = new LinkedList<String>(Arrays.asList("D", "H", "H", "N", "O", "T"));
-	private static final List<String> die17 = new LinkedList<String>(Arrays.asList("D", "H", "L", "N", "O", "R"));
-	private static final List<String> die18 = new LinkedList<String>(Arrays.asList("E", "I", "I", "I", "T", "T"));
-	private static final List<String> die19 = new LinkedList<String>(Arrays.asList("E", "M", "O", "T", "T", "T"));
-	private static final List<String> die20 = new LinkedList<String>(Arrays.asList("E", "N", "S", "S", "S", "U"));
-	private static final List<String> die21 = new LinkedList<String>(Arrays.asList("F", "I", "P", "R", "S", "Y"));
-	private static final List<String> die22 = new LinkedList<String>(Arrays.asList("G", "O", "R", "R", "V", "W"));
-	private static final List<String> die23 = new LinkedList<String>(Arrays.asList("H", "I", "P", "R", "R", "Y"));
-	private static final List<String> die24 = new LinkedList<String>(Arrays.asList("N", "O", "O", "T", "U", "W"));
-	private static final List<String> die25 = new LinkedList<String>(Arrays.asList("O", "O", "O", "T", "T", "U"));
+	private static final LinkedList<String> die1 = new LinkedList<String>(
+			Arrays.asList("A", "A", "A", "F", "R", "S"));
+	private static final LinkedList<String> die2 = new LinkedList<String>(
+			Arrays.asList("A", "A", "E", "E", "E", "E"));
+	private static final LinkedList<String> die3 = new LinkedList<String>(
+			Arrays.asList("A", "A", "F", "I", "R", "S"));
+	private static final LinkedList<String> die4 = new LinkedList<String>(
+			Arrays.asList("A", "D", "E", "N", "N", "N"));
+	private static final LinkedList<String> die5 = new LinkedList<String>(
+			Arrays.asList("A", "E", "E", "E", "E", "M"));
+	private static final LinkedList<String> die6 = new LinkedList<String>(
+			Arrays.asList("A", "E", "E", "G", "M", "U"));
+	private static final LinkedList<String> die7 = new LinkedList<String>(
+			Arrays.asList("A", "E", "G", "M", "N", "N"));
+	private static final LinkedList<String> die8 = new LinkedList<String>(
+			Arrays.asList("A", "F", "I", "R", "S", "Y"));
+	private static final LinkedList<String> die9 = new LinkedList<String>(
+			Arrays.asList("B", "J", "K", "Q", "X", "Z"));
+	private static final LinkedList<String> die10 = new LinkedList<String>(
+			Arrays.asList("C", "C", "N", "S", "T", "W"));
+	private static final LinkedList<String> die11 = new LinkedList<String>(
+			Arrays.asList("C", "E", "I", "I", "L", "T"));
+	private static final LinkedList<String> die12 = new LinkedList<String>(
+			Arrays.asList("C", "E", "I", "L", "P", "T"));
+	private static final LinkedList<String> die13 = new LinkedList<String>(
+			Arrays.asList("C", "E", "I", "P", "S", "T"));
+	private static final LinkedList<String> die14 = new LinkedList<String>(
+			Arrays.asList("D", "D", "L", "N", "O", "R"));
+	private static final LinkedList<String> die15 = new LinkedList<String>(
+			Arrays.asList("D", "H", "H", "L", "O", "R"));
+	private static final LinkedList<String> die16 = new LinkedList<String>(
+			Arrays.asList("D", "H", "H", "N", "O", "T"));
+	private static final LinkedList<String> die17 = new LinkedList<String>(
+			Arrays.asList("D", "H", "L", "N", "O", "R"));
+	private static final LinkedList<String> die18 = new LinkedList<String>(
+			Arrays.asList("E", "I", "I", "I", "T", "T"));
+	private static final LinkedList<String> die19 = new LinkedList<String>(
+			Arrays.asList("E", "M", "O", "T", "T", "T"));
+	private static final LinkedList<String> die20 = new LinkedList<String>(
+			Arrays.asList("E", "N", "S", "S", "S", "U"));
+	private static final LinkedList<String> die21 = new LinkedList<String>(
+			Arrays.asList("F", "I", "P", "R", "S", "Y"));
+	private static final LinkedList<String> die22 = new LinkedList<String>(
+			Arrays.asList("G", "O", "R", "R", "V", "W"));
+	private static final LinkedList<String> die23 = new LinkedList<String>(
+			Arrays.asList("H", "I", "P", "R", "R", "Y"));
+	private static final LinkedList<String> die24 = new LinkedList<String>(
+			Arrays.asList("N", "O", "O", "T", "U", "W"));
+	private static final LinkedList<String> die25 = new LinkedList<String>(
+			Arrays.asList("O", "O", "O", "T", "T", "U"));
 
-	private static final List<List<String>> THE_DIE = 
-			new LinkedList<List<String>>(Arrays.asList(
-					die1,die2,die3,die4,die5,die6,
-					die7,die8,die9,die10,die11,
-					die12,die13,die14,die15,die16,
-					die17,die18,die19,die20,die21,
-					die22,die23,die24,die25));
+	@SuppressWarnings("unchecked")
+	private static final LinkedList<LinkedList<String>> THE_DIE = new LinkedList<LinkedList<String>>(
+			Arrays.asList(die1, die2, die3, die4, die5, die6, die7, die8, die9,
+					die10, die11, die12, die13, die14, die15, die16, die17,
+					die18, die19, die20, die21, die22, die23, die24, die25));
 
 	private int score;
-	public int retrieveScore() { return this.score; }
+
+	public int retrieveScore() {
+		return this.score;
+	}
 
 	private PersistentBogglePuzzleView persistentBogglePuzzleView;
 	GsonBuilder gsonb = new GsonBuilder();
@@ -135,9 +172,15 @@ public class PersistentBoggleGame extends Activity {
 
 		setKeys(this);
 
+		// Determine whether to use the remote or local values
 		boolean useServer = false;
-		Long localTime = PersistentBoggle.getPref(this, WORLD_TIME_KEY, (long) 0);
-		Long remoteTime = Long.valueOf(PersistentBoggle.getKeyValue(SERVER_WORLD_TIME_KEY, "0")).longValue();
+		Long localTime = PersistentBoggle.getPref(this, WORLD_TIME_KEY,
+				(long) 0);
+		Long remoteTime = Long.valueOf(
+				PersistentBoggle.getKeyValue(SERVER_WORLD_TIME_KEY, "0"))
+				.longValue();
+		Log.d(TAG, "Local: " + localTime);
+		Log.d(TAG, "Remote: " + remoteTime);
 		if (remoteTime == 0 && localTime != 0)
 			useServer = false;
 		else if (localTime == 0 && remoteTime != 0)
@@ -152,21 +195,32 @@ public class PersistentBoggleGame extends Activity {
 		this.score = getScore(useServer);
 		this.usedWords = getUsedWords(useServer);
 		this.time = getTime(useServer);
-		
+
 		// Send board to prefs and server
 		PersistentBoggle.setPref(this, BOARD_KEY, board);
 		PersistentBoggle.setKeyValue(SERVER_BOARD_KEY, board);
-		PersistentBoggle.setKeyValue(OPP_BOARD_KEY, board);
-		Log.d(TAG, "server board key"+SERVER_BOARD_KEY);
-		Log.d(TAG, "opp board key"+OPP_BOARD_KEY);
-		
+
+		// Send time to prefs and server
 		PersistentBoggle.setPref(this, TIME_KEY, time);
 		PersistentBoggle.setKeyValue(SERVER_TIME_KEY, String.valueOf(time));
+
+		// Send score to prefs and server
 		PersistentBoggle.setPref(this, SCORE_KEY, score);
 		PersistentBoggle.setKeyValue(SERVER_SCORE_KEY, String.valueOf(score));
+
+		// Send used words to prefs and server
 		PersistentBoggle.setPref(this, USED_WORDS_KEY, this.serializeWords());
 		PersistentBoggle.setKeyValue(SERVER_USED_WORDS_KEY, this.serializeWords());
-		
+
+		// Set this player's opponent score to the opponent's score from the
+		// server
+		PersistentBoggle.setKeyValue(SERVER_OPP_SCORE_KEY,
+				PersistentBoggle.getKeyValue(OPP_SCORE_KEY, "0"));
+		// Set this player's opponent used words list to the opponent's used
+		// words list from the server
+		PersistentBoggle.setKeyValue(SERVER_OPP_USED_WORDS_KEY,
+				PersistentBoggle.getKeyValue(OPP_USED_WORDS_KEY, ""));
+
 		persistentBogglePuzzleView = new PersistentBogglePuzzleView(this);
 		setContentView(persistentBogglePuzzleView);
 		persistentBogglePuzzleView.requestFocus();
@@ -178,40 +232,103 @@ public class PersistentBoggleGame extends Activity {
 					if (time <= 0) {
 						time = 0;
 						gameOver = true;
-						task.cancel();
 					}
-					else if (time % 5 == 0)
-						opponentScore = PersistentBoggle.getKeyValue(OPP_SCORE_KEY, "0");
+					if (time % 5 == 0) {
+						Context ctx = getApplicationContext();
+
+						// Get opponent score from this player's stored copy
+						opponentScore = PersistentBoggle.getKeyValue(SERVER_OPP_SCORE_KEY, "0");
+
+						// Determine if your opponent is online
+						boolean serverOnline = Boolean.valueOf(PersistentBoggle
+								.getKeyValue(OPP_ONLINE_KEY, "false"));
+						boolean localOnline = PersistentBoggle.getPref(ctx,
+								LOCAL_OPP_ONLINE_KEY, false);
+						if (localOnline && !serverOnline) {
+							showToast(opponent + " has gone offline.");
+							PersistentBoggle.setPref(ctx, LOCAL_OPP_ONLINE_KEY,
+									false);
+						}
+						else if (!localOnline && serverOnline) {
+							showToast(opponent + " has come online.");
+							PersistentBoggle.setPref(ctx, LOCAL_OPP_ONLINE_KEY,
+									true);
+						}
+
+						// Determine if your opponent has finished the game
+						Log.d(TAG, "opp-opp-key: "+PersistentBoggle.getKeyValue(OPP_OPP_KEY, ""));
+						Log.d(TAG, "userID: "+userID);
+						Log.d(TAG, "opp-time-key: "+PersistentBoggle.getKeyValue(OPP_TIME_KEY, "120"));
+						boolean serverDone = !PersistentBoggle.getKeyValue(OPP_OPP_KEY, "").equals(userID) ||
+								(Integer.valueOf(PersistentBoggle.getKeyValue(OPP_TIME_KEY, "120")) == 0);
+						boolean localDone = PersistentBoggle.getPref(ctx, LOCAL_OPP_DONE_KEY, false);
+						if (localDone && !serverDone)
+							PersistentBoggle.setPref(ctx, LOCAL_OPP_DONE_KEY, false);
+						else if (!localDone && serverDone) {
+							showToast(opponent + " has finished the game.");
+							PersistentBoggle.setPref(ctx, LOCAL_OPP_DONE_KEY, true);
+						}
+					}
 				}
 			}
 		};
 		timer.schedule(this.task, 0, delay);
+
+		// Intent intent = new Intent(this, AlarmManager.class);
+		// long delayTime = 60*2000;//2mins
+		// PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
+		// intent, 0);
+		// AlarmManager alarmManager = (AlarmManager)
+		// getSystemService(ALARM_SERVICE);
+		// alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+		// + delayTime, pendingIntent);
 	}
-	
+
+	/**
+	 * Displays a toast with information about the opponent's state These states
+	 * include "online", "offline", "paused", "resumed"
+	 * */
+	private void showToast(final CharSequence state) {
+		PersistentBoggleGame.this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Toast t = Toast.makeText(PersistentBoggleGame.this, state,
+						Toast.LENGTH_LONG);
+				t.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
+				t.show();
+			}
+		});
+	}
+
 	private void setKeys(Context context) {
-		userID = context.getSharedPreferences(USER_PREFS, MODE_PRIVATE).getString(USER_ID_KEY, "");
-		Log.d("Persistent Boggle", "user id"+userID);
+		userID = context.getSharedPreferences(USER_PREFS, MODE_PRIVATE)
+				.getString(USER_ID_KEY, "");
+		Log.d("Persistent Boggle", "user id" + userID);
 
-		SERVER_BOARD_KEY = userID+"board";
-		SERVER_SCORE_KEY = userID+"score";
-		SERVER_USED_WORDS_KEY = userID+"used-words";
-		SERVER_TIME_KEY = userID+"time";
-		SERVER_OPP_KEY = userID+"opponent";
-		SERVER_ONLINE_KEY = userID+"online";
-		SERVER_WORLD_TIME_KEY = userID+"world-time";
+		SERVER_BOARD_KEY = userID + "board";
+		SERVER_SCORE_KEY = userID + "score";
+		SERVER_USED_WORDS_KEY = userID + "used-words";
+		SERVER_TIME_KEY = userID + "time";
+		SERVER_OPP_KEY = userID + "opponent";
+		SERVER_ONLINE_KEY = userID + "online";
+		SERVER_OPP_SCORE_KEY = userID + "opp-score";
+		SERVER_OPP_USED_WORDS_KEY = userID + "opp-used-words";
+		SERVER_WORLD_TIME_KEY = userID + "world-time";
 
-		opponent = KeyValueAPI.get(TEAM, PASSWORD, SERVER_OPP_KEY);
-		if (opponent == "")
-			opponent = PersistentBoggle.getPref(context, OPP_KEY, "");		
-		Log.d("Boggle", "opponent"+opponent);
-		
-		OPP_BOARD_KEY = opponent+"board";
-		OPP_SCORE_KEY = opponent+"score";
-		OPP_USED_WORDS_KEY = opponent+"used-words";
-		OPP_TIME_KEY = opponent+"time";
-		OPP_ONLINE_KEY = opponent+"online";
-		OPP_OPP_KEY = opponent+"opponent";
-		
+		opponent = PersistentBoggle.getKeyValue(SERVER_OPP_KEY, "");
+		if (opponent.equals(""))
+			opponent = PersistentBoggle.getPref(context, OPP_KEY, "");
+		Log.d("Boggle", "opponent" + opponent);
+
+		OPP_BOARD_KEY = opponent + "board";
+		OPP_SCORE_KEY = opponent + "score";
+		OPP_TIME_KEY = opponent + "time";
+		OPP_USED_WORDS_KEY = opponent + "used-words";
+		OPP_ONLINE_KEY = opponent + "online";
+		OPP_OPP_KEY = opponent + "opponent";
+		OPP_OPP_SCORE_KEY = opponent + "opp-score";
+		OPP_OPP_USED_WORDS_KEY = opponent + "opp-used-words";
+
 		opponentScore = PersistentBoggle.getKeyValue(OPP_SCORE_KEY, "0");
 	}
 
@@ -241,7 +358,8 @@ public class PersistentBoggleGame extends Activity {
 
 		// Store time value locally and remotely
 		PersistentBoggle.setPref(this, TIME_KEY, this.time);
-		PersistentBoggle.setKeyValue(SERVER_TIME_KEY, String.valueOf(this.time));
+		PersistentBoggle
+		.setKeyValue(SERVER_TIME_KEY, String.valueOf(this.time));
 		PersistentBoggle.setKeyValue(SERVER_ONLINE_KEY, String.valueOf(false));
 		PersistentBoggleMusic.stop(this);
 	}
@@ -249,7 +367,7 @@ public class PersistentBoggleGame extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		//Log.d(TAG, "onPause");
+		// Log.d(TAG, "onPause");
 		pauseGame();
 	}
 
@@ -259,45 +377,49 @@ public class PersistentBoggleGame extends Activity {
 		// Check server for value first
 		if (useServer) {
 			b = PersistentBoggle.getKeyValue(SERVER_BOARD_KEY, "");
-			Log.d(TAG, "board getboard: "+b);
+			Log.d(TAG, "board getboard: " + b);
 		}
 		else
 			b = PersistentBoggle.getPref(this, BOARD_KEY, "");
-		if (b == "")
+		if (b.equals(""))
 			b = createBoard();
 		return b;
 	}
+
 	private int getScore(boolean useServer) {
 		int s = 0;
 		if (useServer) {
 			String st = PersistentBoggle.getKeyValue(SERVER_SCORE_KEY, "0");
-			s = Integer.parseInt(PersistentBoggle.getKeyValue(SERVER_SCORE_KEY, "0"));
+			s = Integer.parseInt(st);
+		} else {
+			s = PersistentBoggle.getPref(this, SCORE_KEY, 0);
 		}
-		else
-			s = Integer.parseInt(PersistentBoggle.getPref(this, SCORE_KEY, "0"));
 		return s;
 	}
+
 	private int getTime(boolean useServer) {
 		int t = 120;
 		if (useServer)
-			t = Integer.parseInt(PersistentBoggle.getKeyValue(SERVER_TIME_KEY, "120"));
+			t = Integer.parseInt(PersistentBoggle.getKeyValue(SERVER_TIME_KEY,
+					"120"));
 		else
-			t = Integer.parseInt(PersistentBoggle.getPref(this, TIME_KEY, "120"));
+			t = PersistentBoggle.getPref(this, TIME_KEY, 120);
 		return t;
 	}
+
 	private List<String> getUsedWords(boolean useServer) {
 		LinkedList<String> value = new LinkedList<String>();
 		if (useServer) {
-			String serverVal = PersistentBoggle.getKeyValue(SERVER_USED_WORDS_KEY, "");
-			if (serverVal != "") {
+			String serverVal = PersistentBoggle.getKeyValue(
+					SERVER_USED_WORDS_KEY, "");
+			if (!serverVal.equals("") && serverVal != null) {
 				String[] list = gson.fromJson(serverVal, String[].class);
 				for (String s : list)
 					value.add(s);
 			}
-		}
-		else {
+		} else {
 			String serverVal = PersistentBoggle.getPref(this, USED_WORDS_KEY, "");
-			if (serverVal != "") {
+			if (!serverVal.equals("") && serverVal != null) {
 				String[] list = gson.fromJson(serverVal, String[].class);
 				for (String s : list)
 					value.add(s);
@@ -305,7 +427,7 @@ public class PersistentBoggleGame extends Activity {
 		}
 		return value;
 	}
-	
+
 	public String serializeWords() {
 		return gson.toJson(this.usedWords);
 	}
@@ -323,7 +445,7 @@ public class PersistentBoggleGame extends Activity {
 		}
 		Random rand = new Random();
 		for (int i = 0; i < (ROWS * ROWS); i++) {
-			int size = remainingDie.size()-1;
+			int size = remainingDie.size() - 1;
 			if (size > 0)
 				// The selected die index
 				dieIndex = rand.nextInt(size);
@@ -331,12 +453,13 @@ public class PersistentBoggleGame extends Activity {
 				dieIndex = 0;
 			// Choose letter
 			char chosenChar = chooseLetter(dieIndex, remainingDie);
-			// Remove die from remainingDie list 
+			// Remove die from remainingDie list
 			remainingDie.remove(dieIndex);
 			// Add char to board
 			board += chosenChar;
 		}
 		Log.d(TAG, "board generated: " + board);
+		PersistentBoggle.setKeyValue(OPP_BOARD_KEY, board);
 		return board;
 	}
 
@@ -357,13 +480,11 @@ public class PersistentBoggleGame extends Activity {
 	}
 
 	/** Convert an array into a board string */
-	/*static private String toBoardString(char[] boardList) {
-      StringBuilder buf = new StringBuilder();
-      for (char element : boardList) {
-         buf.append(element);
-      }
-      return buf.toString();
-   }*/
+	/*
+	 * static private String toBoardString(char[] boardList) { StringBuilder buf
+	 * = new StringBuilder(); for (char element : boardList) {
+	 * buf.append(element); } return buf.toString(); }
+	 */
 
 	/** Convert a board string into an array */
 	static protected char[] fromBoardString(String string) {
@@ -378,6 +499,7 @@ public class PersistentBoggleGame extends Activity {
 	private char getTile(int x, int y) {
 		return fromBoardString(board)[y * ROWS + x];
 	}
+
 	private char getTile(int tile) {
 		return fromBoardString(board)[tile];
 	}
@@ -387,6 +509,7 @@ public class PersistentBoggleGame extends Activity {
 		char v = getTile(x, y);
 		return String.valueOf(v);
 	}
+
 	protected String getTileString(int tile) {
 		char v = getTile(tile);
 		return String.valueOf(v);
@@ -403,15 +526,20 @@ public class PersistentBoggleGame extends Activity {
 			return 1;
 		}
 		// If given index is the same as the previously selected index
-		else if (index == selected.get(selected.size()-1)) {
+		else if (index == selected.get(selected.size() - 1)) {
 			String word = "";
-			for (int i : selected) {
+			for (int i : selected)
 				word += getTileString(i);
-			}
 			submitWord(word);
 			return 2;
 		}
-		else
+		// If given index is same as tile selected before the last selection
+		else if (isSelected(index)) { // && selected.size()>1) {
+			// Simply remove the last selected letter
+			int s = selected.size() - 1;
+			selected.remove(s);
+			return 3;
+		} else
 			return 0;
 	}
 
@@ -429,7 +557,7 @@ public class PersistentBoggleGame extends Activity {
 			return false;
 		else {
 			try {
-				is = this.getAssets().open(length+"/"+firstLetter+".txt");
+				is = this.getAssets().open(length + "/" + firstLetter + ".txt");
 				br = new BufferedReader(new InputStreamReader(is));
 				String line;
 
@@ -439,11 +567,9 @@ public class PersistentBoggleGame extends Activity {
 
 				br.close();
 				is.close();
-			}
-			catch (FileNotFoundException e) {
+			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return isValid;
@@ -465,31 +591,40 @@ public class PersistentBoggleGame extends Activity {
 		if (isValidWord(word)) {
 			this.score += calculateScore(word);
 			persistentBogglePuzzleView.setScore(this.score);
-			PersistentBoggle.setKeyValue(SERVER_SCORE_KEY, String.valueOf(this.score));
+			PersistentBoggle.setKeyValue(SERVER_SCORE_KEY,
+					String.valueOf(this.score));
 			PersistentBoggle.setPref(this, SCORE_KEY, this.score);
 
 			usedWords.add(word.trim().toLowerCase());
 			String value = this.serializeWords();
 			PersistentBoggle.setKeyValue(SERVER_USED_WORDS_KEY, value);
 			PersistentBoggle.setPref(this, USED_WORDS_KEY, value);
-			
-			PersistentBoggle.setKeyValue(SERVER_TIME_KEY, String.valueOf(this.time));
+
+			if (PersistentBoggle.getKeyValue(OPP_OPP_KEY, "").equals(userID)) {
+				PersistentBoggle.setKeyValue(OPP_OPP_SCORE_KEY,
+						String.valueOf(this.score));
+				PersistentBoggle.setKeyValue(OPP_OPP_USED_WORDS_KEY, value);
+			}
+
+			PersistentBoggle.setKeyValue(SERVER_TIME_KEY,
+					String.valueOf(this.time));
 			PersistentBoggle.setPref(this, TIME_KEY, this.time);
-			
+
 			PersistentBoggleMusic.playSound(this, R.raw.reward);
-		}
-		else
+		} else
 			PersistentBoggleMusic.playSound(this, R.raw.fail);
 		selected.clear();
 	}
 
 	/** Return whether a tile is in range of the previously selected tile */
 	private boolean inRange(int selIndex) {
-		int tile = selected.get(selected.size()-1);
+		int tile = selected.get(selected.size() - 1);
 		return ((tile - 1) == selIndex) || ((tile + 1) == selIndex)
 				|| ((tile - ROWS) == selIndex) || ((tile + ROWS) == selIndex)
-				|| ((tile - ROWS - 1) == selIndex) || ((tile - ROWS + 1) == selIndex)
-				|| ((tile + ROWS - 1) == selIndex) || ((tile + ROWS + 1) == selIndex);
+				|| ((tile - ROWS - 1) == selIndex)
+				|| ((tile - ROWS + 1) == selIndex)
+				|| ((tile + ROWS - 1) == selIndex)
+				|| ((tile + ROWS + 1) == selIndex);
 	}
 
 	/** Return whether a tile has already been selected */
@@ -504,6 +639,133 @@ public class PersistentBoggleGame extends Activity {
 
 	/** Return whether a tile is selectable */
 	private boolean isSelectable(int selIndex) {
-		return selected.size() == 0 || (inRange(selIndex) && !isSelected(selIndex));
+		return selected.isEmpty() || (inRange(selIndex) && !isSelected(selIndex));
+	}
+
+	/** Handle game over */
+	public void handleGameOver() {
+		PersistentBoggleMusic.stop(this);
+
+		// Initialize message
+		String message = "";
+
+		// If your opponent has finished the game
+		if ((PersistentBoggle.getKeyValue(OPP_OPP_KEY, "")).equals(userID) ||
+				Integer.valueOf(PersistentBoggle.getKeyValue(OPP_TIME_KEY, "120")) == 0) {
+			// List of opponent's used words
+			List<String> oppUsedWords = new LinkedList<String>();
+			String serverVal = PersistentBoggle.getKeyValue(SERVER_OPP_USED_WORDS_KEY, "");
+			if (!serverVal.equals("") && serverVal != null) {
+				String[] list = gson.fromJson(serverVal, String[].class);
+				for (String s : list)
+					oppUsedWords.add(s);
+			}
+
+			// If you lost
+			if (Integer.valueOf(opponentScore) > this.score) {
+				message = "You lost.\nYou scored " + String.valueOf(this.score)
+						+ " points with "
+						+ String.valueOf(this.usedWords.size())
+						+ " words.\nYour opponent scored " + opponentScore
+						+ " points with " + String.valueOf(oppUsedWords.size())
+						+ " words.";
+			}
+			// If you tied
+			else if (Integer.valueOf(opponentScore) == this.score) {
+				message = "You tied!\nYou scored " + String.valueOf(this.score)
+						+ " points with "
+						+ String.valueOf(this.usedWords.size())
+						+ " words!\nYour opponent also scored " + opponentScore
+						+ " points with " + String.valueOf(oppUsedWords.size())
+						+ " words.";
+			}
+			// If you won
+			else {
+				message = "You won!\nYou scored " + String.valueOf(this.score)
+						+ " points with "
+						+ String.valueOf(this.usedWords.size())
+						+ " words!\nYour opponent scored " + opponentScore
+						+ " points with " + String.valueOf(oppUsedWords.size())
+						+ " words.";
+			}
+		}
+		// If your opponent hasn't finished the game yet
+		else {
+			message = "You scored " + String.valueOf(this.score)
+					+ " points with " + String.valueOf(this.usedWords.size())
+					+ " words!\nYour opponent has not yet finished the game.";
+		}
+
+		new AlertDialog.Builder(this)
+		.setTitle(R.string.persistent_game_over_title)
+		.setMessage(message)
+		.setCancelable(true)
+		.setPositiveButton("Back to Game",
+				new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+			}
+		})
+		.setNegativeButton("View Words",
+				new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog,
+					int which) {
+				showUsedWords();
+				dialog.dismiss();
+			}
+		}).show();
+
+		if (!PersistentBoggle.getPref(this, GAME_OVER, true)) {
+			// Create new leaderboard entry
+			LeaderboardEntry entry = new LeaderboardEntry(userID, this.score);
+
+			// If the server is available
+			if (KeyValueAPI.isServerAvailable()) {
+				// Get the leaderboard from the server
+				Leaderboard leaderboard = gson.fromJson(
+						PersistentBoggle.getKeyValue(LEADERBOARD, ""),
+						Leaderboard.class);
+				if (leaderboard == null)
+					leaderboard = new Leaderboard(
+							new LinkedList<LeaderboardEntry>());
+				// Add the leaderboard entry
+				leaderboard.addEntry(entry);
+				// Serialize the leaderboard
+				String serializedLeaderboard = gson.toJson(leaderboard);
+				// Set the leaderboard on the server
+				PersistentBoggle
+				.setKeyValue(LEADERBOARD, serializedLeaderboard);
+			} else {
+				// Get the local leaderboard
+				Leaderboard leaderboard = gson.fromJson(
+						PersistentBoggle.getPref(this, LEADERBOARD, ""),
+						Leaderboard.class);
+				if (leaderboard == null)
+					leaderboard = new Leaderboard(
+							new LinkedList<LeaderboardEntry>());
+				// Add the leaderboard entry
+				leaderboard.addEntry(entry);
+				// Serialize the leaderboard
+				String serializedLeaderboard = gson.toJson(leaderboard);
+				// Set the leaderboard locally
+				PersistentBoggle.setPref(this, LEADERBOARD,
+						serializedLeaderboard);
+			}
+			PersistentBoggle.setPref(this, GAME_OVER, true);
+		}
+	}
+
+	/** Shows an alert dialog with the used words */
+	public void showUsedWords() {
+		final CharSequence[] words = this.usedWords
+				.toArray(new CharSequence[this.usedWords.size()]);
+
+		new AlertDialog.Builder(this).setTitle(R.string.persistent_words_title)
+		.setItems(words, null).setCancelable(true)
+		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+			}
+		}).show();
 	}
 }
