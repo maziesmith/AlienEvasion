@@ -11,16 +11,13 @@ package edu.neu.madcourse.adamgressen.persistentboggle;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -31,7 +28,6 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 import edu.neu.madcourse.adamgressen.R;
-import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle.BoggleFields;
 import edu.neu.mobileclass.apis.KeyValueAPI;
 
 public class PersistentBoggle extends Activity implements OnClickListener,PersistentBoggleInterface {
@@ -130,7 +126,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 
 	private void setKeys(Context context, String opp) {
 		userID = context.getSharedPreferences(USER_PREFS, MODE_PRIVATE).getString(USER_ID_KEY, "");
-		Log.d("Persistent Boggle", "user id"+userID);
+		Log.d("Persistent Boggle", "user id: "+userID);
 
 		SERVER_BOARD_KEY = userID+"board";
 		SERVER_SCORE_KEY = userID+"score";
@@ -143,15 +139,15 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 		SERVER_WORLD_TIME_KEY = userID+"world-time";
 
 		if (opp.equals("")) {
-			opponent = PersistentBoggle.getKeyValue(SERVER_OPP_KEY, "");
+			opponent = PersistentBoggle.getKeyValuewait(SERVER_OPP_KEY, "");
 			if (opponent.equals(""))
 				opponent = PersistentBoggle.getPref(context, OPP_KEY, "");	
-			Log.d("Boggle", "opponent"+opponent);
+			Log.d("Boggle", "opponent: "+opponent);
 		}
 		else
 			opponent = opp;
 
-		if (PersistentBoggle.getKeyValue(SERVER_BOARD_KEY, "").equals("") &&
+		if (PersistentBoggle.getKeyValuewait(SERVER_BOARD_KEY, "").equals("") &&
 				PersistentBoggle.getPref(context, BOARD_KEY, "").equals(""))
 			boardExists = false;
 		else
@@ -179,14 +175,12 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 			continueButton.setVisibility(0);
 
 		PersistentBoggleMusic.playMusic(this, R.raw.main);
-
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		PersistentBoggleMusic.stop(this);
-
 	}
 
 	public void onClick(View v) {
@@ -296,7 +290,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 			public void onClick(DialogInterface arg0, int arg1) {
 				String value = input.getText().toString().trim();
 				String testOppTimeKey = value+"time";
-				int t = Integer.valueOf(PersistentBoggle.getKeyValue(testOppTimeKey, "120"));
+				int t = Integer.valueOf(PersistentBoggle.getKeyValuewait(testOppTimeKey, "120"));
 				if (t > 0 && t != 120) {
 					Toast.makeText(getApplicationContext(), 
 							"This player is currently in another game. Try again later.",
@@ -321,7 +315,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 		// If the server is available
 		if (KeyValueAPI.isServerAvailable()) {
 			// Get the server leaderboard
-			Leaderboard leaderboard = gson.fromJson(PersistentBoggle.getKeyValue(SERVER_LEADERBOARD, ""), Leaderboard.class);
+			Leaderboard leaderboard = gson.fromJson(PersistentBoggle.getKeyValuewait(SERVER_LEADERBOARD, ""), Leaderboard.class);
 			if (leaderboard == null)
 				leaderboard = new Leaderboard(new LinkedList<LeaderboardEntry>());
 			// Get the local leaderboard
@@ -331,7 +325,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 			// Combine the leaderboards
 			leaderboard.combineLeaderboards(localLeaderboard);
 			// Write the combined leaderboards to the server
-			PersistentBoggle.setKeyValue(SERVER_LEADERBOARD, gson.toJson(leaderboard));
+			PersistentBoggle.setKeyValue(this, SERVER_LEADERBOARD, gson.toJson(leaderboard));
 			// Clear the local leaderboard
 			PersistentBoggle.setPref(this, LEADERBOARD, "");
 			// List to be populated by leader info
@@ -384,50 +378,48 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 
 		// Clear necessary remote board prefs
 		clearKeyValue(SERVER_BOARD_KEY);
-		clearKeyValue(SERVER_SCORE_KEY);
-		clearKeyValue(SERVER_USED_WORDS_KEY);
-		clearKeyValue(SERVER_TIME_KEY);
-		clearKeyValue(SERVER_ONLINE_KEY);
-		clearKeyValue(SERVER_OPP_KEY);
+		//clearKeyValue(SERVER_SCORE_KEY);
+		//clearKeyValue(SERVER_USED_WORDS_KEY);
+		//clearKeyValue(SERVER_TIME_KEY);
+		//clearKeyValue(SERVER_ONLINE_KEY);
+		//clearKeyValue(SERVER_OPP_KEY);
 		clearKeyValue(SERVER_OPP_SCORE_KEY);
 		clearKeyValue(SERVER_OPP_USED_WORDS_KEY);
 
 		clearKeyValue(OPP_BOARD_KEY);
-		clearKeyValue(OPP_SCORE_KEY);
-		clearKeyValue(OPP_USED_WORDS_KEY);
-		clearKeyValue(OPP_TIME_KEY);
+		//clearKeyValue(OPP_SCORE_KEY);
+		//clearKeyValue(OPP_USED_WORDS_KEY);
+		//clearKeyValue(OPP_TIME_KEY);
 		clearKeyValue(OPP_ONLINE_KEY);
-		clearKeyValue(OPP_OPP_KEY);
-		clearKeyValue(OPP_OPP_SCORE_KEY);
-		clearKeyValue(OPP_OPP_USED_WORDS_KEY);
+		//clearKeyValue(OPP_OPP_KEY);
+		//clearKeyValue(OPP_OPP_SCORE_KEY);
+		//clearKeyValue(OPP_OPP_USED_WORDS_KEY);
 
 		Long time = new Date().getTime();
 
-		Context ctx = getApplicationContext();
+		setPref(this, SCORE_KEY, 0);
+		setPref(this, USED_WORDS_KEY, "");
+		setPref(this, TIME_KEY, 120);
+		setPref(this, OPP_KEY, value);
+		setPref(this, WORLD_TIME_KEY, time);
+		setPref(this, LOCAL_OPP_ONLINE_KEY, false);
+		setPref(this, LOCAL_OPP_DONE_KEY, false);
+		setPref(this, GAME_OVER, false);
 
-		setPref(ctx, SCORE_KEY, 0);
-		setPref(ctx, USED_WORDS_KEY, "");
-		setPref(ctx, TIME_KEY, 120);
-		setPref(ctx, OPP_KEY, value);
-		setPref(ctx, WORLD_TIME_KEY, time);
-		setPref(ctx, LOCAL_OPP_ONLINE_KEY, false);
-		setPref(ctx, LOCAL_OPP_DONE_KEY, false);
-		setPref(ctx, GAME_OVER, false);
+		setKeyValuewait(SERVER_OPP_KEY, value);
+		setKeyValuewait(SERVER_SCORE_KEY, "0");
+		setKeyValuewait(SERVER_USED_WORDS_KEY, "");
+		setKeyValuewait(SERVER_TIME_KEY, "120");
+		setKeyValuewait(SERVER_WORLD_TIME_KEY, String.valueOf(time));
+		setKeyValuewait(SERVER_ONLINE_KEY, String.valueOf(true));
 
-		setKeyValue(this,SERVER_OPP_KEY, value);
-		setKeyValue(this,SERVER_SCORE_KEY, "0");
-		setKeyValue(this,SERVER_USED_WORDS_KEY, "");
-		setKeyValue(this,SERVER_TIME_KEY, "120");
-		setKeyValue(this,SERVER_WORLD_TIME_KEY, String.valueOf(time));
-		setKeyValue(this,SERVER_ONLINE_KEY, String.valueOf(true));
-
-		setKeyValue(this,OPP_SCORE_KEY, "0");
-		setKeyValue(this,OPP_USED_WORDS_KEY, "");
-		setKeyValue(this,OPP_TIME_KEY, "120");
-		setKeyValue(this,OPP_WORLD_TIME_KEY, String.valueOf(time));
-		setKeyValue(this,OPP_OPP_KEY, userID);
-		setKeyValue(this,OPP_OPP_SCORE_KEY, "0");
-		setKeyValue(this,OPP_OPP_USED_WORDS_KEY, "");
+		setKeyValuewait(OPP_SCORE_KEY, "0");
+		setKeyValuewait(OPP_USED_WORDS_KEY, "");
+		setKeyValuewait(OPP_OPP_SCORE_KEY, "0");
+		setKeyValuewait(OPP_OPP_USED_WORDS_KEY, "");
+		setKeyValuewait(OPP_TIME_KEY, "120");
+		setKeyValuewait(OPP_WORLD_TIME_KEY, String.valueOf(time));
+		setKeyValuewait(OPP_OPP_KEY, userID);
 	}
 
 	/** Set preferences */
@@ -494,33 +486,15 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 		kvthreadobject.execute(state);
 	}
 
+	public void setBoard(String board) {}
 
+	public void setScore(int score) {}
 
-	public void setBoard(String board) {
-		// TODO Auto-generated method stub
+	public void setRemoteTime(Long remotetime) {}
 
-	}
+	public void setTime(int time) {}
 
-	public void setScore(int score) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setRemoteTime(Long remotetime) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setTime(int time) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	public void setUsedWordString(String usedwords) {
-		// TODO Auto-generated method stub
-
-	}
+	public void setUsedWordString(String usedwords) {}
 
 	public static String getKeyValuewait(String key, String defVal) {
 		try {
@@ -531,6 +505,8 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 				else
 					return val;
 			}
+			else
+				return defVal;
 		}
 		catch (Exception e) {
 			return defVal;

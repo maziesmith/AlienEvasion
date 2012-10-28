@@ -187,7 +187,7 @@ public class PersistentBogglePuzzleView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		setTime(this.persistentBoggleGame.retrieveTime());
+		setTime(this.persistentBoggleGame.getTime());
 		setScore(this.persistentBoggleGame.retrieveScore());
 		setOpponentScore(this.persistentBoggleGame.retrieveOpponentScore());
 		
