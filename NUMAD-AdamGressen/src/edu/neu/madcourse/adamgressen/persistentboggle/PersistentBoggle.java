@@ -32,7 +32,7 @@ import edu.neu.mobileclass.apis.KeyValueAPI;
 
 public class PersistentBoggle extends Activity implements OnClickListener,PersistentBoggleInterface {
 	private static final String BOARD_PREFS = "persistent_board-prefs";
-	private static final String BOARD_KEY = "board";
+	public static final String BOARD_KEY = "board";
 	private static final String SCORE_KEY = "score";
 	private static final String USED_WORDS_KEY = "used-words";
 	private static final String TIME_KEY = "time";
@@ -85,7 +85,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	private static String OPP_OPP_USED_WORDS_KEY;
 	public static String OPP_WORLD_TIME_KEY;
 	
-	public static long POLL_INTERVAL = 300000;
+	public static long POLL_INTERVAL = 30000L;
 
 	public static enum BoggleFields{
 		OPPONENT,USERID,BOARD,SCORE,REMOTETIME,SERVERTIME,USEDWORDS,OPPSCORE

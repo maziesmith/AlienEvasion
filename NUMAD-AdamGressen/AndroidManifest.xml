@@ -70,6 +70,11 @@
             android:name=".persistentboggle.PersistentBoggle"
             android:label="Persistent Boggle"
             android:screenOrientation="landscape">
+            <intent-filter>
+			<action android:name="android.intent.action.VIEW"/>
+			<action android:name="edu.neu.madcourse.adamgressen.PersistentBoggle.PersistentBoggle"/>
+			</intent-filter>
+            
         </activity>
         <activity
             android:name=".persistentboggle.PersistentBoggleAbout"

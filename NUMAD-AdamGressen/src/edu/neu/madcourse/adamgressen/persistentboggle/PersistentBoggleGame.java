@@ -70,7 +70,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static final String TIME_KEY = "time";
 	private static final String USED_WORDS_KEY = "used-words";
 	private static final String OPP_KEY = "opponent";
-	private static final String WORLD_TIME_KEY = "world-time";
+	public static final String WORLD_TIME_KEY = "world-time";
 	public static String getWorldTimeKey() {
 		return WORLD_TIME_KEY;
 	}
@@ -81,8 +81,8 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static final String GAME_OVER = "game-over";
 
 	private static final String USER_PREFS = "persistent_user_prefs";
-	private static final String USER_ID_KEY = "id";
-	private static String userID;
+	public static final String USER_ID_KEY = "id";
+	public static String userID;
 
 	public static String getUserID() {
 		return userID;
