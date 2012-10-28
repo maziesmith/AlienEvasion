@@ -19,6 +19,8 @@ public class Leaderboard {
 		}
 		if (!exists)
 			this.entries.add(entry);
+		
+		this.sortAndRemove();
 	}
 	
 	/** Given a leaderboard, combine it with this leaderboard */

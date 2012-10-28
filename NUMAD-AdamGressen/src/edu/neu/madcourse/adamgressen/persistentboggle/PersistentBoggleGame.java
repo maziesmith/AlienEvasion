@@ -806,9 +806,9 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 					leaderboard = new Leaderboard(new LinkedList<LeaderboardEntry>());
 				else {
 					// Get the leaderboard from the server
-					JsonReader reader = new JsonReader(new StringReader(l));
-					reader.setLenient(true);
-					leaderboard = gson.fromJson(reader, Leaderboard.class);
+					//JsonReader reader = new JsonReader(new StringReader(l));
+					//reader.setLenient(true);
+					leaderboard = gson.fromJson(l, Leaderboard.class);
 				}
 				// Handle a null leaderboard
 				if (leaderboard == null)
