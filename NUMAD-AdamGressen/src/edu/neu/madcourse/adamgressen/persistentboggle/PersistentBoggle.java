@@ -48,7 +48,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 
 	private static final String USER_PREFS = "persistent_user_prefs";
 	private static final String USER_ID_KEY = "id";
-	
+
 	public void setUserID(String userID) {
 		PersistentBoggle.userID = userID;
 	}
@@ -85,7 +85,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	private static String OPP_OPP_SCORE_KEY;
 	private static String OPP_OPP_USED_WORDS_KEY;
 	private static String OPP_WORLD_TIME_KEY;
-	
+
 	public static enum BoggleFields{
 		OPPONENT,USERID,BOARD,SCORE,REMOTETIME,SERVERTIME,USEDWORDS
 	}
@@ -179,14 +179,14 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 			continueButton.setVisibility(0);
 
 		PersistentBoggleMusic.playMusic(this, R.raw.main);
-		
+
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		PersistentBoggleMusic.stop(this);
-		
+
 	}
 
 	public void onClick(View v) {
@@ -450,10 +450,9 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	public static void setKeyValue(PersistentBoggleInterface callable, String key, String val) {
 		KeyValueThread kvthreadobject = new KeyValueThread();
 		PersistentBoggleState state = new PersistentBoggleState();
-		
+
 		state.setMode(callable,key,val);
 		kvthreadobject.execute(state);
-		
 	}
 
 	/** Get preferences */
@@ -469,64 +468,61 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	public static Long getPref(Context context, String key, Long defVal) {
 		return context.getSharedPreferences(BOARD_PREFS, MODE_PRIVATE).getLong(key, defVal);
 	}
-	
+
 	public static void getKeyValue(PersistentBoggleInterface callable,String key, String defVal, BoggleFields field) {
 		KeyValueThread kvthreadobject = new KeyValueThread();
 		PersistentBoggleState state = new PersistentBoggleState();
-		
+
 		state.getMode(callable,key,defVal,field);
 		kvthreadobject.execute(state);
-		
 	}
-	
+
 	public static void getKeyValue(PersistentBoggleInterface callable,String key, String defVal, BoggleFields field, boolean bool){
 		KeyValueThread kvthreadobject = new KeyValueThread();
 		PersistentBoggleState state = new PersistentBoggleState();
-		
+
 		state.getMode(callable,key,defVal,field);
 		kvthreadobject.execute(state);
-		
 	}
 
 	// Clear a remote preference
 	public static void clearKeyValue(String key) {
 		KeyValueThread kvthreadobject = new KeyValueThread();
 		PersistentBoggleState state = new PersistentBoggleState();
-		
+
 		state.clearMode(key);
 		kvthreadobject.execute(state);
 	}
 
-	
-	
+
+
 	public void setBoard(String board) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setScore(int score) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setRemoteTime(Long remotetime) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setTime(int time) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 
 	public void setUsedWordString(String usedwords) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public static String getKeyValuewait(String key, String defval) {
-		// TODO Auto-generated method stub
+	public static String getKeyValuewait(String key, String defVal) {
 		try {
 			if (KeyValueAPI.isServerAvailable()) {
 				String val = KeyValueAPI.get(TEAM, PASSWORD, key);
@@ -534,20 +530,14 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 					return defVal;
 				else
 					return val;
-				}
-
 			}
-			else
-				return defval;
 		}
 		catch (Exception e) {
-			return defval;
+			return defVal;
 		}
-
 	}
 
 	public static void setKeyValuewait(String key, String value) {
-		// TODO Auto-generated method stub
 		try{
 			if (KeyValueAPI.isServerAvailable()) {
 				KeyValueAPI.put(TEAM, PASSWORD, key, value);
@@ -557,8 +547,5 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		
 	}
-
-
 }
