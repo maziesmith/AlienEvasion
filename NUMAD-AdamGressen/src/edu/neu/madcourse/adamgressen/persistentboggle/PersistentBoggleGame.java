@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,7 +22,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -270,6 +268,8 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		// Send board to prefs and server
 		PersistentBoggle.setPref(this, BOARD_KEY, board);
 		PersistentBoggle.setKeyValuewait(SERVER_BOARD_KEY, board);
+		if(PersistentBoggle.getKeyValuewait(OPP_OPP_KEY, "").equals(userID))
+			PersistentBoggle.setKeyValuewait(OPP_BOARD_KEY, board);
 		Log.d(TAG, "server board key"+SERVER_BOARD_KEY);
 		Log.d(TAG, "opp board key"+OPP_BOARD_KEY);
 
@@ -535,7 +535,6 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		}
 		Log.d(TAG, "board generated: " + board);
 		Log.d(TAG, "opp board key: "+OPP_BOARD_KEY);
-		PersistentBoggle.setKeyValuewait(OPP_BOARD_KEY, board);
 		return board;
 	}
 

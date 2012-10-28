@@ -144,11 +144,10 @@ public class PersistentBogglePuzzleView extends View {
 		buttonHeight = (int)(h*0.11);
 		
 		// Define color and style for numbers
-		textPaint.setColor(getResources().getColor(
-				R.color.puzzle_foreground));
+		textPaint.setColor(getResources().getColor(R.color.puzzle_foreground));
 		textPaint.setStyle(Style.FILL);
 		textPaint.setTextSize(buttonHeight * 0.5f);
-		textPaint.setTextScaleX(w / h);
+		textPaint.setTextScaleX(diff / h);
 		textPaint.setTextAlign(Paint.Align.CENTER);
 		
 		timeX = h + buttonMargin + (buttonWidth / 2);
