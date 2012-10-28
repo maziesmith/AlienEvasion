@@ -37,7 +37,6 @@ public class PersistentBoggleMusic {
 		   music.start();
 	   }
    }
-   
 
    /** Stop the given media player */
    public static void stop(Context context, MediaPlayer m) { 
