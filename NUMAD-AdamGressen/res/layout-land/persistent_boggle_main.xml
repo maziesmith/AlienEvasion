@@ -14,7 +14,7 @@
    android:layout_height="fill_parent"
    android:background="@color/background"
    android:gravity="center"
-   android:padding="35dip">
+   android:padding="15dip">
    <TextView
       android:text="@string/persistent_title"
       android:layout_height="wrap_content"
@@ -30,10 +30,12 @@
       <TableRow>
          <Button
             android:id="@+id/continue_button"
-            android:text="@string/continue_label" />
+            android:text="@string/continue_label"
+            android:layout_weight="1" />
          <Button
             android:id="@+id/new_button"
-            android:text="@string/new_game_label" />
+            android:text="@string/new_game_label"
+            android:layout_weight="1" />
       </TableRow>
       <TableRow>
           <Button
@@ -48,8 +50,14 @@
               android:id="@+id/acknowledgements_button"
 		      android:text="@string/acknowledgements_label" />
          <Button
+              android:id="@+id/leaderboard_button"
+              android:text="@string/persistent_leaderboard_title" />
+      </TableRow>
+      <TableRow>
+          <Button
             android:id="@+id/exit_button"
-            android:text="@string/exit_label" />
+            android:text="@string/exit_label"
+            android:layout_span="2" />
       </TableRow>
    </TableLayout>
 </LinearLayout>
