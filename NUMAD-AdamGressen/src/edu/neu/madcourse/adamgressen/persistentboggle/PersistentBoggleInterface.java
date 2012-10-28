@@ -1,7 +1,5 @@
 package edu.neu.madcourse.adamgressen.persistentboggle;
 
-import java.util.List;
-
 public interface PersistentBoggleInterface {
 
 	public void setUserID(String UserID);

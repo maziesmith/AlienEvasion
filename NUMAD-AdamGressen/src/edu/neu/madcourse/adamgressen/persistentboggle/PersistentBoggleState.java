@@ -1,7 +1,6 @@
 package edu.neu.madcourse.adamgressen.persistentboggle;
 
 import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle.BoggleFields;
-import android.content.Context;
 
 public class PersistentBoggleState {
 	
@@ -41,7 +40,6 @@ public class PersistentBoggleState {
 		this.callable = callable;
 		this.key = key;
 		this.value = value;
-		
 	}
 	
 	public void clearMode(String key){
@@ -82,5 +80,4 @@ public class PersistentBoggleState {
 	public void setDefval(String defval) {
 		this.defval = defval;
 	}
-
 }
