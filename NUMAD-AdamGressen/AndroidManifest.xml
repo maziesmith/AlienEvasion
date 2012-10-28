@@ -14,6 +14,7 @@
 	<uses-permission android:name="android.permission.WRITE_SETTINGS" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="android.permission.USE_CREDENTIALS" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -86,6 +87,20 @@
             android:label="@string/persistent_title"
             android:screenOrientation="landscape">
         </activity>
+        <receiver 
+            android:name=".persistentboggle.AlarmReceiver"
+            android:process=":remote">
+        </receiver>
+        <service 
+            android:name=".persistentboggle.BoggleService">
+        </service>
+        <receiver 
+            android:name ="persistentboggle.BoggleBootService">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETE" />
+            </intent-filter>
+        </receiver>
+        
     </application>
 
 </manifest>
