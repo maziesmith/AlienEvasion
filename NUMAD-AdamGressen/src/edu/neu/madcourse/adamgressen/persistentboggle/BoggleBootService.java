@@ -18,7 +18,7 @@ public class BoggleBootService extends BroadcastReceiver {
 		calendar.add(Calendar.MINUTE, 1);
 		
 		alarmmanager.setRepeating(AlarmManager.RTC_WAKEUP,
-				calendar.getTimeInMillis(),20000, pIntent);
+				calendar.getTimeInMillis(),PersistentBoggle.POLL_INTERVAL, pIntent);
 	}
 
 }

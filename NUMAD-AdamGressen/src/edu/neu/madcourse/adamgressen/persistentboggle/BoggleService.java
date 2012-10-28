@@ -29,14 +29,25 @@ public class BoggleService extends IntentService {
 		String UserID = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getUserID(), "");
 		String time = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getOPP_TIME_KEY(), "0");
 
+		int user_world_time = PersistentBoggle.getPref(getApplicationContext(), PersistentBoggle.SERVER_WORLD_TIME_KEY, 0);
+		String opp_world_time = PersistentBoggle.getKeyValuewait(PersistentBoggle.OPP_WORLD_TIME_KEY, "0");
+
+		String user_board = PersistentBoggle.getPref(getApplicationContext(), PersistentBoggle.SERVER_BOARD_KEY, "");
+
 		if(opponent_opp.equals(UserID)){
-			if (Integer.parseInt(time)==0){
-				sendnotification(this,0);
-			}
-			else if(Integer.parseInt(time)==120)
-				sendnotification(this,120);
+			if(user_world_time>Integer.parseInt(opp_world_time))
+				PersistentBoggle.setKeyValuewait(PersistentBoggle.OPP_BOARD_KEY,user_board );
+				
+				if (Integer.parseInt(time)==0){
+					sendnotification(this,0);
+					
+				}
+				else if(Integer.parseInt(time)==120){
+					sendnotification(this,120);
+					PersistentBoggle.setKeyValuewait(PersistentBoggle.OPP_BOARD_KEY,user_board );
+				}
+			
 		}
-		
 	}
 	
 	private void sendnotification(Context context,int time){

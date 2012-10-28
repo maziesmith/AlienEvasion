@@ -68,6 +68,10 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static final String USED_WORDS_KEY = "used-words";
 	private static final String OPP_KEY = "opponent";
 	private static final String WORLD_TIME_KEY = "world-time";
+	public static String getWorldTimeKey() {
+		return WORLD_TIME_KEY;
+	}
+
 	private static final String LOCAL_OPP_ONLINE_KEY = "opp-online";
 	private static final String LOCAL_OPP_DONE_KEY = "opp-done";
 	private static final String LEADERBOARD = "leaderboard";
@@ -95,8 +99,12 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	private static String SERVER_OPP_USED_WORDS_KEY;
 	private static String SERVER_WORLD_TIME_KEY;
 
+	public static String getSERVER_WORLD_TIME_KEY() {
+		return SERVER_WORLD_TIME_KEY;
+	}
+
 	private static String opponent;
-	private static String OPP_BOARD_KEY;
+	public static String OPP_BOARD_KEY;
 	private static String OPP_SCORE_KEY;
 	private static String OPP_TIME_KEY;
 	public static String getOPP_TIME_KEY() {
@@ -343,7 +351,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		//Calendar calendar = Calendar.getInstance();
 		//calendar.add(Calendar.MILLISECOND,1000);
 		alarmmanager.setRepeating(AlarmManager.RTC_WAKEUP,
-			System.currentTimeMillis()+3000,20000, pIntent);
+			System.currentTimeMillis()+3000,PersistentBoggle.POLL_INTERVAL, pIntent);
 	}
 
 	/**

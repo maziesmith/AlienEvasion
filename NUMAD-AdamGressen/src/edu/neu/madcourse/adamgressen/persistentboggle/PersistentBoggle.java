@@ -59,7 +59,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	private static boolean boardExists;
 	private static final String GAME_OVER = "game-over";
 
-	private static String SERVER_BOARD_KEY;
+	public static String SERVER_BOARD_KEY;
 	private static String SERVER_SCORE_KEY;
 	private static String SERVER_USED_WORDS_KEY;
 	private static String SERVER_TIME_KEY;
@@ -74,7 +74,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	private static final String PASSWORD = "p3rs1st3nc3";
 
 	private static String opponent;
-	private static String OPP_BOARD_KEY;
+	public static String OPP_BOARD_KEY;
 	private static String OPP_SCORE_KEY;
 	private static String OPP_USED_WORDS_KEY;
 	private static String OPP_TIME_KEY;
@@ -83,7 +83,9 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 
 	private static String OPP_OPP_SCORE_KEY;
 	private static String OPP_OPP_USED_WORDS_KEY;
-	private static String OPP_WORLD_TIME_KEY;
+	public static String OPP_WORLD_TIME_KEY;
+	
+	public static long POLL_INTERVAL = 300000;
 
 	public static enum BoggleFields{
 		OPPONENT,USERID,BOARD,SCORE,REMOTETIME,SERVERTIME,USEDWORDS,OPPSCORE
