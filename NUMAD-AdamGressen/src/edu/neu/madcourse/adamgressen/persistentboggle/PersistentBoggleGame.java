@@ -729,7 +729,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		String message = "";
 
 		// If your opponent has finished the game
-		if ((PersistentBoggle.getKeyValuewait(OPP_OPP_KEY, "")).equals(userID) ||
+		if ((PersistentBoggle.getKeyValuewait(OPP_OPP_KEY, "")).equals(userID) &&
 				Integer.valueOf(PersistentBoggle.getKeyValuewait(OPP_TIME_KEY, "120")) == 0) {
 			// List of opponent's used words
 			List<String> oppUsedWords = new LinkedList<String>();
@@ -806,8 +806,6 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 					leaderboard = new Leaderboard(new LinkedList<LeaderboardEntry>());
 				else {
 					// Get the leaderboard from the server
-					//JsonReader reader = new JsonReader(new StringReader(l));
-					//reader.setLenient(true);
 					leaderboard = gson.fromJson(l, Leaderboard.class);
 				}
 				// Handle a null leaderboard
