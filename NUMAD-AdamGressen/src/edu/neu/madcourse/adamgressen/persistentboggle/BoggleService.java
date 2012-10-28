@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class BoggleService extends IntentService {
 
@@ -17,19 +16,15 @@ public class BoggleService extends IntentService {
 	
 	public BoggleService(String name) {
 		super("Boggle Service");
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		// TODO Auto-generated method stub
-
 		String opponent_opp = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getOPP_OPP_KEY(),"");
 		String UserID = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getUserID(), "");
 		String time = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getOPP_TIME_KEY(), "0");

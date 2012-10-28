@@ -16,4 +16,6 @@ public interface PersistentBoggleInterface {
 	
 	public void setUsedWordString(String usedwords);
 	
+	public void setOpponentScore(String score);
+	
 }

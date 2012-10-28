@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -30,12 +29,9 @@ import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.ViewDebug.FlagToString;
 import android.view.Gravity;
 import android.widget.Toast;
 import edu.neu.madcourse.adamgressen.R;
@@ -131,8 +127,8 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		PersistentBoggleGame.opponent = opponent;
 	}
 
-	public static void setOpponentScore(String opponentScore) {
-		PersistentBoggleGame.opponentScore = opponentScore;
+	public void setOpponentScore(String s) {
+		opponentScore = s;
 	}
 
 	public void setBoard(String board) {
@@ -338,11 +334,8 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		
 		startAlarmReceiver();
 	}
-
 	
-	private void startAlarmReceiver() {
-		// TODO Auto-generated method stub
-		
+	private void startAlarmReceiver() {		
 		AlarmManager alarmmanager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this,AlarmReceiver.class);
 		PendingIntent pIntent = PendingIntent.getBroadcast(this, 0, intent,PendingIntent.FLAG_CANCEL_CURRENT );
@@ -367,7 +360,6 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 				t.show();
 			}
 		});
-
 	}
 
 	private void setKeys(Context context) {
@@ -399,7 +391,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		OPP_OPP_SCORE_KEY = opponent + "opp-score";
 		OPP_OPP_USED_WORDS_KEY = opponent + "opp-used-words";
 
-		PersistentBoggle.getKeyValue(this, OPP_SCORE_KEY, "0", BoggleFields.SCORE);
+		PersistentBoggle.getKeyValue(this, OPP_SCORE_KEY, "0", BoggleFields.OPPSCORE);
 	}
 
 	/** Return game state (paused) */

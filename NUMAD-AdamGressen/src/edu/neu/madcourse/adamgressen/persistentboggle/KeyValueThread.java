@@ -7,10 +7,8 @@ import android.util.Log;
 
 public class KeyValueThread extends AsyncTask<PersistentBoggleState, Void, PersistentBoggleState> {
 
-
 	private static final String TEAM = "persistence";
 	private static final String PASSWORD = "p3rs1st3nc3";
-
 
 	@Override
 	protected void onPreExecute() {
@@ -35,7 +33,6 @@ public class KeyValueThread extends AsyncTask<PersistentBoggleState, Void, Persi
 						state.setValue(val);
 						return state;
 					}
-
 				}
 				else
 					return state;
@@ -43,7 +40,6 @@ public class KeyValueThread extends AsyncTask<PersistentBoggleState, Void, Persi
 			catch (Exception e) {
 				return state;
 			}
-
 		}
 		else if(state.getMode() == PersistentBoggleState.SET_MODE){
 			Log.d("KEYVALUETHREAD", "SET_MODE");
@@ -69,6 +65,7 @@ public class KeyValueThread extends AsyncTask<PersistentBoggleState, Void, Persi
 
 		return state;
 	}
+	
 	@Override
 	protected void onPostExecute(PersistentBoggleState result) {
 		super.onPostExecute(result);
@@ -98,6 +95,8 @@ public class KeyValueThread extends AsyncTask<PersistentBoggleState, Void, Persi
 			case USEDWORDS:
 				result.getCallable().setUsedWordString(result.getValue());
 				break;
+			case OPPSCORE:
+				result.getCallable().setOpponentScore(result.getValue());
 			default:
 
 			}

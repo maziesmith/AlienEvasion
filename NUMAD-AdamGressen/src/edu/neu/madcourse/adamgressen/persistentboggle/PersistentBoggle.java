@@ -52,6 +52,8 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	public void setOpponent(String opponent) {
 		PersistentBoggle.opponent = opponent;
 	}
+	
+	public void setOpponentScore(String score) {}
 
 	private static String userID;
 	private static boolean boardExists;
@@ -84,7 +86,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	private static String OPP_WORLD_TIME_KEY;
 
 	public static enum BoggleFields{
-		OPPONENT,USERID,BOARD,SCORE,REMOTETIME,SERVERTIME,USEDWORDS
+		OPPONENT,USERID,BOARD,SCORE,REMOTETIME,SERVERTIME,USEDWORDS,OPPSCORE
 	}
 
 	GsonBuilder gsonb = new GsonBuilder();
