@@ -22,7 +22,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -328,7 +327,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 						}
 
 						// Determine if your opponent has finished the game
-						boolean serverDone = !PersistentBoggle.getKeyValuewait(OPP_OPP_KEY, "").equals(userID) ||
+						boolean serverDone = !PersistentBoggle.getKeyValuewait(OPP_OPP_KEY, userID).equals(userID) ||
 								(Integer.valueOf(PersistentBoggle.getKeyValuewait(OPP_TIME_KEY, "120")) == 0);
 						boolean localDone = PersistentBoggle.getPref(ctx, LOCAL_OPP_DONE_KEY, false);
 						if (localDone && !serverDone)

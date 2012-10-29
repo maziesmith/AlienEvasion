@@ -85,7 +85,7 @@ public class PersistentBoggle extends Activity implements OnClickListener,Persis
 	private static String OPP_OPP_USED_WORDS_KEY;
 	public static String OPP_WORLD_TIME_KEY;
 	
-	public static long POLL_INTERVAL = 30000L;
+	public static long POLL_INTERVAL = 300000L;
 
 	public static enum BoggleFields{
 		OPPONENT,USERID,BOARD,SCORE,REMOTETIME,SERVERTIME,USEDWORDS,OPPSCORE

@@ -41,12 +41,10 @@ public class BoggleService extends IntentService {
 
 				if (Long.valueOf(time)==0L){
 					sendnotification(this,0);
-
 				}
 				else if(Long.valueOf(time)==120L){
 					sendnotification(this,120);
 				}
-
 			}
 		}
 	}
@@ -75,8 +73,5 @@ public class BoggleService extends IntentService {
 		
 		notification.setLatestEventInfo(context, contentTitle, content, pIntent);
 		notificationmanager.notify(0,notification);
-		
-		
 	}
-
 }

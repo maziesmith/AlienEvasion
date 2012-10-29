@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 
 public class BoggleBootService extends BroadcastReceiver {
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		AlarmManager alarmmanager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -20,5 +19,4 @@ public class BoggleBootService extends BroadcastReceiver {
 		alarmmanager.setRepeating(AlarmManager.RTC_WAKEUP,
 				calendar.getTimeInMillis(),PersistentBoggle.POLL_INTERVAL, pIntent);
 	}
-
 }
