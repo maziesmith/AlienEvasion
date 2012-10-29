@@ -72,7 +72,6 @@
             android:screenOrientation="landscape">
             <intent-filter>
 			<action android:name="android.intent.action.VIEW"/>
-			<action android:name="edu.neu.madcourse.adamgressen.PersistentBoggle.PersistentBoggle"/>
 			</intent-filter>
             
         </activity>
