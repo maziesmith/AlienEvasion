@@ -26,27 +26,28 @@ public class BoggleService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		String opponent_opp = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getOPP_OPP_KEY(),"");
-		String UserID = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getUserID(), "");
+		String UserID = PersistentBoggleGame.userID;
 		String time = PersistentBoggle.getKeyValuewait(PersistentBoggleGame.getOPP_TIME_KEY(), "0");
 
-		int user_world_time = PersistentBoggle.getPref(getApplicationContext(), PersistentBoggle.SERVER_WORLD_TIME_KEY, 0);
+		long user_world_time = PersistentBoggle.getPref(getApplicationContext(), PersistentBoggleGame.WORLD_TIME_KEY, (long)0);
 		String opp_world_time = PersistentBoggle.getKeyValuewait(PersistentBoggle.OPP_WORLD_TIME_KEY, "0");
 
-		String user_board = PersistentBoggle.getPref(getApplicationContext(), PersistentBoggle.SERVER_BOARD_KEY, "");
+		String user_board = PersistentBoggle.getPref(getApplicationContext(), PersistentBoggle.BOARD_KEY, "");
 
-		if(opponent_opp.equals(UserID)){
-			if(user_world_time>Integer.parseInt(opp_world_time))
-				PersistentBoggle.setKeyValuewait(PersistentBoggle.OPP_BOARD_KEY,user_board );
-				
-				if (Integer.parseInt(time)==0){
-					sendnotification(this,0);
-					
-				}
-				else if(Integer.parseInt(time)==120){
-					sendnotification(this,120);
+		if(!opp_world_time.equals("0")){
+			if(opponent_opp.equals(UserID)){
+				if(user_world_time>Long.valueOf(opp_world_time))
 					PersistentBoggle.setKeyValuewait(PersistentBoggle.OPP_BOARD_KEY,user_board );
+
+				if (Long.valueOf(time)==0L){
+					sendnotification(this,0);
+
 				}
-			
+				else if(Long.valueOf(time)==120L){
+					sendnotification(this,120);
+				}
+
+			}
 		}
 	}
 	

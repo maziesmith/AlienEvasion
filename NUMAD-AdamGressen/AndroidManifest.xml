@@ -70,6 +70,10 @@
             android:name=".persistentboggle.PersistentBoggle"
             android:label="Persistent Boggle"
             android:screenOrientation="landscape">
+            <intent-filter>
+			<action android:name="android.intent.action.VIEW"/>
+			</intent-filter>
+            
         </activity>
         <activity
             android:name=".persistentboggle.PersistentBoggleAbout"
