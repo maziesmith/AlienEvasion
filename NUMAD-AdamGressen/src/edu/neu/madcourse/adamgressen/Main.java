@@ -43,6 +43,8 @@ public class Main extends Activity implements OnClickListener {
 		// Set up click listeners for buttons
 		View teamButton = findViewById(R.id.team_button);
 		teamButton.setOnClickListener(this);
+		View trickiestButton = findViewById(R.id.trickiest_button);
+		trickiestButton.setOnClickListener(this);
 		View sudokuButton = findViewById(R.id.sudoku_button);
 		sudokuButton.setOnClickListener(this);
 		View boggleButton = findViewById(R.id.boggle_button);
@@ -92,7 +94,11 @@ public class Main extends Activity implements OnClickListener {
 						}
 					}).show();
 			break;
-			// Sudoku button click event
+		case R.id.trickiest_button:
+			Intent t = new Intent(this, Tricky.class);
+			startActivity(t);
+			break;
+		// Sudoku button click event
 		case R.id.sudoku_button:
 			Intent l = new Intent(this, Sudoku.class);
 			startActivity(l);
