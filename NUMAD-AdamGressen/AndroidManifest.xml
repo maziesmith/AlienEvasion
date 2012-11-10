@@ -36,6 +36,11 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name=".MotionSensor"
+            android:screenOrientation="portrait">
+            
+        </activity>
+        <activity
             android:name=".sudoku.Sudoku"
             android:label="Sudoku">
         </activity>

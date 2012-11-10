@@ -16,7 +16,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-public class Tricky extends MapActivity implements LocationListener {
+public class Tricky extends MapActivity implements LocationListener  {
 
 	MapView mapView;
 	MyLocationOverlay myLocOverlay;
@@ -78,20 +78,21 @@ public class Tricky extends MapActivity implements LocationListener {
 		mapView.invalidate();
 	}
 
-	@Override
+	
 	public void onProviderDisabled(String provider) {
-		// Show turn on gps option
+		// TODO Auto-generated method stub
+		
 	}
 
-	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-
+		
 	}
+
 }
+
