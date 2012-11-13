@@ -1,8 +1,5 @@
 package edu.neu.madcourse.adamgressen;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -10,73 +7,122 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.FloatMath;
 import android.widget.Toast;
 
 public class MotionSensor extends Activity implements SensorEventListener {
-	
+
+	/* put this into your activity class */
 	private SensorManager mSensorManager;
-	private Sensor mSensor;
-	private long lastTime = 0L;
-	
-	
-	//private static ArrayList<FloatArray> listAxis = new ArrayList<FloatArray>();
-	
-	private final float MINIMUM_ACCELERATION = (float)9;
-	
+	private float mAccel; // acceleration apart from gravity
+	private float mAccelCurrent; // current acceleration including gravity
+	private float mAccelLast; // last acceleration including gravity
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.motion_sensor);
-		
+		/*
 		mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-		
+
 		mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
-		
+		 */
+
+		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+		mAccel = 0.00f;
+		mAccelCurrent = SensorManager.GRAVITY_EARTH;
+		mAccelLast = SensorManager.GRAVITY_EARTH;
+	}
+
+	public void onSensorChanged(SensorEvent se) {
+		float x = se.values[0];
+		float y = se.values[1];
+		float z = se.values[2];
+		mAccelLast = mAccelCurrent;
+		mAccelCurrent = FloatMath.sqrt(x*x + y*y + z*z);
+		float delta = mAccelCurrent - mAccelLast;
+		mAccel = mAccel * 0.9f + delta; // perform low-cut filter
+		System.out.println("Acceleration: "+mAccel);
+		if (mAccel > 30)
+			setToast("Motion Detected!!!");
+	}
+
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
+		mSensorManager.unregisterListener(this);
+		super.onStop();
+	}
+	
+	private void setToast(String string) {
+		Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
+	}
+
+	/*
+	private SensorManager mSensorManager;
+	private Sensor mSensor;
+	private long lastTime = 0L;
+
+
+	private static ArrayList<FloatArray> listAxis = new ArrayList<FloatArray>();
+
+	private final float MINIMUM_ACCELERATION = (float)20;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.motion_sensor);
+
+		mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
+		mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+	}
+
+	@Override
+	protected void onPause() {
 		super.onPause();
 		mSensorManager.unregisterListener(this);
 	}
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
-	
-		
 		if(lastTime == 0){
 			lastTime = System.currentTimeMillis();
 		}
 		else if(greaterMin(event.values)){
-			
+
 			long current = System.currentTimeMillis();
 			if((current - lastTime > 2000) ){
 				setToast("Motion Detected!!!");
 				System.out.println("Motion");
 				lastTime = current;
 			}
-			
-			
 		}
-		
-		/*
+
+
 		if(listAxis.size() < 3){
 
 			if(greaterMin(event.values)){
 				listAxis.add(new FloatArray(event.values));
 
 				System.out.println(event.values[0]);
-				
+
 			}
 			return;
 			//System.out.print(event.values[1]);
@@ -105,8 +151,6 @@ public class MotionSensor extends Activity implements SensorEventListener {
 
 		System.out.println("clear");
 		listAxis.clear();
-		
-		*/
 	}
 
 
@@ -119,30 +163,26 @@ public class MotionSensor extends Activity implements SensorEventListener {
 
 		return false;
 	}
-	
+
 	private boolean legalMotion(float firstPoint, float secondPoint, float thirdPoint){
-		
+
 			System.out.println("greater than MIN ");
 			System.out.println(firstPoint);
 			System.out.println(secondPoint);
 			System.out.println(thirdPoint);
-			
+
 			if((firstPoint > (float)0 && secondPoint < (float)0 && thirdPoint > (float)0)
 					|| (firstPoint < (float)0 && secondPoint > (float)0 && thirdPoint < (float)0))
 			return true;
-		
+
 		return false;
 	}
 
 	private void setToast(String string) {
-		// TODO Auto-generated method stub
 		Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
 	}
 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
-		
 	}
-
-
+	 */
 }
