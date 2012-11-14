@@ -5,11 +5,11 @@
     android:orientation="vertical" >
 
     <com.google.android.maps.MapView
+        android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/mapview"
-        android:enabled="true"
+        android:apiKey="03rmv2rPwImI2BKWkID01pLgHuQi-oXl9xaLz9A"
         android:clickable="true"
-        android:apiKey="03rmv2rPwImKPgliNbYUSlzQF2oqZuEM5D1jfJw" />
-
+        android:enabled="true" />
+<!--"03rmv2rPwImKPgliNbYUSlzQF2oqZuEM5D1jfJw" this is the debug key-->
 </LinearLayout>
