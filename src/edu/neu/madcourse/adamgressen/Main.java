@@ -45,8 +45,6 @@ public class Main extends Activity implements OnClickListener {
 		teamButton.setOnClickListener(this);
 		View trickiestButton = findViewById(R.id.trickiest_button);
 		trickiestButton.setOnClickListener(this);
-		View motionButton = findViewById(R.id.motion_button);
-		motionButton.setOnClickListener(this);
 		View sudokuButton = findViewById(R.id.sudoku_button);
 		sudokuButton.setOnClickListener(this);
 		View boggleButton = findViewById(R.id.boggle_button);
@@ -99,12 +97,7 @@ public class Main extends Activity implements OnClickListener {
 		case R.id.trickiest_button:
 			Intent t = new Intent(this, Tricky.class);
 			startActivity(t);
-			break;
-		case R.id.motion_button:
-			Intent m = new Intent(this, MotionSensor.class);
-			startActivity(m);
-			break;
-		
+			break;		
 		// Sudoku button click event
 		case R.id.sudoku_button:
 			Intent l = new Intent(this, Sudoku.class);

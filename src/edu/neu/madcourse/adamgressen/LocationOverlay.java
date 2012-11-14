@@ -14,27 +14,36 @@ import com.google.android.maps.Projection;
 public class LocationOverlay extends Overlay {
 	GeoPoint p;
 	int index;
-	double distance;
+	String dist;
+	
+	// Set up paint
+	Paint paint = new Paint();
+	Paint textPaint = new Paint();
 
-	public LocationOverlay(GeoPoint p, int index) {
+	public LocationOverlay(GeoPoint p, int index, String d) {
 		this.p = p;
 		this.index = index;
-		this.distance = 0.0;
+		this.dist = d;
+		
+		paint.setStrokeWidth(4);
+		paint.setARGB(80,0,0,255);
+		paint.setStyle(Paint.Style.FILL_AND_STROKE);
+		
+		textPaint.setStrokeWidth(4);
+		textPaint.setTextSize(40);
+		textPaint.setARGB(255, 0, 0, 255);
+		textPaint.setStyle(Paint.Style.STROKE);
 	}
 
 	@Override
 	public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
 		super.draw(canvas, mapView, shadow);
-
-		Paint paint = new Paint();
+		
 		// Convert lat and long to screen coordinates
 		Point previousPoint = new Point();
 		Point point = new Point();
 		Projection proj = mapView.getProjection();
 		proj.toPixels(p, point);
-		paint.setStrokeWidth(4);
-		paint.setARGB(80,0,0,255);
-		paint.setStyle(Paint.Style.FILL_AND_STROKE);
 
 		List<Overlay> overlays = mapView.getOverlays();
 		if (this.index > 0) {
@@ -51,12 +60,11 @@ public class LocationOverlay extends Overlay {
 					p.getLatitudeE6()/1E6,
 					p.getLongitudeE6()/1E6,
 					results);
-			distance += (double)results[0]/1609.34;
 		}
 
 		if (this.index == overlays.size()-1) {
 			canvas.drawCircle(point.x, point.y, 20, paint);
-			canvas.drawText(String.valueOf(distance)+" miles", point.x, point.y, paint);
+			canvas.drawText(this.dist+" miles", point.x, point.y, textPaint);
 		}
 
 		return true;
