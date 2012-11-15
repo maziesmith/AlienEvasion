@@ -11,5 +11,6 @@
         android:apiKey="03rmv2rPwImI2BKWkID01pLgHuQi-oXl9xaLz9A"
         android:clickable="true"
         android:enabled="true" />
-<!--"03rmv2rPwImKPgliNbYUSlzQF2oqZuEM5D1jfJw" this is the debug key-->
+<!-- "03rmv2rPwImKPgliNbYUSlzQF2oqZuEM5D1jfJw" this is the debug key -->
+<!-- "03rmv2rPwImI2BKWkID01pLgHuQi-oXl9xaLz9A" this is the release key -->
 </LinearLayout>

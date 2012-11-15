@@ -61,7 +61,7 @@ public class Tricky extends MapActivity implements LocationListener, GpsStatus.L
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trickiest);
-		
+
 		if (!isNetworkAvailable()) {
 			// Ask for another attempt
 			new AlertDialog.Builder(this)
@@ -180,26 +180,30 @@ public class Tricky extends MapActivity implements LocationListener, GpsStatus.L
 		switch (event) {
 		case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
 
-			// If there's a previous location and the time is outside of the timeout region
-			if (lastLoc != null &&
-			(SystemClock.elapsedRealtime() - lastLocTime > TIMEOUT_DELAY))
+			// If there's a previous location
+			// and the time is outside of the timeout period
+			if (lastLoc != null && SystemClock.elapsedRealtime() - lastLocTime > TIMEOUT_DELAY) {
+				// If the time is outside of the timeout period
 				Toast.makeText(this,
 						"The aliens are blocking your transmissions.",
 						Toast.LENGTH_SHORT).show();
+			}
 
-			// If there is no previous time and we're within the acceptable range
-			else if (SystemClock.elapsedRealtime() - beginCheckTime < TIMEOUT_DELAY)
-				System.out.println("Waiting for a GPS fix");
-
-			// Otherwise timeout
-			else
-				GPSTimeout();
-
+			// If there's no previous location
+			else if (lastLoc == null) {
+				// If we're within the acceptable wait range
+				if (SystemClock.elapsedRealtime() - beginCheckTime < TIMEOUT_DELAY) {
+					System.out.println("Waiting for a GPS fix");
+				}
+				// Otherwise, we need to timeout
+				else {
+					GPSTimeout();
+				}
+			}
 			break;
 
 		case GpsStatus.GPS_EVENT_FIRST_FIX:
 			pro.hide();
-			//Toast.makeText(this, "First GPS fix", Toast.LENGTH_LONG).show();
 			break;
 		}
 	}
@@ -307,12 +311,12 @@ public class Tricky extends MapActivity implements LocationListener, GpsStatus.L
 		}
 		return dist;
 	}
-	
+
 	// Check if network is available
 	private boolean isNetworkAvailable() {
-	    ConnectivityManager connectivityManager 
-	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-	    return activeNetworkInfo != null;
+		ConnectivityManager connectivityManager 
+		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
 	}
 }
