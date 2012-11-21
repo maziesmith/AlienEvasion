@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="fill_parent" >
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
         <Button
@@ -17,11 +18,20 @@
             android:text="@string/team_button" />
 
         <Button
+            android:id="@+id/alien_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/team_button"
+            android:layout_marginTop="26dp"
+            android:text="@string/alien_evasion_title" />
+        
+        <Button
             android:id="@+id/trickiest_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/alien_button"
             android:layout_marginTop="26dp"
             android:text="@string/trickiest_button" />
 
@@ -30,7 +40,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/team_button"
+            android:layout_below="@+id/trickiest_button"
             android:layout_marginTop="26dp"
             android:text="@string/sudoku_button" />
 

@@ -1,0 +1,35 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:stretchColumns="*" >
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/start_button"
+                android:text="@string/start_label" />
+
+            <Button
+                android:id="@+id/evasions_button"
+                android:text="@string/evasions_title" />
+        </TableRow>
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/achievements_button"
+                android:text="@string/achievements_title" />
+
+            <Button
+                android:id="@+id/exit_button"
+                android:text="@string/exit_label" />
+        </TableRow>
+    </TableLayout>
+
+</ScrollView>

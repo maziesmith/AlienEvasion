@@ -43,6 +43,8 @@ public class Main extends Activity implements OnClickListener {
 		// Set up click listeners for buttons
 		View teamButton = findViewById(R.id.team_button);
 		teamButton.setOnClickListener(this);
+		View alienButton = findViewById(R.id.alien_button);
+		alienButton.setOnClickListener(this);
 		View trickiestButton = findViewById(R.id.trickiest_button);
 		trickiestButton.setOnClickListener(this);
 		View sudokuButton = findViewById(R.id.sudoku_button);
@@ -94,25 +96,24 @@ public class Main extends Activity implements OnClickListener {
 						}
 					}).show();
 			break;
+		case R.id.alien_button:
+			startActivity(new Intent(this, edu.neu.madcourse.adamgressen.alienevasion.Main.class));
+			break;
 		case R.id.trickiest_button:
-			Intent t = new Intent(this, Tricky.class);
-			startActivity(t);
+			startActivity(new Intent(this, Tricky.class));
 			break;		
 		// Sudoku button click event
 		case R.id.sudoku_button:
-			Intent l = new Intent(this, Sudoku.class);
-			startActivity(l);
+			startActivity(new Intent(this, Sudoku.class));
 			break;
 			// Boggle button click event
 		case R.id.boggle_button:
-			Intent j = new Intent(this, Boggle.class);
-			startActivity(j);
+			startActivity(new Intent(this, Boggle.class));
 			break;
 			// Persistent Boggle button click event
 		case R.id.persistent_boggle_button:
 			if (accounts != null && accounts.length != 0) {
-				Intent u = new Intent(this, PersistentBoggle.class);
-				startActivity(u);
+				startActivity(new Intent(this, PersistentBoggle.class));
 			}
 			else {
 				new AlertDialog.Builder(this)

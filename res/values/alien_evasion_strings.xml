@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="evade_title">Evade</string>
+    <string name="evasions_title">Evasions</string>
+    <string name="alien_evasion_settings_title">Settings</string>
+    <string name="achievements_title">Achievements</string>
+    <string name="alien_evasion_title">Alien Evasion</string>
+    <string name="evaded_label">Aliens Evaded</string>
+    <string name="pause_label">Pause</string>
+    <string name="time_label">Time</string>
+    <string name="distance_label">Distance</string>
+    <string name="pursuit_label">Aliens in Pursuit</string>
+    <string name="finish_label">Finish Evasion</string>
+    <string name="resume_label">Resume</string>
+    <string name="shake_string">Shake Them Off!!!</string>
+    <string name="call_support_title">Call in Support</string>
+
+    <string-array name="support_list">
+        <item>Road Block</item>
+        <item>Helicopter Support</item>
+        <item>FBI Agents</item>
+        <item>Decoy</item>
+    </string-array>
+
+    <string name="back_label">Back</string>
+    <string name="signal_blocked_title">Signal Blocked</string>
+    <string name="signal_blocked_message">The aliens are blocking the GPS signal. Keep running!</string>
+    <string name="completed_title">Evasion Completed!</string>
+    <string name="menu_label">Main Menu</string>
+    <string name="unlock_title">Unlockables</string>
+    <string name="unit">miles</string>
+
+    <string-array name="achievements_list">
+        <item>Evade Your First Alien</item>
+        <item>Contact the Government</item>
+        <item>Run Your First Mile</item>
+        <item>Unlock Your First New Alien</item>
+        <item>Evade 1,000 Aliens</item>
+    </string-array>
+
+    <string name="speed_label">Speed</string>
+    <string name="strength_label">Strength</string>
+
+    <string-array name="aliens_list"></string-array>
+
+    <string name="gov_support_title">Government Support</string>
+    <string name="sign_in_title">Sign In</string>
+    <string name="version_label">App Version:</string>
+    <string name="free_version">Free</string>
+    <string name="plus_version">Plus</string>
+    <string name="start_label">Start Running</string>
+    <!-- <string name="exit_label">Exit</string> -->
+    <!-- <string name="settings_title">Settings</string> -->
+    <string name="about_message">Created by Adam Gressen and Vaibhav Mahindroo</string>
+    <string name="alien_evasion_about_title">About Alien Evasion</string><string name="alien_evasion_music_title">Music</string><string name="alien_evasion_music_summary">Play background music</string>
+
+</resources>
