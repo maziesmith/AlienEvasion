@@ -1,57 +1,59 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.util.LinkedList;
 import java.util.List;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
 import edu.neu.madcourse.adamgressen.R;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.util.FloatMath;
-import android.location.GpsStatus;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.widget.Toast;
 
-public class Evade extends MapActivity implements LocationListener, GpsStatus.Listener, SensorEventListener  {
+/***
+ * 
+ * The Evade class handles the GPS, Accelerometer and Locations
+ * while displaying everything on a Map with help from Google
+ * 
+ * **/
+public class Evade extends MapActivity  {	
+	// Map View
 	MapView mapView;
-	MyLocationOverlay myLocOverlay;
+	// List of location overlays
+	List<LocationOverlay> locOverlays;
+	// List of enemy overlays
+	List<EnemyOverlay> enOverlays;
+	// Map Controller
 	MapController mc;
-	LocationManager lm;
+
+	// Current location
 	GeoPoint p;
-	Location lastLoc;
-	Long lastLocTime;
-	Long beginCheckTime;
-	ProgressDialog pro;
-	double distance;
+
+	// Managers
+	EvadeLocationManager locMan;
+	GPSManager gpsMan;
+	AccelerometerManager accMan;
+
+	// Distance traveled
+	private double distance;
 	public String getDist() {
 		double d = ((double)((int)(this.distance*100.0)))/100.0;
 		return String.valueOf(d);
 	}
-
-	private SensorManager mSensorManager;
-	private float mAccel; // acceleration apart from gravity
-	private float mAccelCurrent; // current acceleration including gravity
-	private float mAccelLast; // last acceleration including gravity
-
-	static final int TIME_DELAY = 10000;
-	static final int DIST_DELAY = 20;
-	static final int TIMEOUT_DELAY = 30000;
+	// Elapsed time
+	private int time;
+	public int getTime() { return time; }
+	// Aliens evaded
+	private int evaded;
+	public int getEvaded() { return evaded; }
+	// Aliens in pursuit
+	private int pursuing;
+	public int getPursuing() { return pursuing; }
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -63,6 +65,14 @@ public class Evade extends MapActivity implements LocationListener, GpsStatus.Li
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alien_evasion_evade);
 
+		locOverlays = new LinkedList<LocationOverlay>();
+		enOverlays = new LinkedList<EnemyOverlay>();
+
+		locMan = new EvadeLocationManager(this);
+		gpsMan = new GPSManager(this);
+		accMan = new AccelerometerManager(this);
+
+		// If there's no network then the map won't display
 		if (!isNetworkAvailable()) {
 			// Ask for another attempt
 			new AlertDialog.Builder(this)
@@ -76,241 +86,75 @@ public class Evade extends MapActivity implements LocationListener, GpsStatus.Li
 			}).show();
 		}
 
-		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-		mAccel = 0.00f;
-		mAccelCurrent = SensorManager.GRAVITY_EARTH;
-		mAccelLast = SensorManager.GRAVITY_EARTH;
-
-		mapView = (MapView) findViewById(R.id.mapview);
-		//mapView.setBuiltInZoomControls(true); // Enables zoom controls
-
-		pro = new ProgressDialog(this);
-		pro.setMessage("Acquiring GPS Signal");
-
-		lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
-		initMyLocation();
-
-		checkForGPS();
+		// Initialize the map
+		initMap();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 
-		mSensorManager.unregisterListener(this);
+		accMan.pause();
+		locMan.pause();
 
-		lm.removeUpdates(this);
+		// Store the current evasion
+		storeEvasion();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 
-		mSensorManager.registerListener(this, 
-				mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				SensorManager.SENSOR_DELAY_NORMAL);
-
-		// Remove last location
-		lastLoc = null;
-		// Reset begin check time variable
-		beginCheckTime = SystemClock.elapsedRealtime();
-
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_DELAY, DIST_DELAY, this);
+		accMan.resume();
+		locMan.resume();
+		gpsMan.resume();
 	}
 
-	private void initMyLocation() {
+	private void initMap() {
+		mapView = (MapView) findViewById(R.id.mapview);
+		//mapView.setBuiltInZoomControls(true); // Enables zoom controls
+
 		mc = mapView.getController();
 		mc.setZoom(18);
-		double lat, lng;
-		// Check for last known location
-		Location lastKnownLoc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		//if (lastKnownLoc == null)
-		//	lastKnownLoc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		if (lastKnownLoc != null) {
-			lat = lastKnownLoc.getLatitude();
-			lng = lastKnownLoc.getLongitude();
-		}
-		else {
-			// Set default latitude and longitude
-			String coordinates[] = {"42.348332", "-71.087873"};
-			lat = Double.parseDouble(coordinates[0]);
-			lng = Double.parseDouble(coordinates[1]);
-		}
 
-		p = new GeoPoint(
-				(int) (lat * 1E6), 
-				(int) (lng * 1E6));
+		locMan.initMyLocation();
 
 		mc.animateTo(p);
-	}
 
-	public void onLocationChanged(Location location) {
-		Log.d("Tricky","location changed");
-
-		pro.cancel();
-
-		// Handle a null location
-		if (location == null) return;
-
-		// Store location and time
-		lastLocTime = SystemClock.elapsedRealtime();
-		lastLoc = location;
-
-		// Set GeoPoint
-		p = new GeoPoint(
-				(int) (location.getLatitude() * 1E6), 
-				(int) (location.getLongitude() * 1E6));
-
-		handleNewLocation();
+		// Check for GPS
+		gpsMan.checkForGPS();
 	}
 
 	// Moves to a new location and adds an overlay
 	public void handleNewLocation() {
 		mc.animateTo(p);
-		this.distance = this.calculateDistance();
+		distance = locMan.calculateDistance();
 		//---Add a location marker---
-		LocationOverlay mapOverlay = new LocationOverlay(p, mapView.getOverlays().size(), this.getDist());
-		List<Overlay> listOfOverlays = mapView.getOverlays();
-		listOfOverlays.add(mapOverlay);
+		LocationOverlay mapOverlay = new LocationOverlay(p, locOverlays.size(), getDist());
+		locOverlays.add(mapOverlay);
+		// Clear the map's overlays
+		mapView.getOverlays().clear();
+		// Add the new list of location overlays
+		mapView.getOverlays().addAll(locOverlays);
+		// Update enemy overlays
+		updateEnemyOverlays();
+		// Invalidate the map so it's redrawn
 		mapView.invalidate();
 	}
 
-	public void onGpsStatusChanged(int event) {
-		switch (event) {
-		case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-
-			// If there's a previous location
-			// and the time is outside of the timeout period
-			if (lastLoc != null && SystemClock.elapsedRealtime() - lastLocTime > TIMEOUT_DELAY) {
-				// If the time is outside of the timeout period
-				Toast.makeText(this,
-						"The aliens are blocking your transmissions.",
-						Toast.LENGTH_SHORT).show();
-			}
-
-			// If there's no previous location
-			else if (lastLoc == null) {
-				// If we're within the acceptable wait range
-				if (SystemClock.elapsedRealtime() - beginCheckTime < TIMEOUT_DELAY) {
-					System.out.println("Waiting for a GPS fix");
-				}
-				// Otherwise, we need to timeout
-				else {
-					GPSTimeout();
-				}
-			}
-			break;
-
-		case GpsStatus.GPS_EVENT_FIRST_FIX:
-			pro.hide();
-			break;
+	// Add enemy overlays to the list
+	public void addEnemies() {
+		// Create enemyoverlay and add to list
+		for (int e = 0; e < 5; e++) {
+			enOverlays.add(new EnemyOverlay(p));
 		}
 	}
 
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void checkForGPS() {
-		pro.show();
-		beginCheckTime = SystemClock.elapsedRealtime();
-		lm.addGpsStatusListener(this);
-		lm.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER,
-				TIME_DELAY,
-				DIST_DELAY, 
-				this);
-	}
-
-	public void GPSTimeout() {
-		//pro.setMessage("Acquiring position from Network");
-		System.out.println("GPS timed out");
-		pro.hide();
-		// Stop checking for location
-		lm.removeGpsStatusListener(this);
-		lm.removeUpdates(this);
-
-		// Ask for another attempt
-		new AlertDialog.Builder(this)
-		.setTitle("Trouble Finding Location")
-		.setMessage("The government agents can't locate you right now.\nTry again?")
-		.setCancelable(true)
-		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {			
-			public void onClick(DialogInterface dialog, int id) {
-				// Start checking again
-				checkForGPS();
-				dialog.dismiss();
-			}
-		})
-		.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(getApplicationContext(), 
-						"Retry by returning to the main menu and relaunching Trickiest Part.", 
-						Toast.LENGTH_LONG).show();
-				dialog.dismiss();
-			}
-		}).show();
-
-		//System.out.println("Switching to Network locator.");
-		//lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, TIME_DELAY, DIST_DELAY, this);
-	}
-
-	public void onSensorChanged(SensorEvent se) {
-		float x = se.values[0];
-		float y = se.values[1];
-		float z = se.values[2];
-		mAccelLast = mAccelCurrent;
-		mAccelCurrent = FloatMath.sqrt(x*x + y*y + z*z);
-		float delta = mAccelCurrent - mAccelLast;
-		mAccel = mAccel * 0.9f + delta; // perform low-cut filter
-		System.out.println("Acceleration: "+mAccel);
-		if (mAccel > 30)
-			setToast("Motion Detected!!!");
-	}
-
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-	}
-
-	private void setToast(String string) {
-		Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
-	}
-
-	private double calculateDistance() {
-		double dist = 0.0;
-		GeoPoint prevPoint = null;
-		GeoPoint curPoint = null;
-		for (Overlay o : mapView.getOverlays()) {
-			if (prevPoint == null)
-				prevPoint = ((LocationOverlay)o).getPoint();
-			else {
-				curPoint = ((LocationOverlay)o).getPoint();
-
-				// Get the distance between the geo points
-				float[] results = new float[3];
-				Location.distanceBetween(
-						prevPoint.getLatitudeE6()/1E6, 
-						prevPoint.getLongitudeE6()/1E6,
-						curPoint.getLatitudeE6()/1E6,
-						curPoint.getLongitudeE6()/1E6,
-						results);
-				dist += (double)results[0]/1609.34;
-				prevPoint = curPoint;
-			}
+	// Updates enemy overlays to new positions
+	private void updateEnemyOverlays() {
+		for (EnemyOverlay e : enOverlays) {
+			e.p = p;
 		}
-		return dist;
 	}
 
 	// Check if network is available
@@ -319,5 +163,16 @@ public class Evade extends MapActivity implements LocationListener, GpsStatus.Li
 		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo != null;
+	}
+
+	// Display a toast
+	public void setToast(String string) {
+		Toast.makeText(this, string, Toast.LENGTH_SHORT).show();
+	}
+
+	// Store this evasion in memory
+	private void storeEvasion() {
+		// Create a new StoredEvasion and store it
+		new StoredEvasion(this).store();
 	}
 }

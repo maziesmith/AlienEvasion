@@ -421,10 +421,9 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 	@Override
 	protected void onResume() {
 		if(isActivityVisible()){
-
-			super.onResume();
 			resumeGame();
 		}
+		super.onResume();
 	}
 
 	/** Pause the game */

@@ -4,8 +4,6 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.location.Location;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -51,15 +49,6 @@ public class LocationOverlay extends Overlay {
 			GeoPoint previousGeoPoint = previous.getPoint();
 			proj.toPixels(previousGeoPoint, previousPoint);
 			canvas.drawLine(previousPoint.x, previousPoint.y, point.x, point.y, paint);
-
-			// Get the distance between the geo points
-			float[] results = new float[3];
-			Location.distanceBetween(
-					previousGeoPoint.getLatitudeE6()/1E6, 
-					previousGeoPoint.getLongitudeE6()/1E6,
-					p.getLatitudeE6()/1E6,
-					p.getLongitudeE6()/1E6,
-					results);
 		}
 
 		if (this.index == overlays.size()-1) {
