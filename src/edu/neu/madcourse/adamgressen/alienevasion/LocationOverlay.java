@@ -1,5 +1,6 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.io.Serializable;
 import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,10 +10,11 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
-public class LocationOverlay extends Overlay {
+public class LocationOverlay extends Overlay{
 	GeoPoint p;
 	int index;
 	String dist;
+	int pursuing;
 	
 	// Set up paint
 	Paint paint = new Paint();
@@ -22,6 +24,7 @@ public class LocationOverlay extends Overlay {
 		this.p = p;
 		this.index = index;
 		this.dist = d;
+		pursuing = Evade.getPursuing();
 		
 		paint.setStrokeWidth(4);
 		paint.setARGB(80,0,0,255);

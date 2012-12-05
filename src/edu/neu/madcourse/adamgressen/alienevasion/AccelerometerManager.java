@@ -31,7 +31,7 @@ public class AccelerometerManager implements SensorEventListener {
 		mAccelCurrent = FloatMath.sqrt(x*x + y*y + z*z);
 		float delta = mAccelCurrent - mAccelLast;
 		mAccel = mAccel * 0.9f + delta; // perform low-cut filter
-		System.out.println("Acceleration: "+mAccel);
+		//System.out.println("Acceleration: "+mAccel);
 		if (mAccel > 30)
 			evade.setToast("Motion Detected!!!");
 	}

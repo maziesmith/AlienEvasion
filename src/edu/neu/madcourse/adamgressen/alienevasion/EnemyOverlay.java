@@ -1,5 +1,6 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import android.graphics.Canvas;
@@ -17,8 +18,9 @@ import com.google.android.maps.Projection;
  * about the enemies it represents
  * 
  * **/
-public class EnemyOverlay extends Overlay {
+public class EnemyOverlay extends Overlay{
 	GeoPoint p;
+	double t;
 	Point enemyPos;
 	Random rand = new Random();
 
@@ -26,8 +28,10 @@ public class EnemyOverlay extends Overlay {
 	Paint paint = new Paint();
 
 	// Constructor
-	public EnemyOverlay(GeoPoint p) {
+	public EnemyOverlay(GeoPoint p,double t) {
 		this.p = p;
+		//t is in radians
+		this.t = t;
 
 		paint.setStrokeWidth(4);
 		paint.setARGB(80,255,0,0);
@@ -52,10 +56,13 @@ public class EnemyOverlay extends Overlay {
 
 	// Randomizes position
 	private Point randomizePos(Point playerPoint) {
-		double t = 2*Math.PI*rand.nextDouble();
-		double r = 60;
+		//double t = 2*Math.PI*rand.nextDouble();
+		double r = 100;
 		
-		Point point = new Point((int)(r*Math.cos(t)), (int)(r*Math.sin(t)));
+		int prevx = playerPoint.x;
+		int prevy = playerPoint.y;
+		
+		Point point = new Point((int)(prevx+ r*Math.sin(t)), (int)(prevy + r*Math.cos(t)));
 
 		return point;
 	}

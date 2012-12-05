@@ -8,7 +8,7 @@
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:apiKey="03rmv2rPwImKPgliNbYUSlzQF2oqZuEM5D1jfJw"
+        android:apiKey="05-InC2TtiPbww7k_ctHmr9YnNhQR-NZ_cVR-mw"
         android:clickable="true"
         android:enabled="true" />
     <!-- "03rmv2rPwImKPgliNbYUSlzQF2oqZuEM5D1jfJw" this is the debug key -->
