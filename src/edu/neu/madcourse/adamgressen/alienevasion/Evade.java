@@ -1,5 +1,11 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -19,6 +25,7 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.widget.Toast;
 
 /***
@@ -46,6 +53,8 @@ public class Evade extends MapActivity  {
 	MapController mc;
 	// boolean for saved maps
 	boolean saved = false;
+	// Timestamp of start of the game
+	String startTime;
 
 	// Current location
 	GeoPoint p;
@@ -116,6 +125,10 @@ public class Evade extends MapActivity  {
 			enOverlays = new LinkedList<EnemyOverlay>();
 			setToast("New Locations used");
 		}
+		
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		startTime = dateFormat.format(cal.getTime());
 
 		locMan = new EvadeLocationManager(this);
 		gpsMan = new GPSManager(this);
@@ -172,13 +185,12 @@ public class Evade extends MapActivity  {
 		.setNegativeButton(android.R.string.no, null)
 		.setPositiveButton(android.R.string.yes, new OnClickListener() {
 
-			public void onClick(DialogInterface arg0, int arg1) {
-				boolean bool = deleteEvasion();
-				if(bool)
-					setToast("File Deleted");
-				Evade.super.onBackPressed();
-			}
-		}).create().show();
+	            public void onClick(DialogInterface arg0, int arg1) {
+	            	deleteEvasion();
+	            	setToast("File Deleted");
+	                Evade.super.onBackPressed();
+	            }
+	        }).create().show();
 	}
 
 	private void initMap() {
@@ -190,17 +202,18 @@ public class Evade extends MapActivity  {
 		mc = mapView.getController();
 		mc.setZoom(18);
 
-		if(!saved){
-			locMan.initMyLocation();
-			mc.animateTo(p);
+		locMan.initMyLocation();
+		mc.animateTo(p);
 			// Check for GPS
 			gpsMan.checkForGPS();
-		}
-		else{
+
+		/*
+		if(saved){
 			mapOverlays.clear();
 			mapOverlays.addAll(locOverlays);
 			mapOverlays.addAll(enOverlays);
 		}
+		*/
 	}
 
 	// Moves to a new location and adds an overlay
@@ -285,10 +298,10 @@ public class Evade extends MapActivity  {
 
 	// Get any saved evasion from memory
 	private StoredEvasion getEvasion(){
-		return StoredEvasion.read(this);
+		 return new StoredEvasion(this).read(this);
 	}
 
-	private boolean deleteEvasion(){
-		return new StoredEvasion().removeEvasion(getApplicationContext());
+	private void deleteEvasion(){
+		new StoredEvasion().finishEvasion(getApplicationContext());
 	}
 }

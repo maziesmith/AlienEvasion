@@ -56,24 +56,31 @@ public class EvadeLocationManager implements LocationListener {
 		double lat, lng;
 		// Check for last known location
 		Location lastKnownLoc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if (lastKnownLoc != null) {
-			lat = lastKnownLoc.getLatitude();
-			lng = lastKnownLoc.getLongitude();
+		if(evade.saved){
+			LocationOverlay lastOverlay = evade.locOverlays.get(evade.locOverlays.size()-1);			
+			evade.p = lastOverlay.p;
 		}
-		else {
-			// Set default latitude and longitude
-			String coordinates[] = {"42.348332", "-71.087873"};
-			lat = Double.parseDouble(coordinates[0]);
-			lng = Double.parseDouble(coordinates[1]);
-		}
+		else{
+			
+			if (lastKnownLoc != null) {
+				lat = lastKnownLoc.getLatitude();
+				lng = lastKnownLoc.getLongitude();
+			}
+			else {
+				// Set default latitude and longitude
+				String coordinates[] = {"42.348332", "-71.087873"};
+				lat = Double.parseDouble(coordinates[0]);
+				lng = Double.parseDouble(coordinates[1]);
+			}
 
-		evade.p = new GeoPoint(
-				(int) (lat * 1E6), 
-				(int) (lng * 1E6));
-		
-		// Add enemies
-		evade.addEnemies();
-	}
+			evade.p = new GeoPoint(
+					(int) (lat * 1E6), 
+					(int) (lng * 1E6));
+
+			// Add enemies
+			evade.addEnemies();
+		}
+			}
 
 	// Calculate the total distance traveled
 	public double calculateDistance() {
