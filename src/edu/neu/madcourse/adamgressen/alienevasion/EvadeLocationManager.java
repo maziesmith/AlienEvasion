@@ -83,11 +83,11 @@ public class EvadeLocationManager implements LocationListener {
 		float[] results = new float[3];
 
 		// Add up all locations in list
-		for (LocationOverlay o : evade.locOverlays) {
+		for (GeoPoint p : evade.locPositions) {
 			if (prevPoint == null)
-				prevPoint = o.getPoint();
+				prevPoint = p;
 			else {
-				curPoint = o.getPoint();
+				curPoint = p;
 
 				// Get the distance between the geo points
 				Location.distanceBetween(
@@ -120,7 +120,7 @@ public class EvadeLocationManager implements LocationListener {
 	}
 
 	public void pause() {
-		lm.removeUpdates(this);
+		stopLocationUpdating();
 	}
 
 	public void resume() {
@@ -128,7 +128,7 @@ public class EvadeLocationManager implements LocationListener {
 		lastLoc = null;
 
 		// Request location updates again
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_DELAY, DIST_DELAY, this);
+		beginLocationUpdating();
 	}
 
 	public void onProviderDisabled(String arg0) {}

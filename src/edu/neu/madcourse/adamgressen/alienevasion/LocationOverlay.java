@@ -1,6 +1,6 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
-import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -12,18 +12,16 @@ import com.google.android.maps.Projection;
 
 public class LocationOverlay extends Overlay{
 	GeoPoint p;
+	GeoPoint prev;
 	int index;
-	String dist;
 	int pursuing;
 	
 	// Set up paint
 	Paint paint = new Paint();
 	Paint textPaint = new Paint();
 
-	public LocationOverlay(GeoPoint p, int index, String d) {
+	public LocationOverlay(GeoPoint p, int index) {
 		this.p = p;
-		this.index = index;
-		this.dist = d;
 		pursuing = Evade.getPursuing();
 		
 		paint.setStrokeWidth(4);
@@ -41,22 +39,34 @@ public class LocationOverlay extends Overlay{
 		super.draw(canvas, mapView, shadow);
 		
 		// Convert lat and long to screen coordinates
-		Point previousPoint = new Point();
 		Point point = new Point();
 		Projection proj = mapView.getProjection();
 		proj.toPixels(p, point);
 
 		List<Overlay> overlays = mapView.getOverlays();
-		if (this.index > 0) {
-			LocationOverlay previous = (LocationOverlay)overlays.get(index-1);
-			GeoPoint previousGeoPoint = previous.getPoint();
+		LinkedList<LocationOverlay> locOverlays = new LinkedList<LocationOverlay>();
+		for (Overlay o : overlays) {
+			if (o.getClass().equals(LocationOverlay.class)) {
+				locOverlays.add((LocationOverlay)o);
+			}
+		}
+		
+		// Draw line to previous GeoPoint
+		if (index == 0)
+			this.prev = null;
+		else
+			this.prev = Evade.locPositions.get(index-1);
+		
+		if (this.prev != null) {
+			Point previousPoint = new Point();
+			GeoPoint previousGeoPoint = prev;
 			proj.toPixels(previousGeoPoint, previousPoint);
 			canvas.drawLine(previousPoint.x, previousPoint.y, point.x, point.y, paint);
 		}
 
-		if (this.index == overlays.size()-1) {
+		if (this.index == locOverlays.size()-1) {
 			canvas.drawCircle(point.x, point.y, 20, paint);
-			canvas.drawText(this.dist+" miles", point.x, point.y, textPaint);
+			canvas.drawText(Evade.getDist()+" miles", point.x, point.y, textPaint);
 		}
 
 		return true;

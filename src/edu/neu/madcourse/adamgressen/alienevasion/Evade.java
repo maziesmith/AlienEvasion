@@ -1,17 +1,14 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+import com.google.android.maps.Projection;
 
 import edu.neu.madcourse.adamgressen.R;
 import android.app.AlertDialog;
@@ -33,10 +30,16 @@ import android.widget.Toast;
 public class Evade extends MapActivity  {	
 	// Map View
 	MapView mapView;
+	// Map overlays
+	List<Overlay> mapOverlays;
+	// List of location positions
+	static LinkedList<GeoPoint> locPositions;
 	// List of location overlays
-	List<LocationOverlay> locOverlays;
+	LinkedList<LocationOverlay> locOverlays;
+	// List of enemy positions
+	LinkedList<GeoPoint> enPositions;
 	// List of enemy overlays
-	List<EnemyOverlay> enOverlays;
+	LinkedList<EnemyOverlay> enOverlays;
 	// List of Random numbers for Aliens
 	List<Double> alienRadius;
 	// Map Controller
@@ -53,9 +56,9 @@ public class Evade extends MapActivity  {
 	AccelerometerManager accMan;
 
 	// Distance traveled
-	private double distance;
-	public String getDist() {
-		double d = ((double)((int)(this.distance*100.0)))/100.0;
+	private static double distance;
+	public static String getDist() {
+		double d = ((double)((int)(distance*100.0)))/100.0;
 		return String.valueOf(d);
 	}
 	// Elapsed time
@@ -78,19 +81,40 @@ public class Evade extends MapActivity  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alien_evasion_evade);
 
+		System.out.println("onCreate Evade");
+
 		StoredEvasion sevasion = getEvasion();
-		
-		if(sevasion!=null){
-			locOverlays = sevasion.locOverlays;
-			enOverlays = sevasion.enOverlays;
+
+		if(sevasion != null){
+			// Get stored location positions
+			locPositions = sevasion.locPositions;
+			// Current position equals the last stored position
+			p = locPositions.getLast();
+			
+			// Populate location overlays
+			for (int gp = 0; gp < locPositions.size(); gp++) {
+				locOverlays.add(new LocationOverlay(locPositions.get(gp), gp));
+			}
+			
+			// Get stored enemy positions
+			enPositions = sevasion.enPositions;
+			
+			// Populate enemy overlays
+			for (GeoPoint gp : enPositions) {
+				enOverlays.add(new EnemyOverlay(gp));
+			}
+			
 			saved = true;
+			
 			System.out.println("Used stored evasion");
 			setToast("Using stored evasion");
 		}
 		else{
-		locOverlays = new LinkedList<LocationOverlay>();
-		enOverlays = new LinkedList<EnemyOverlay>();
-		setToast("New Locations used");
+			locPositions = new LinkedList<GeoPoint>();
+			locOverlays = new LinkedList<LocationOverlay>();
+			enPositions = new LinkedList<GeoPoint>();
+			enOverlays = new LinkedList<EnemyOverlay>();
+			setToast("New Locations used");
 		}
 
 		locMan = new EvadeLocationManager(this);
@@ -119,8 +143,11 @@ public class Evade extends MapActivity  {
 	public void onPause() {
 		super.onPause();
 
+		System.out.println("onPause Evade");
+
 		accMan.pause();
 		locMan.pause();
+		gpsMan.pause();
 
 		// Store the current evasion
 		storeEvasion();
@@ -130,31 +157,35 @@ public class Evade extends MapActivity  {
 	public void onResume() {
 		super.onResume();
 
+		System.out.println("onResume Evade");
+
 		accMan.resume();
 		locMan.resume();
 		gpsMan.resume();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
-	    new AlertDialog.Builder(this)
-	        .setTitle("Really Exit?")
-	        .setMessage("Are you sure you want to exit?")
-	        .setNegativeButton(android.R.string.no, null)
-	        .setPositiveButton(android.R.string.yes, new OnClickListener() {
+		new AlertDialog.Builder(this)
+		.setTitle("Really Exit?")
+		.setMessage("Are you sure you want to exit?")
+		.setNegativeButton(android.R.string.no, null)
+		.setPositiveButton(android.R.string.yes, new OnClickListener() {
 
-	            public void onClick(DialogInterface arg0, int arg1) {
-	            	boolean bool = deleteEvasion();
-	            	if(bool)
-	            	setToast("File Deleted");
-	                Evade.super.onBackPressed();
-	            }
-	        }).create().show();
+			public void onClick(DialogInterface arg0, int arg1) {
+				boolean bool = deleteEvasion();
+				if(bool)
+					setToast("File Deleted");
+				Evade.super.onBackPressed();
+			}
+		}).create().show();
 	}
 
 	private void initMap() {
 		mapView = (MapView) findViewById(R.id.mapview);
 		//mapView.setBuiltInZoomControls(true); // Enables zoom controls
+
+		mapOverlays = mapView.getOverlays();
 
 		mc = mapView.getController();
 		mc.setZoom(18);
@@ -162,13 +193,13 @@ public class Evade extends MapActivity  {
 		if(!saved){
 			locMan.initMyLocation();
 			mc.animateTo(p);
-		// Check for GPS
-		gpsMan.checkForGPS();
+			// Check for GPS
+			gpsMan.checkForGPS();
 		}
 		else{
-			mapView.getOverlays().clear();
-			mapView.getOverlays().addAll(locOverlays);
-			mapView.getOverlays().addAll(enOverlays);
+			mapOverlays.clear();
+			mapOverlays.addAll(locOverlays);
+			mapOverlays.addAll(enOverlays);
 		}
 	}
 
@@ -176,16 +207,18 @@ public class Evade extends MapActivity  {
 	public void handleNewLocation() {
 		mc.animateTo(p);
 		distance = locMan.calculateDistance();
+		// Add position to list
+		locPositions.add(p);
 		//---Add a location marker---
-		LocationOverlay mapOverlay = new LocationOverlay(p, locOverlays.size(), getDist());
+		LocationOverlay mapOverlay = new LocationOverlay(p, locPositions.size()-1);
 		locOverlays.add(mapOverlay);
 		// Clear the map's overlays
-		mapView.getOverlays().clear();
+		mapOverlays.clear();
 		// Add the new list of location overlays
-		mapView.getOverlays().addAll(locOverlays);
+		mapOverlays.addAll(locOverlays);
 		// Update enemy overlays
 		updateEnemyOverlays();
-		mapView.getOverlays().addAll(enOverlays);
+		mapOverlays.addAll(enOverlays);
 		// Invalidate the map so it's redrawn
 		mapView.invalidate();
 	}
@@ -196,28 +229,39 @@ public class Evade extends MapActivity  {
 		pursuing = 5;
 		// Create enemyoverlay and add to list
 		for (int e = 0; e < 5; e++) {
-			enOverlays.add(new EnemyOverlay(p,alienRadius.get(e)));
+			GeoPoint newEnPos = randomizePos();
+			enPositions.add(newEnPos);
+			enOverlays.add(new EnemyOverlay(newEnPos));
 		}
 	}
 
 	// Updates enemy overlays to new positions
 	private void updateEnemyOverlays() {
-		for (EnemyOverlay e : enOverlays) {
-			e.p = p;
+		for (int g = 0; g < enPositions.size(); g++) {
+			enOverlays.get(g).enemyPos = randomizePos();
 		}
 	}
-	
+
 	// Randomizes position
-	private void randomizePos() {
+	private GeoPoint randomizePos() {
 		alienRadius = new LinkedList<Double>();
 		Random rand = new Random();
 		double t;
 
-		for(int i=0;i < 5; i++){
-			t = rand.nextDouble();
-			alienRadius.add(t);
-		}
-		
+		t = 2*Math.PI*rand.nextDouble();
+
+		// Convert lat and long to screen coordinates
+		Point playerPoint = new Point();
+		Projection proj = mapView.getProjection();
+		proj.toPixels(p, playerPoint);
+
+		int prevx = playerPoint.x;
+		int prevy = playerPoint.y;
+		double r = 100;
+
+		Point newEnPoint = new Point((int)(prevx+ r*Math.sin(t)), (int)(prevy + r*Math.cos(t)));
+
+		return proj.fromPixels(newEnPoint.x, newEnPoint.y);
 	}
 
 	// Check if network is available
@@ -238,12 +282,12 @@ public class Evade extends MapActivity  {
 		// Create a new StoredEvasion and store it
 		new StoredEvasion(this).store(getApplicationContext());
 	}
-	
+
 	// Get any saved evasion from memory
 	private StoredEvasion getEvasion(){
-		 return StoredEvasion.read(this);
+		return StoredEvasion.read(this);
 	}
-	
+
 	private boolean deleteEvasion(){
 		return new StoredEvasion().removeEvasion(getApplicationContext());
 	}
