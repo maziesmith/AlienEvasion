@@ -30,6 +30,9 @@ public class Evasions extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		readStoredEvasions();
+		String currentEvasion = getSavedEvasionName();
+		storedEvasions.remove(currentEvasion);
+		
 		final CharSequence[] options={"View Score","Delete"};
 		
 		final Context context = this;
@@ -44,14 +47,19 @@ public class Evasions extends ListActivity {
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				
-				
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Make your selection");
 				builder.setItems(options, new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
 				         // Do something with the selection
 				    	
-				    	
+				    	switch(item){
+				    	case 0:
+				    		
+				    		break;
+				    	case 1:
+				    		break;
+				    	}
 				    	
 				    	}
 				    		
@@ -79,6 +87,10 @@ public class Evasions extends ListActivity {
 		
 
 
+	}
+	
+	private String getSavedEvasionName(){
+		return new StoredEvasion().getSavedEvasionName(getApplicationContext());
 	}
 
 	private void readStoredEvasions() {
