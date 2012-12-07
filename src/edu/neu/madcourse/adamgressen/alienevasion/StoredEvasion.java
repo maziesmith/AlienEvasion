@@ -50,7 +50,7 @@ public class StoredEvasion {
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
 			dir.mkdirs();
-			File file = new File(dir, EVASION_FILE);
+			File file = new File(dir, EVASION_FILE + name);
 
 			FileWriter fos = new FileWriter(file);
 			
@@ -77,11 +77,15 @@ public class StoredEvasion {
 		StoredEvasion se = null;
 		
 		try {
+			String savedEvasionName = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
+			
+			if (savedEvasionName =="")
+				return se;
 			
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
 			
-			File file = new File(dir, EVASION_FILE + name);
+			File file = new File(dir, EVASION_FILE + savedEvasionName);
 			FileReader fis = new FileReader(file);
 			BufferedReader bf = new BufferedReader(fis);
 			String read = "";
@@ -133,6 +137,10 @@ public class StoredEvasion {
 		.putString(EVASION_CURRENT, "")
 		.commit();
 		
+	}
+	
+	public String getSavedEvasionName(Context context){
+		return context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
 	}
 
 	
