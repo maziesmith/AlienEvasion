@@ -1,8 +1,11 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -56,13 +59,18 @@ public class StoredEvasion {
 			.edit()
 			.putString(EVASION_CURRENT, name)
 			.commit();
+			/*
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
 			dir.mkdirs();
-			File file = new File(dir, EVASION_FILE + name);
-
-			FileWriter fos = new FileWriter(file);
+			File file = new File(dir, name);
 			
+			FileWriter fos = new FileWriter(file);
+			BufferedWriter output = new BufferedWriter(fos);
+			*/
+			File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); //Creating an internal dir;
+			File fileinDir = new File(dir, name); //Getting a file within the dir.
+			FileWriter fos = new FileWriter(fileinDir);
 			BufferedWriter output = new BufferedWriter(fos);
 			
 			Gson gson = new Gson();
@@ -95,12 +103,18 @@ public class StoredEvasion {
 			else
 				savedEvasionName = this.name;
 
+			File mydir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
+			File fileinMyDir = new File(mydir, name);
+			FileReader fis = new FileReader(fileinMyDir);
+			BufferedReader bf = new BufferedReader(fis);
+			/*
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
 			
-			File file = new File(dir, EVASION_FILE + savedEvasionName);
+			File file = new File(dir, savedEvasionName);
 			FileReader fis = new FileReader(file);
 			BufferedReader bf = new BufferedReader(fis);
+			*/
 			String read = "";
 			String json ="";
 			
@@ -122,23 +136,27 @@ public class StoredEvasion {
 			catch(IOException e){
 				System.out.println("Unable to read the Evasion");
 			}
+		System.out.println("Read");
 		
 		return se;
 	}
 	
 	
 	
-	public List<String> readAll(Context context){
+	public List<String> readAll(Context context) throws IOException{
 		
 		List<String> evasions = new LinkedList<String>();
+		
 		File sdCard = Environment.getExternalStorageDirectory();
 		File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
+		//sdcard support
 		
-		for(File file : dir.listFiles()){
-			if(!file.isDirectory())
-				evasions.add(file.getName());
-		}
+			for(File file : dir.listFiles()){
+				if(!file.isDirectory())
+					evasions.add(file.getName());
+			}
 		
+
 		
 		return evasions;
 		

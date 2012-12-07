@@ -1,6 +1,7 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -100,8 +101,15 @@ public class Evasions extends ListActivity {
 
 	private void readStoredEvasions() {
 		
-		List<String> evasions = new StoredEvasion().readAll(this);
-		storedEvasions = evasions;
+		List<String> evasions;
+		try {
+			evasions = new StoredEvasion().readAll(this);
+			storedEvasions = evasions;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

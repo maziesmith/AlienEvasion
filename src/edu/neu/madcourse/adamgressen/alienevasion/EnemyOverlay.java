@@ -36,7 +36,7 @@ public class EnemyOverlay extends Overlay{
 
 		this.evade = (Evade)context;
 		
-		enemyImage = BitmapFactory.decodeResource(evade.getResources(), R.drawable.player);
+		enemyImage = BitmapFactory.decodeResource(evade.getResources(), R.drawable.aliens);
 		
 		paint.setStrokeWidth(4);
 		paint.setARGB(80,255,0,0);
