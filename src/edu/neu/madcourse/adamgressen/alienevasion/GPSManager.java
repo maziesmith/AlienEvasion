@@ -89,7 +89,7 @@ public class GPSManager implements GpsStatus.Listener {
 			public void onClick(DialogInterface dialog, int id) {
 				// Start checking again
 				checkForGPS();
-				// Makes it so timeout will occurr again if necessary
+				// Makes it so timeout will occur again if necessary
 				timeout = false;
 				dialog.dismiss();
 			}

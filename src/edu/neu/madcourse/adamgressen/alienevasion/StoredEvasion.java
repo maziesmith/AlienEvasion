@@ -34,10 +34,16 @@ public class StoredEvasion {
 	String name;
 	//Context
 	Context context;
+	//Evade
+	Evade evade;
 
 	// Constructors
 	public StoredEvasion(){};
+	public StoredEvasion(String name){
+		this.name = name;
+	}
 	public StoredEvasion(Evade evade) {
+		this.evade = evade;
 		this.locPositions = evade.locPositions;
 		this.enPositions = evade.enPositions;
 		this.name = evade.startTime;
@@ -77,13 +83,18 @@ public class StoredEvasion {
 	public StoredEvasion read(Context context){
 
 		StoredEvasion se = null;
+		String savedEvasionName;
 		
 		try {
-			String savedEvasionName = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
-			System.out.println("Read Saved Game>" + savedEvasionName + "<");
-			if (savedEvasionName == "")
-				return se;
-			
+			if(this.evade != null){
+				savedEvasionName = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
+				System.out.println("Read Saved Game>" + savedEvasionName + "<");
+				if (savedEvasionName == "")
+					return se;
+			}
+			else
+				savedEvasionName = this.name;
+
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
 			
@@ -114,6 +125,8 @@ public class StoredEvasion {
 		
 		return se;
 	}
+	
+	
 	
 	public List<String> readAll(Context context){
 		
