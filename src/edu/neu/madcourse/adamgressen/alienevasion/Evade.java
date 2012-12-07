@@ -53,8 +53,12 @@ public class Evade extends MapActivity  {
 	MapController mc;
 	// boolean for saved maps
 	boolean saved = false;
+	// boolean for finishing
+	boolean finished = false;
 	// Timestamp of start of the game
 	String startTime;
+	// StoredEvasion Object
+	StoredEvasion sevasion;
 
 	// Current location
 	GeoPoint p;
@@ -90,10 +94,17 @@ public class Evade extends MapActivity  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alien_evasion_evade);
 
-		System.out.println("onCreate Evade");
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		startTime = dateFormat.format(cal.getTime());
 
-		StoredEvasion sevasion = getEvasion();
+		sevasion = getEvasion();
 
+		locPositions = new LinkedList<GeoPoint>();
+		locOverlays = new LinkedList<LocationOverlay>();
+		enPositions = new LinkedList<GeoPoint>();
+		enOverlays = new LinkedList<EnemyOverlay>();
+		
 		if(sevasion != null){
 			// Get stored location positions
 			locPositions = sevasion.locPositions;
@@ -119,17 +130,11 @@ public class Evade extends MapActivity  {
 			setToast("Using stored evasion");
 		}
 		else{
-			locPositions = new LinkedList<GeoPoint>();
-			locOverlays = new LinkedList<LocationOverlay>();
-			enPositions = new LinkedList<GeoPoint>();
-			enOverlays = new LinkedList<EnemyOverlay>();
+			
 			setToast("New Locations used");
 		}
 		
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		startTime = dateFormat.format(cal.getTime());
-
+		
 		locMan = new EvadeLocationManager(this);
 		gpsMan = new GPSManager(this);
 		accMan = new AccelerometerManager(this);
@@ -163,6 +168,7 @@ public class Evade extends MapActivity  {
 		gpsMan.pause();
 
 		// Store the current evasion
+		if(!finished)
 		storeEvasion();
 	}
 
@@ -187,8 +193,9 @@ public class Evade extends MapActivity  {
 
 	            public void onClick(DialogInterface arg0, int arg1) {
 	            	deleteEvasion();
-	            	setToast("File Deleted");
+	            	finished = true;
 	                Evade.super.onBackPressed();
+	                return;
 	            }
 	        }).create().show();
 	}
@@ -293,7 +300,7 @@ public class Evade extends MapActivity  {
 	// Store this evasion in memory
 	private void storeEvasion() {
 		// Create a new StoredEvasion and store it
-		new StoredEvasion(this).store(getApplicationContext());
+		new StoredEvasion(this).store(this);
 	}
 
 	// Get any saved evasion from memory
@@ -302,6 +309,6 @@ public class Evade extends MapActivity  {
 	}
 
 	private void deleteEvasion(){
-		new StoredEvasion().finishEvasion(getApplicationContext());
+		new StoredEvasion(this).finishEvasion(this);
 	}
 }

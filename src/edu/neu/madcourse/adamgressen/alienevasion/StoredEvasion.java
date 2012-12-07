@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 
 import android.content.Context;
 import android.os.Environment;
+import android.widget.Toast;
 
 public class StoredEvasion {	
 	// File name for the stored serialized class
@@ -31,6 +32,8 @@ public class StoredEvasion {
 	LinkedList<GeoPoint> enPositions = new LinkedList<GeoPoint>();
 	// Timestamp of the saved Game
 	String name;
+	//Context
+	Context context;
 
 	// Constructors
 	public StoredEvasion(){};
@@ -59,7 +62,6 @@ public class StoredEvasion {
 			Gson gson = new Gson();
 			String json = gson.toJson(this);
 			
-			
 			try {
 				output.write(json);
 			}
@@ -78,8 +80,8 @@ public class StoredEvasion {
 		
 		try {
 			String savedEvasionName = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
-			
-			if (savedEvasionName =="")
+			System.out.println("Read Saved Game>" + savedEvasionName + "<");
+			if (savedEvasionName == "")
 				return se;
 			
 			File sdCard = Environment.getExternalStorageDirectory();
@@ -91,7 +93,6 @@ public class StoredEvasion {
 			String read = "";
 			String json ="";
 			
-
 			try {
 				while((read=bf.readLine()) !=null){
 						json = read;
@@ -132,10 +133,11 @@ public class StoredEvasion {
 	
 	public void finishEvasion(Context context){
 		
-		context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE)
-		.edit()
-		.putString(EVASION_CURRENT, "")
-		.commit();
+		context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).edit().clear().commit();
+		
+		String current = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
+		Toast.makeText(context, current, Toast.LENGTH_SHORT).show();
+		System.out.println("Saved Game>" + current + "<");
 		
 	}
 	

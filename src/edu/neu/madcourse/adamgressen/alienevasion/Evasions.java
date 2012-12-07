@@ -90,7 +90,7 @@ public class Evasions extends ListActivity {
 	}
 	
 	private String getSavedEvasionName(){
-		return new StoredEvasion().getSavedEvasionName(this);
+		return new StoredEvasion().getSavedEvasionName(getApplicationContext());
 	}
 
 	private void readStoredEvasions() {

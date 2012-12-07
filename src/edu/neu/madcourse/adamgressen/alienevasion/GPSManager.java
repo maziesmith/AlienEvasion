@@ -27,6 +27,7 @@ public class GPSManager implements GpsStatus.Listener {
 	private void createProgressDialog() {
 		pro = new ProgressDialog(evade);
 		pro.setMessage("Acquiring GPS Signal");
+		//pro.hide();
 	}
 
 	// When the GPS status changes
@@ -108,7 +109,7 @@ public class GPSManager implements GpsStatus.Listener {
 	}
 	
 	public void resume() {
-		createProgressDialog();
+		//createProgressDialog();
 		// Reset begin check time variable
 		beginCheckTime = SystemClock.elapsedRealtime();
 	}
