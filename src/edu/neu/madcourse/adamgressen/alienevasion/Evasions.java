@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,7 +46,7 @@ public class Evasions extends ListActivity {
 		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
+					int position, final long id) {
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Make your selection");
@@ -55,7 +56,14 @@ public class Evasions extends ListActivity {
 				    	
 				    	switch(item){
 				    	case 0:
-				    		
+							Toast.makeText(getApplicationContext(),
+									storedEvasions.get((int)id), Toast.LENGTH_SHORT).show();
+							
+							Intent intent = new Intent(context, SavedEvasions.class);
+							Bundle b = new Bundle();
+							b.putString("EVASION_NAME", storedEvasions.get((int)id));
+							intent.putExtras(b);
+							startActivity(intent);
 				    		break;
 				    	case 1:
 				    		break;
