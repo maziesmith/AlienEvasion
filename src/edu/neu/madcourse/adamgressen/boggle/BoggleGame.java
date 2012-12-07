@@ -10,7 +10,6 @@ package edu.neu.madcourse.adamgressen.boggle;
 
 //import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,13 +22,14 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import edu.neu.madcourse.adamgressen.R;
 
 public class BoggleGame extends Activity {
@@ -104,7 +104,8 @@ public class BoggleGame extends Activity {
       bogglePuzzleView.requestFocus();
       
       this.task = new TimerTask() {
-          public void run() {
+          @Override
+		public void run() {
         	  if (!paused) {
         		  time--;
         		  Log.d("time left: ", String.valueOf(time));

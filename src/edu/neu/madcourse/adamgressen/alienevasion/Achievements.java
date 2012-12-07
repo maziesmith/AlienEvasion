@@ -1,10 +1,10 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
-import edu.neu.madcourse.adamgressen.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import edu.neu.madcourse.adamgressen.R;
 
 public class Achievements extends Activity {
 	

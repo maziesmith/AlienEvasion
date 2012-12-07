@@ -11,8 +11,7 @@ package edu.neu.madcourse.adamgressen.persistentboggle;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,6 +26,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import edu.neu.madcourse.adamgressen.R;
 import edu.neu.mobileclass.apis.KeyValueAPI;
 

@@ -6,15 +6,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.LinkedList;
-
-import com.google.android.maps.GeoPoint;
-import com.google.gson.Gson;
+import java.util.List;
 
 import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
+
+import com.google.android.maps.GeoPoint;
+import com.google.gson.Gson;
 
 public class StoredEvasion {	
 	// File name for the stored serialized class
@@ -38,7 +38,7 @@ public class StoredEvasion {
 	// Constructors
 	public StoredEvasion(){};
 	public StoredEvasion(Evade evade) {
-		this.locPositions = Evade.locPositions;
+		this.locPositions = evade.locPositions;
 		this.enPositions = evade.enPositions;
 		this.name = evade.startTime;
 	}

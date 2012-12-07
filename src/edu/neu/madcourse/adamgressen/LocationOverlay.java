@@ -1,6 +1,7 @@
 package edu.neu.madcourse.adamgressen;
 
 import java.util.List;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;

@@ -16,7 +16,7 @@ import android.view.View.OnClickListener;
 import edu.neu.madcourse.adamgressen.boggle.Boggle;
 import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle;
 import edu.neu.madcourse.adamgressen.sudoku.Sudoku;
-import edu.neu.mobileClass.*;
+import edu.neu.mobileClass.PhoneCheckAPI;
 
 public class Main extends Activity implements OnClickListener {
 

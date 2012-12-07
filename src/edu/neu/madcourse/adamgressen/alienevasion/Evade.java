@@ -1,22 +1,11 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.Projection;
 
-import edu.neu.madcourse.adamgressen.R;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,8 +14,16 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.widget.Toast;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.Projection;
+
+import edu.neu.madcourse.adamgressen.R;
 
 /***
  * 
@@ -40,7 +37,7 @@ public class Evade extends MapActivity  {
 	// Map overlays
 	List<Overlay> mapOverlays;
 	// List of location positions
-	static LinkedList<GeoPoint> locPositions;
+	LinkedList<GeoPoint> locPositions;
 	// List of location overlays
 	LinkedList<LocationOverlay> locOverlays;
 	// List of enemy positions
@@ -71,7 +68,7 @@ public class Evade extends MapActivity  {
 	// Distance traveled
 	private static double distance;
 	public static String getDist() {
-		double d = ((double)((int)(distance*100.0)))/100.0;
+		double d = ((int)(distance*100.0))/100.0;
 		return String.valueOf(d);
 	}
 	// Elapsed time
@@ -113,7 +110,7 @@ public class Evade extends MapActivity  {
 			
 			// Populate location overlays
 			for (int gp = 0; gp < locPositions.size(); gp++) {
-				locOverlays.add(new LocationOverlay(locPositions.get(gp), gp));
+				locOverlays.add(new LocationOverlay(this, locPositions.get(gp), gp));
 			}
 			
 			// Get stored enemy positions
@@ -121,7 +118,7 @@ public class Evade extends MapActivity  {
 			
 			// Populate enemy overlays
 			for (GeoPoint gp : enPositions) {
-				enOverlays.add(new EnemyOverlay(gp));
+				enOverlays.add(new EnemyOverlay(this, gp));
 			}
 			
 			saved = true;
@@ -230,7 +227,7 @@ public class Evade extends MapActivity  {
 		// Add position to list
 		locPositions.add(p);
 		//---Add a location marker---
-		LocationOverlay mapOverlay = new LocationOverlay(p, locPositions.size()-1);
+		LocationOverlay mapOverlay = new LocationOverlay(this, p, locPositions.size()-1);
 		locOverlays.add(mapOverlay);
 		// Clear the map's overlays
 		mapOverlays.clear();
@@ -251,7 +248,7 @@ public class Evade extends MapActivity  {
 		for (int e = 0; e < 5; e++) {
 			GeoPoint newEnPos = randomizePos();
 			enPositions.add(newEnPos);
-			enOverlays.add(new EnemyOverlay(newEnPos));
+			enOverlays.add(new EnemyOverlay(this, newEnPos));
 		}
 	}
 

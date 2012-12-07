@@ -1,22 +1,16 @@
 package edu.neu.madcourse.adamgressen;
 
 import java.util.List;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.util.FloatMath;
-import android.location.GpsStatus;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,8 +18,16 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.FloatMath;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Overlay;
 
 public class Tricky extends MapActivity implements LocationListener, GpsStatus.Listener, SensorEventListener  {
 	MapView mapView;
@@ -39,7 +41,7 @@ public class Tricky extends MapActivity implements LocationListener, GpsStatus.L
 	ProgressDialog pro;
 	double distance;
 	public String getDist() {
-		double d = ((double)((int)(this.distance*100.0)))/100.0;
+		double d = ((int)(this.distance*100.0))/100.0;
 		return String.valueOf(d);
 	}
 
@@ -305,7 +307,7 @@ public class Tricky extends MapActivity implements LocationListener, GpsStatus.L
 						curPoint.getLatitudeE6()/1E6,
 						curPoint.getLongitudeE6()/1E6,
 						results);
-				dist += (double)results[0]/1609.34;
+				dist += results[0]/1609.34;
 				prevPoint = curPoint;
 			}
 		}

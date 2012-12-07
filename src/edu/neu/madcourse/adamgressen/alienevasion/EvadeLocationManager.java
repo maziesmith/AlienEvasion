@@ -1,13 +1,13 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
-import com.google.android.maps.GeoPoint;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+
+import com.google.android.maps.GeoPoint;
 
 public class EvadeLocationManager implements LocationListener {
 	static final int TIME_DELAY = 10000;
@@ -103,7 +103,7 @@ public class EvadeLocationManager implements LocationListener {
 						curPoint.getLatitudeE6()/1E6,
 						curPoint.getLongitudeE6()/1E6,
 						results);
-				dist += (double)results[0]/1609.34;
+				dist += results[0]/1609.34;
 				prevPoint = curPoint;
 			}
 		}

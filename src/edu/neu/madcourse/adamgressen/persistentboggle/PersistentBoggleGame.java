@@ -20,23 +20,26 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import edu.neu.madcourse.adamgressen.R;
-import edu.neu.mobileclass.apis.KeyValueAPI;
 import edu.neu.madcourse.adamgressen.persistentboggle.PersistentBoggle.BoggleFields;
+import edu.neu.mobileclass.apis.KeyValueAPI;
 
 public class PersistentBoggleGame extends Activity implements PersistentBoggleInterface {
 	private static final String TAG = "Boggle";
@@ -298,6 +301,7 @@ public class PersistentBoggleGame extends Activity implements PersistentBoggleIn
 		persistentBogglePuzzleView.requestFocus();
 
 		this.task = new TimerTask() {
+			@Override
 			public void run() {
 				if (!paused) {
 					time--;
