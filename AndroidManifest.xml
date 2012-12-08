@@ -123,6 +123,10 @@
             android:name=".alienevasion.Achievements"
             android:label="@string/achievements_title">
         </activity>
+        <activity
+            android:name=".alienevasion.SavedEvasions"
+            android:label="@string/savedevasions_title">
+        </activity>
         
         <receiver 
             android:name=".persistentboggle.AlarmReceiver"

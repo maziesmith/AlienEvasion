@@ -134,7 +134,7 @@ public class Evade extends MapActivity  {
 		timer.schedule(updateTask, 0, TIMER_TICK);
 
 		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM-dd-yyyy@h@mm@ss@a");
 		startTime = dateFormat.format(cal.getTime());
 
 		sevasion = getEvasion();
@@ -214,17 +214,18 @@ public class Evade extends MapActivity  {
 	public void onBackPressed() {
 		new AlertDialog.Builder(this)
 		.setTitle("Really Exit?")
-		.setMessage("Are you sure you want to exit?")
+		.setMessage("Are you sure you want to exit? This will end your current run!")
 		.setNegativeButton(android.R.string.no, null)
 		.setPositiveButton(android.R.string.yes, new OnClickListener() {
 
-			public void onClick(DialogInterface arg0, int arg1) {
-				deleteEvasion();
-				finished = true;
-				Evade.super.onBackPressed();
-				return;
-			}
-		}).create().show();
+	            public void onClick(DialogInterface arg0, int arg1) {
+	            	deleteEvasion();
+	            	finished = true;
+	            	finish();
+	                Evade.super.onBackPressed();
+	                return;
+	            }
+	        }).create().show();
 	}
 
 	private void initMap() {
@@ -354,6 +355,11 @@ public class Evade extends MapActivity  {
 
 		return proj.fromPixels(newEnPoint.x, newEnPoint.y);
 	}
+	
+	@Override
+    protected void onDestroy() {
+        super.onStop();
+    }
 
 	// Show an alert if the network is unavailable
 	private void checkNetworkAvailability() {
