@@ -56,7 +56,7 @@ public class Evasions extends ListActivity {
 							Toast.makeText(getApplicationContext(),
 									storedEvasions.get((int)id), Toast.LENGTH_SHORT).show();
 							
-							Intent intent = new Intent(context, SavedEvasions.class);
+							Intent intent = new Intent(context, StoredEvasion.class);
 							Bundle b = new Bundle();
 							b.putString("EVASION_NAME", storedEvasions.get((int)id));
 							intent.putExtras(b);

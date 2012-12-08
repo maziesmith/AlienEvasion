@@ -17,7 +17,6 @@ public class LocationOverlay extends Overlay{
 	GeoPoint p;
 	GeoPoint prev;
 	int index;
-	int pursuing;
 	Bitmap playerImage;
 	Evade evade;
 	
@@ -28,7 +27,7 @@ public class LocationOverlay extends Overlay{
 	public LocationOverlay(Context context, GeoPoint p, int index) {
 		this.p = p;
 		this.evade = (Evade)context;
-		pursuing = Evade.getPursuing();
+		this.index = index;
 		
 		playerImage = BitmapFactory.decodeResource(evade.getResources(), R.drawable.player);
 		
@@ -51,8 +50,6 @@ public class LocationOverlay extends Overlay{
 		Projection proj = mapView.getProjection();
 		proj.toPixels(p, point);
 		
-		System.out.println(index);
-		
 		// Draw line to previous GeoPoint
 		if (index == 0)
 			this.prev = null;
@@ -69,7 +66,10 @@ public class LocationOverlay extends Overlay{
 		if (this.index == evade.locPositions.size()-1) {
             canvas.drawBitmap(playerImage, point.x-(playerImage.getWidth()/2), point.y-(playerImage.getHeight()/2), null);
 			//canvas.drawCircle(point.x, point.y, 20, paint);
-			canvas.drawText(Evade.getDist()+" miles", point.x+20, point.y, textPaint);
+			canvas.drawText(evade.getDist()+" miles", //point.x+20, point.y, 
+					0, 0,
+					textPaint);
+			canvas.drawText(String.valueOf(evade.getEvaded()), 0f, 10f, textPaint);
 		}
 
 		return true;
