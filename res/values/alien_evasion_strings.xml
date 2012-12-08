@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <string name="evade_title">Evade</string>
     <string name="evasions_title">Evasions</string>
     <string name="alien_evasion_settings_title">Settings</string>
     <string name="achievements_title">Achievements</string>
-    <string name="alien_evasion_title">Alien Evasion</string>
+    <string name="alien_evasion_title">MAD-Alien Evasion</string>
     <string name="evaded_label">Aliens Evaded</string>
     <string name="pause_label">Pause</string>
     <string name="time_label">Time</string>
@@ -14,7 +14,6 @@
     <string name="finish_label">Finish Evasion</string>
     <string name="resume_label">Resume</string>
     <string name="shake_string">Shake Them Off!!!</string>
-
     <string name="back_label">Back</string>
     <string name="signal_blocked_title">Signal Blocked</string>
     <string name="signal_blocked_message">The aliens are blocking the GPS signal. Keep running!</string>
@@ -47,6 +46,8 @@
     <string name="alien_evasion_about_title">About Alien Evasion</string>
     <string name="alien_evasion_music_title">Music</string>
     <string name="alien_evasion_music_summary">Play background music</string>
+    <string name="alien_evasion_sound_title">Sound</string>
+    <string name="alien_evasion_sound_summary">Play sounds</string>
 
     <style name="ButtonText">
         <item name="android:layout_width">fill_parent</item>
@@ -54,12 +55,41 @@
         <item name="android:textColor">#ffffff</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_margin">3dp</item>
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:shadowColor">#000000</item>
         <item name="android:shadowDx">1</item>
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">2</item>
     </style>
+
+    <string name="ack_label">Acknowledgements</string>
+    <string name="acknowledgements">
+    We want to thank Professor Intille and everyone who posted 
+    questions or advice on Piazza.\n
+	We also want to thank Stack Overflow which helped us correct 
+	bugs, add in functionality and generally work out the kinks.\n
+	We used resources from the following sites:\n
+	images &#8212;&#8212; pixeljoint.com\n
+	fonts &#8212;&#8212; dafont.com\n
+	music &#8212;&#8212; flashkit.org\n
+	sounds &#8212;&#8212; sweetsoundeffects.com\n
+	sounds &#8212;&#8212; freesound.org\n
+	button styles &#8212;&#8212; dibbus.com\n
+	Phone models used for testing:\n
+	Motorola Droid 2 &amp; HTC One X	</string>
+	
+    <string name="howto_title">Rules</string>
+    <string name="howto">
+    The <bi>Alien Evasion</bi> begins when you press 
+    <i>Start Running</i>.\n\n
+    You can also press <i>Start Running</i> to continue to 
+    play an <i>Evasion</i> that\'s already in progress.\n\n
+    You can view your previous <i>Evasions</i> by pressing
+    <i>Evasions</i> on the main screen.\n\n
+    Press <i>Achievements</i> to track your progress and see 
+    what cool new aliens you\'ve unlocked.\n\n
+    When aliens invade....evade!
+    </string>
 
 </resources>

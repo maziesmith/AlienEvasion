@@ -4,6 +4,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_title">Adam Gressen</string>
     <string name="team_button">Team Members</string>
+    <string name="final_button">Final Project</string>
     <string name="boggle_button">Boggle</string>
     <string name="persistent_boggle_button">Persistent Boggle</string>
     <string name="sudoku_button">Sudoku</string>

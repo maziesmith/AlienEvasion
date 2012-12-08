@@ -12,11 +12,11 @@ public class Sounds {
 		stop(context, sound);
 
 		// Play sound only if not disabled in preferences
-		//if (Settings.getSound(context)) {
-		sound = MediaPlayer.create(context, resource);
-		sound.setLooping(false);
-		sound.start();
-		//}
+		if (Settings.getSound(context)) {
+			sound = MediaPlayer.create(context, resource);
+			sound.setLooping(false);
+			sound.start();
+		}
 	}
 
 	public static void playMusic(Context context, int resource) {
@@ -34,7 +34,7 @@ public class Sounds {
 	public static void stop(Context context, MediaPlayer m) { 
 		if (m != null) {
 			m.release();
-			m = null;
+			m.reset();
 		}
 	}
 

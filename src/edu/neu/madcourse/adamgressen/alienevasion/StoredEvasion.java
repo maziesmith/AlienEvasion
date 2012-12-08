@@ -8,16 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
 import android.content.Context;
 import android.widget.Toast;
-
 import com.google.android.maps.GeoPoint;
 import com.google.gson.Gson;
 
 public class StoredEvasion {	
 	// File name for the stored serialized class
-	private static final String EVASION_FILE = "evasion.json";
 	private static final String EVASION_PREFS = "Stored_Evasion";
 	private static final String EVASION_CURRENT = "Current_Evasion";
 

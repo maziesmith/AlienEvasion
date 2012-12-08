@@ -1,7 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="fill_parent"
+    android:background="@drawable/background" >
 
     <TableLayout
         android:layout_width="wrap_content"
@@ -13,22 +14,30 @@
 
             <Button
                 android:id="@+id/start_button"
-                android:text="@string/start_label" />
+                android:text="@string/start_label"
+                android:background="@drawable/btn_black"
+            	style="@style/ButtonText" />
 
             <Button
                 android:id="@+id/evasions_button"
-                android:text="@string/evasions_title" />
+                android:text="@string/evasions_title"
+                android:background="@drawable/btn_black"
+            	style="@style/ButtonText" />
         </TableRow>
 
         <TableRow>
 
             <Button
                 android:id="@+id/achievements_button"
-                android:text="@string/achievements_title" />
+                android:text="@string/achievements_title"
+                android:background="@drawable/btn_black"
+            	style="@style/ButtonText" />
 
             <Button
                 android:id="@+id/exit_button"
-                android:text="@string/exit_label" />
+                android:text="@string/exit_label"
+                android:background="@drawable/btn_black"
+            	style="@style/ButtonText" />
         </TableRow>
     </TableLayout>
 

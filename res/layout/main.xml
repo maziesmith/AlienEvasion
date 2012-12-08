@@ -24,7 +24,7 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/team_button"
             android:layout_marginTop="26dp"
-            android:text="@string/alien_evasion_title" />
+            android:text="@string/final_button" />
         
         <Button
             android:id="@+id/trickiest_button"

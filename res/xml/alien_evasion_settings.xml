@@ -6,4 +6,9 @@
       android:title="@string/alien_evasion_music_title"
       android:summary="@string/alien_evasion_music_summary"
       android:defaultValue="true" />
+   <CheckBoxPreference
+      android:key="sound"
+      android:title="@string/alien_evasion_sound_title"
+      android:summary="@string/alien_evasion_sound_summary"
+      android:defaultValue="true" />
 </PreferenceScreen>
