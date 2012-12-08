@@ -41,6 +41,7 @@ public class SavedEvasions extends MapActivity {
 	protected void onCreate(Bundle icicle) {
 		// TODO Auto-generated method stub
 		super.onCreate(icicle);
+		setContentView(R.id.savedmapview);
 
 		Bundle b = getIntent().getExtras();
 		String name = b.getString("EVASION_NAME");

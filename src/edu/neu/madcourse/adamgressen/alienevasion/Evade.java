@@ -191,6 +191,7 @@ public class Evade extends MapActivity  {
 	            public void onClick(DialogInterface arg0, int arg1) {
 	            	deleteEvasion();
 	            	finished = true;
+	            	finish();
 	                Evade.super.onBackPressed();
 	                return;
 	            }
@@ -280,6 +281,11 @@ public class Evade extends MapActivity  {
 
 		return proj.fromPixels(newEnPoint.x, newEnPoint.y);
 	}
+	
+	@Override
+    protected void onDestroy() {
+        super.onStop();
+    }
 
 	// Check if network is available
 	private boolean isNetworkAvailable() {

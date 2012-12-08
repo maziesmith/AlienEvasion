@@ -121,5 +121,6 @@
 	<string name="Notification_Game_Started">
 	    Your Opponent has started the Game.
 	</string>
+	<string name="savedevasions_title">Saved Evasion</string>
 	
 </resources>
