@@ -18,7 +18,7 @@ public class LocationOverlay extends Overlay{
 	GeoPoint prev;
 	int index;
 	Bitmap playerImage;
-	Evade evade;
+	EvadeInterface evade;
 	
 	// Set up paint
 	Paint paint = new Paint();
@@ -26,10 +26,10 @@ public class LocationOverlay extends Overlay{
 
 	public LocationOverlay(Context context, GeoPoint p, int index) {
 		this.p = p;
-		this.evade = (Evade)context;
+		this.evade = (EvadeInterface)context;
 		this.index = index;
 		
-		playerImage = BitmapFactory.decodeResource(evade.getResources(), R.drawable.player);
+		playerImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.player);
 		
 		paint.setStrokeWidth(4);
 		paint.setARGB(80,0,0,255);
@@ -55,7 +55,7 @@ public class LocationOverlay extends Overlay{
 		if (index == 0)
 			this.prev = null;
 		else
-			this.prev = evade.locPositions.get(index-1);
+			this.prev = evade.getLocPositions().get(index-1);
 		
 		if (this.prev != null) {
 			Point previousPoint = new Point();
@@ -64,10 +64,10 @@ public class LocationOverlay extends Overlay{
 			canvas.drawLine(previousPoint.x, previousPoint.y, point.x, point.y, paint);
 		}
 
-		if (this.index == evade.locPositions.size()-1) {
+		if (this.index == evade.getLocPositions().size()-1) {
             canvas.drawBitmap(playerImage, point.x-(playerImage.getWidth()/2), point.y-(playerImage.getHeight()/2), null);
 			//canvas.drawCircle(point.x, point.y, 20, paint);
-			canvas.drawText(evade.getDist()+" miles", //point.x+20, point.y, 
+			canvas.drawText(String.valueOf(evade.getDist())+" miles", //point.x+20, point.y, 
 					0, 0,
 					textPaint);
 			canvas.drawText(String.valueOf(evade.getEvaded()), 0f, 10f, textPaint);

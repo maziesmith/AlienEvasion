@@ -8,11 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
         android:layout_gravity="bottom">
-
+        
         <Button
             android:id="@+id/start_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:background="@drawable/btn_black"
+            style="@style/ButtonText"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="26dp"
@@ -20,8 +20,8 @@
 
         <Button
             android:id="@+id/evasions_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:background="@drawable/btn_black"
+            style="@style/ButtonText"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/start_button"
             android:layout_marginTop="26dp"
@@ -29,8 +29,8 @@
 
         <Button
             android:id="@+id/achievements_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:background="@drawable/btn_black"
+            style="@style/ButtonText"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/evasions_button"
             android:layout_marginTop="26dp"
@@ -39,8 +39,8 @@
         
         <Button
             android:id="@+id/exit_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:background="@drawable/btn_black"
+            style="@style/ButtonText"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/achievements_button"
             android:layout_marginTop="23dp"

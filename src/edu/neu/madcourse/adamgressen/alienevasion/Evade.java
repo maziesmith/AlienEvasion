@@ -1,5 +1,6 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -34,13 +35,16 @@ import edu.neu.madcourse.adamgressen.R;
  * while displaying everything on a Map with help from Google
  * 
  * **/
-public class Evade extends MapActivity  {	
+public class Evade extends MapActivity implements EvadeInterface {	
 	// Map View
 	MapView mapView;
 	// Map overlays
 	List<Overlay> mapOverlays;
 	// List of location positions
-	LinkedList<GeoPoint> locPositions;
+	private LinkedList<GeoPoint> locPositions;
+	public LinkedList<GeoPoint> getLocPositions() {
+		return locPositions;
+	}
 	// List of location overlays
 	LinkedList<LocationOverlay> locOverlays;
 	// List of enemy positions
@@ -86,9 +90,9 @@ public class Evade extends MapActivity  {
 	}
 	// Distance traveled -- in miles
 	private double distance;
-	public String getDist() {
-		double d = ((int)(distance*100.0))/100.0;
-		return String.valueOf(d);
+	public double getDist() {
+		DecimalFormat format = new DecimalFormat("#.##");
+		return Double.valueOf(format.format(distance));
 	}
 	// Timer
 	Timer timer;

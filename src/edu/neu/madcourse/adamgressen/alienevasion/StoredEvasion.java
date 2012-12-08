@@ -1,11 +1,8 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
-import android.os.Environment;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -33,6 +29,10 @@ public class StoredEvasion {
 	LinkedList<GeoPoint> locPositions = new LinkedList<GeoPoint>();
 	// List of enemy overlays
 	LinkedList<GeoPoint> enPositions = new LinkedList<GeoPoint>();
+	// Distance
+	double totalDist;
+	// Evaded
+	int evaded;
 	// Timestamp of the saved Game
 	String name;
 	//Context
@@ -44,9 +44,11 @@ public class StoredEvasion {
 		this.name = name;
 	}
 	public StoredEvasion(Evade evade) {
-		this.locPositions = evade.locPositions;
+		this.locPositions = evade.getLocPositions();
 		this.enPositions = evade.enPositions;
 		this.name = evade.startTime;
+		this.totalDist = evade.getDist();
+		this.evaded = evade.getEvaded();
 	}
 
 	// Store this StoredEvasion in memory
