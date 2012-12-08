@@ -25,8 +25,14 @@
     <string-array name="achievements_list">
         <item>Evade Your First Alien</item>
         <item>Run Your First Mile</item>
+        <item>Run Your First 10 Miles</item>
+        <item>Run Your First 50 Miles</item>
+        <item>Completed the run for 1 Hour</item>
+        <item>Completed the run for 5 Hour</item>
+        <item>Completed the run for 10 Hour</item>
         <item>Unlock Your First New Alien</item>
         <item>Evade 1,000 Aliens</item>
+        <item>Evade 1000 aliens in a single run</item>
     </string-array>
 
     <string name="speed_label">Speed</string>

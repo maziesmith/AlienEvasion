@@ -23,13 +23,15 @@ public class StoredEvasion {
 	// Distance
 	// Time
 	// List of location overlays
-	LinkedList<GeoPoint> locPositions = new LinkedList<GeoPoint>();
+	LinkedList<GeoPoint> locPositions; 
 	// List of enemy overlays
-	LinkedList<GeoPoint> enPositions = new LinkedList<GeoPoint>();
+
+	LinkedList<GeoPoint> enPositions;
 	// Distance
 	double totalDist;
 	// Evaded
 	int evaded;
+
 	// Timestamp of the saved Game
 	String name;
 	//Context
@@ -55,17 +57,9 @@ public class StoredEvasion {
 			.edit()
 			.putString(EVASION_CURRENT, name)
 			.commit();
-			/*
-			File sdCard = Environment.getExternalStorageDirectory();
-			File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
-			dir.mkdirs();
-			File file = new File(dir, name);
 			
-			FileWriter fos = new FileWriter(file);
-			BufferedWriter output = new BufferedWriter(fos);
-			*/
-			File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); //Creating an internal dir;
-			File fileinDir = new File(dir, name); //Getting a file within the dir.
+			File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
+			File fileinDir = new File(dir, name); 
 			FileWriter fos = new FileWriter(fileinDir);
 			BufferedWriter output = new BufferedWriter(fos);
 			
@@ -90,12 +84,15 @@ public class StoredEvasion {
 		String savedEvasionName;
 		
 		try {
+			if(locPositions!=null && enPositions != null){
+		
 				savedEvasionName = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
 				System.out.println("Read Saved Game>" + savedEvasionName + "<");
 				if (savedEvasionName == "")
 					return se;
 			else
 				savedEvasionName = this.name;
+		}
 
 			File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
 			File fileinDir = new File(dir, name);
@@ -134,9 +131,7 @@ public class StoredEvasion {
 		
 		List<String> evasions = new LinkedList<String>();
 		File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
-		//File fileinDir = new File(dir.getName());
 		
-		//sdcard support
 		try{
 		for(File file : dir.listFiles()){
 			if(!file.isDirectory())
