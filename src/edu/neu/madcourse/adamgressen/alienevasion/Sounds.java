@@ -34,7 +34,7 @@ public class Sounds {
 	public static void stop(Context context, MediaPlayer m) { 
 		if (m != null) {
 			m.release();
-			m.reset();
+			m = null;
 		}
 	}
 

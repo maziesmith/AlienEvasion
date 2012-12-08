@@ -24,14 +24,31 @@
                 android:background="@drawable/btn_black"
             	style="@style/ButtonText" />
         </TableRow>
-
+        
         <TableRow>
-
+            
             <Button
                 android:id="@+id/achievements_button"
                 android:text="@string/achievements_title"
                 android:background="@drawable/btn_black"
             	style="@style/ButtonText" />
+            
+            <Button
+                android:id="@+id/howto_button"
+                android:text="@string/howto_title"
+                android:background="@drawable/btn_black"
+            	style="@style/ButtonText" />
+            
+        </TableRow>
+
+        <TableRow>
+            
+			<Button
+                android:id="@+id/acknowledgements_button"
+                android:text="@string/ack_label"
+                android:background="@drawable/btn_black"
+            	style="@style/ButtonText" />
+            
 
             <Button
                 android:id="@+id/exit_button"
