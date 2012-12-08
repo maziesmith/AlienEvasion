@@ -37,8 +37,6 @@ public class StoredEvasion {
 	String name;
 	//Context
 	Context context;
-	//Evade
-	Evade evade;
 
 	// Constructors
 	public StoredEvasion(){};
@@ -46,7 +44,6 @@ public class StoredEvasion {
 		this.name = name;
 	}
 	public StoredEvasion(Evade evade) {
-		this.evade = evade;
 		this.locPositions = evade.locPositions;
 		this.enPositions = evade.enPositions;
 		this.name = evade.startTime;
@@ -94,27 +91,18 @@ public class StoredEvasion {
 		String savedEvasionName;
 		
 		try {
-			if(this.evade != null){
 				savedEvasionName = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
 				System.out.println("Read Saved Game>" + savedEvasionName + "<");
 				if (savedEvasionName == "")
 					return se;
-			}
 			else
 				savedEvasionName = this.name;
 
-			File mydir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
-			File fileinMyDir = new File(mydir, name);
-			FileReader fis = new FileReader(fileinMyDir);
+			File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
+			File fileinDir = new File(dir, name);
+			FileReader fis = new FileReader(fileinDir);
 			BufferedReader bf = new BufferedReader(fis);
-			/*
-			File sdCard = Environment.getExternalStorageDirectory();
-			File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
 			
-			File file = new File(dir, savedEvasionName);
-			FileReader fis = new FileReader(file);
-			BufferedReader bf = new BufferedReader(fis);
-			*/
 			String read = "";
 			String json ="";
 			
@@ -136,7 +124,7 @@ public class StoredEvasion {
 			catch(IOException e){
 				System.out.println("Unable to read the Evasion");
 			}
-		System.out.println("Read");
+		System.out.println("Read the internal storage");
 		
 		return se;
 	}
@@ -146,16 +134,19 @@ public class StoredEvasion {
 	public List<String> readAll(Context context) throws IOException{
 		
 		List<String> evasions = new LinkedList<String>();
+		File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
+		//File fileinDir = new File(dir.getName());
 		
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File (sdCard.getAbsolutePath() + "/AlienEvasion");
 		//sdcard support
-		
-			for(File file : dir.listFiles()){
-				if(!file.isDirectory())
-					evasions.add(file.getName());
-			}
-		
+		try{
+		for(File file : dir.listFiles()){
+			if(!file.isDirectory())
+				evasions.add(file.getName());
+		}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 
 		
 		return evasions;

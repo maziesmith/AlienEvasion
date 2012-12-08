@@ -51,7 +51,7 @@ public class LocationOverlay extends Overlay{
 		Projection proj = mapView.getProjection();
 		proj.toPixels(p, point);
 		
-		System.out.println(index);
+		//System.out.println(index);
 		
 		// Draw line to previous GeoPoint
 		if (index == 0)

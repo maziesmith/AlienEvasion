@@ -92,7 +92,7 @@ public class Evade extends MapActivity  {
 		setContentView(R.layout.alien_evasion_evade);
 
 		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM-dd-yyyy@h@mm@ss@a");
 		startTime = dateFormat.format(cal.getTime());
 
 		sevasion = getEvasion();
