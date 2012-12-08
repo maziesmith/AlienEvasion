@@ -32,7 +32,7 @@ public class EvadeLocationManager implements LocationListener {
 	// When the location changes
 	public void onLocationChanged(Location location) {
 		evade.gpsMan.pro.hide();
-		
+
 		// Makes it possible to show block message again
 		evade.gpsMan.blockMessageShown = false;
 
@@ -61,7 +61,7 @@ public class EvadeLocationManager implements LocationListener {
 			evade.p = lastOverlay.p;
 		}
 		else{
-			
+
 			if (lastKnownLoc != null) {
 				lat = lastKnownLoc.getLatitude();
 				lng = lastKnownLoc.getLongitude();
@@ -80,35 +80,6 @@ public class EvadeLocationManager implements LocationListener {
 			// Add enemies
 			evade.addEnemies();
 		}
-			}
-
-	// Calculate the total distance traveled
-	public double calculateDistance() {
-		double dist = 0.0;
-		GeoPoint prevPoint = null;
-		GeoPoint curPoint = null;
-		float[] results = new float[3];
-
-		// Add up all locations in list
-		for (GeoPoint p : evade.locPositions) {
-			if (prevPoint == null)
-				prevPoint = p;
-			else {
-				curPoint = p;
-
-				// Get the distance between the geo points
-				Location.distanceBetween(
-						prevPoint.getLatitudeE6()/1E6, 
-						prevPoint.getLongitudeE6()/1E6,
-						curPoint.getLatitudeE6()/1E6,
-						curPoint.getLongitudeE6()/1E6,
-						results);
-				dist += results[0]/1609.34;
-				prevPoint = curPoint;
-			}
-		}
-
-		return dist;
 	}
 
 	public void beginLocationUpdating() {

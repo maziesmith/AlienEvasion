@@ -1,16 +1,20 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Point;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -31,13 +35,16 @@ import edu.neu.madcourse.adamgressen.R;
  * while displaying everything on a Map with help from Google
  * 
  * **/
-public class Evade extends MapActivity  {	
+public class Evade extends MapActivity implements EvadeInterface {	
 	// Map View
 	MapView mapView;
 	// Map overlays
 	List<Overlay> mapOverlays;
 	// List of location positions
-	LinkedList<GeoPoint> locPositions;
+	private LinkedList<GeoPoint> locPositions;
+	public LinkedList<GeoPoint> getLocPositions() {
+		return locPositions;
+	}
 	// List of location overlays
 	LinkedList<LocationOverlay> locOverlays;
 	// List of enemy positions
@@ -65,21 +72,41 @@ public class Evade extends MapActivity  {
 	GPSManager gpsMan;
 	AccelerometerManager accMan;
 
-	// Distance traveled
-	private static double distance;
-	public static String getDist() {
-		double d = ((int)(distance*100.0))/100.0;
-		return String.valueOf(d);
+	// Average distance over time -- in mph
+	int avgSpd;
+	// Time between finding locations -- in seconds
+	long timePassed;
+	
+	// Time interval for feedback -- in seconds
+	final int TIME_INTERVAL = 20;
+
+	// Distance during interval -- in miles
+	private double intDist;
+	public double getIntDist() {
+		return intDist;
 	}
-	// Elapsed time
-	private int time;
-	public int getTime() { return time; }
+	public void setIntDist(double dist) {
+		intDist = dist;
+	}
+	// Distance traveled -- in miles
+	private double distance;
+	public double getDist() {
+		DecimalFormat format = new DecimalFormat("#.##");
+		return Double.valueOf(format.format(distance));
+	}
+	// Timer
+	Timer timer;
+	// Delay between timer ticks
+	int TIMER_TICK = 1000;
+	// Elapsed time -- in seconds
+	private long time;
+	public long getTime() { return time; }
 	// Aliens evaded
 	private int evaded;
 	public int getEvaded() { return evaded; }
 	// Aliens in pursuit
-	private static int pursuing;
-	public static int getPursuing() { return pursuing; }
+	private int pursuing;
+	public int getPursuing() { return pursuing; }
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -90,6 +117,25 @@ public class Evade extends MapActivity  {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alien_evasion_evade);
+		
+		timer = new Timer();
+		timePassed = 0;
+
+		class Updater extends TimerTask{
+			public void run() {
+				// Increment the stored game time
+				time++;
+				// Increment the timePassed
+				timePassed++;
+				
+				// Check if we've hit the time interval
+				if (time % TIME_INTERVAL == 0) {
+					// provide audio feedback
+				}
+			}
+		}
+		TimerTask updateTask = new Updater();
+		timer.schedule(updateTask, 0, TIMER_TICK);
 
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM-dd-yyyy@h@mm@ss@a");
@@ -101,54 +147,42 @@ public class Evade extends MapActivity  {
 		locOverlays = new LinkedList<LocationOverlay>();
 		enPositions = new LinkedList<GeoPoint>();
 		enOverlays = new LinkedList<EnemyOverlay>();
-		
+
 		if(sevasion != null){
 			// Get stored location positions
 			locPositions = sevasion.locPositions;
 			// Current position equals the last stored position
 			p = locPositions.getLast();
-			
+
 			// Populate location overlays
 			for (int gp = 0; gp < locPositions.size(); gp++) {
 				locOverlays.add(new LocationOverlay(this, locPositions.get(gp), gp));
 			}
-			
+
 			// Get stored enemy positions
 			enPositions = sevasion.enPositions;
-			
+
 			// Populate enemy overlays
 			for (GeoPoint gp : enPositions) {
 				enOverlays.add(new EnemyOverlay(this, gp));
 			}
-			
+
 			saved = true;
-			
+
 			System.out.println("Used stored evasion");
 			setToast("Using stored evasion");
 		}
 		else{
-			
+
 			setToast("New Locations used");
 		}
-		
-		
+
+
 		locMan = new EvadeLocationManager(this);
 		gpsMan = new GPSManager(this);
 		accMan = new AccelerometerManager(this);
 
-		// If there's no network then the map won't display
-		if (!isNetworkAvailable()) {
-			// Ask for another attempt
-			new AlertDialog.Builder(this)
-			.setTitle("No Network Available")
-			.setMessage("You will not be able to view the map, but you can still track your movement and load the map later.")
-			.setCancelable(true)
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {			
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.dismiss();
-				}
-			}).show();
-		}
+		checkNetworkAvailability();
 
 		// Initialize the map
 		initMap();
@@ -166,7 +200,7 @@ public class Evade extends MapActivity  {
 
 		// Store the current evasion
 		if(!finished)
-		storeEvasion();
+			storeEvasion();
 	}
 
 	@Override
@@ -209,8 +243,8 @@ public class Evade extends MapActivity  {
 
 		locMan.initMyLocation();
 		mc.animateTo(p);
-			// Check for GPS
-			gpsMan.checkForGPS();
+		// Check for GPS
+		gpsMan.checkForGPS();
 
 		/*
 		if(saved){
@@ -218,25 +252,64 @@ public class Evade extends MapActivity  {
 			mapOverlays.addAll(locOverlays);
 			mapOverlays.addAll(enOverlays);
 		}
-		*/
+		 */
+	}
+
+	// Update the total distance traveled
+	public void updateDistance() {
+		// If there are previous locations
+		if (!locPositions.isEmpty()) {
+			// Get previous location
+			GeoPoint prevPoint = locPositions.get(locPositions.size()-1);
+
+			// Create results array
+			float[] results = new float[3];
+			// Get the distance between the geo points
+			Location.distanceBetween(
+					prevPoint.getLatitudeE6()/1E6, 
+					prevPoint.getLongitudeE6()/1E6,
+					p.getLatitudeE6()/1E6,
+					p.getLongitudeE6()/1E6,
+					results);
+
+			// Get the distance value we care about
+			double dist = results[0] / 1609.34;
+
+			// Add dist to interval and total distance values
+			intDist += dist;
+			distance += dist;
+		}
 	}
 
 	// Moves to a new location and adds an overlay
 	public void handleNewLocation() {
 		mc.animateTo(p);
-		distance = locMan.calculateDistance();
+		updateDistance();
+		
+		// calculate current speed -- in mph
+		double curSpd = intDist * timePassed / 360;
+		
+		// calculate the score -- the number of evaded aliens
+		evaded += curSpd;
+		
+		// Reset intDist to 0
+		intDist = 0;
+		
 		// Add position to list
 		locPositions.add(p);
 		//---Add a location marker---
 		LocationOverlay mapOverlay = new LocationOverlay(this, p, locPositions.size()-1);
 		locOverlays.add(mapOverlay);
+		
 		// Clear the map's overlays
 		mapOverlays.clear();
+		
 		// Add the new list of location overlays
 		mapOverlays.addAll(locOverlays);
 		// Update enemy overlays
 		updateEnemyOverlays();
 		mapOverlays.addAll(enOverlays);
+		
 		// Invalidate the map so it's redrawn
 		mapView.invalidate();
 	}
@@ -254,9 +327,14 @@ public class Evade extends MapActivity  {
 	}
 
 	// Updates enemy overlays to new positions
+	// This assumes that there is more than one GeoPoint in locPositions
 	private void updateEnemyOverlays() {
+		GeoPoint newEnPos = new GeoPoint(
+				p.getLatitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6(),
+				p.getLongitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6());
+		
 		for (int g = 0; g < enPositions.size(); g++) {
-			enOverlays.get(g).enemyPos = randomizePos();
+			enOverlays.get(g).enemyPos = newEnPos;
 		}
 	}
 
@@ -287,6 +365,23 @@ public class Evade extends MapActivity  {
         super.onStop();
     }
 
+	// Show an alert if the network is unavailable
+	private void checkNetworkAvailability() {
+		// If there's no network then the map won't display
+		if (!isNetworkAvailable()) {
+			// Ask for another attempt
+			new AlertDialog.Builder(this)
+			.setTitle("No Network Available")
+			.setMessage("You will not be able to view the map, but you can still track your movement and load the map later.")
+			.setCancelable(true)
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {			
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.dismiss();
+				}
+			}).show();
+		}
+	}
+
 	// Check if network is available
 	private boolean isNetworkAvailable() {
 		ConnectivityManager connectivityManager 
@@ -308,7 +403,7 @@ public class Evade extends MapActivity  {
 
 	// Get any saved evasion from memory
 	private StoredEvasion getEvasion(){
-		 return new StoredEvasion(this).read(this);
+		return new StoredEvasion(this).read(this);
 	}
 
 	private void deleteEvasion(){

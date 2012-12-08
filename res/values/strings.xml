@@ -10,44 +10,39 @@
     <string name="error_button">Create Error</string>
     <string name="exit_button">Exit</string>
 
-<!--
+    <!--
  ! Excerpted from "Hello, Android",
  ! published by The Pragmatic Bookshelf.
  ! Copyrights apply to this code. It may not be used to create training material, 
  ! courses, books, articles, and the like. Contact us if you are in doubt.
  ! We make no guarantees that this code is fit for any purpose. 
- ! Visit http://www.pragmaticprogrammer.com/titles/eband3 for more book information.
--->
-    
+ ! Visit http://www.pragmaticprogrammer.com/titles/eband3 for more book information.
+    -->
+
     <string name="main_title">Android Boggle</string>
     <string name="sudoku_title">Android Sudoku</string>
     <string name="persistent_title">Persistent Boggle</string>
-	<string name="continue_label">Continue</string>
-	<string name="new_game_label">New Game</string>
-	<string name="about_label">About</string>
-	<string name="exit_label">Exit</string>
-
-	<string name="settings_label">Settings&#8230;</string>
-	<string name="settings_title">Settings</string>
-	<string name="persistent_settings_title">Persistent Boggle settings</string>
-	<string name="sudoku_settings_title">Sudoku settings</string>
-	<string name="settings_shortcut">s</string>
-	<string name="music_title">Music</string>
-	<string name="music_summary">Play background music</string>
-	<string name="sound_title">Sound</string>
-	<string name="sound_summary">Play all other sounds</string>
-	<string name="hints_title">Hints</string>
-	<string name="hints_summary">Show hints during play</string>
-	
-	<string name="acknowledgements_label">Acknowledgements</string>
-	<string name="persistent_acknowledgements">
-	We want to thank everyone who posted questions or advice on Piazza.\n
+    <string name="continue_label">Continue</string>
+    <string name="new_game_label">New Game</string>
+    <string name="about_label">About</string>
+    <string name="exit_label">Exit</string>
+    <string name="settings_label">Settings&#8230;</string>
+    <string name="settings_title">Settings</string>
+    <string name="persistent_settings_title">Persistent Boggle settings</string>
+    <string name="sudoku_settings_title">Sudoku settings</string>
+    <string name="settings_shortcut">s</string>
+    <string name="music_title">Music</string>
+    <string name="music_summary">Play background music</string>
+    <string name="sound_title">Sound</string>
+    <string name="sound_summary">Play all other sounds</string>
+    <string name="hints_title">Hints</string>
+    <string name="hints_summary">Show hints during play</string>
+    <string name="acknowledgements_label">Acknowledgements</string>
+    <string name="persistent_acknowledgements">	We want to thank everyone who posted questions or advice on Piazza.\n
 	We also want to thank Stack Overflow which helped us correct 
-	bugs, add in functionality and generally work out the kinks.
-	</string>
-	<string name="rules_label">Rules</string>
-	<string name="persistent_rules">
-	Creating a new game:\n
+	bugs, add in functionality and generally work out the kinks.</string>
+    <string name="rules_label">Rules</string>
+    <string name="persistent_rules">	Creating a new game:\n
 	Press New Game and provide the email of
 	another user.\n
 	If the user is available then you will both 
@@ -67,60 +62,42 @@
 	Scoring:\n
 	Words less than length 3 = 0 points\n
 	Words of length 3-4 = 2 points\n
-	Words greater than length 4 = length-2 points
-	</string>
-
-	<string name="new_game_title">Create New Game</string>
-	<string name="new_game_message">This will overwrite your current game.</string>
-	<string name="easy_label">Easy</string>
-	<string name="medium_label">Medium</string>
-	<string name="hard_label">Hard</string>
-	
-	<string name="game_title">Game</string>
-	<string name="no_moves_label">No moves</string>
-	<string name="keypad_title">Keypad</string>
-   
-	<string name="about_title">About Android Boggle</string>
-	<string name="persistent_about_title">About Persistent Boggle</string>
-	<string name="sudoku_about_title">About Android Sudoku</string>
-	<string name="about_text">
-	Persistent Boggle is a fast paced word finding puzzle. 
+	Words greater than length 4 = length-2 points</string>
+    <string name="new_game_title">Create New Game</string>
+    <string name="new_game_message">This will overwrite your current game.</string>
+    <string name="easy_label">Easy</string>
+    <string name="medium_label">Medium</string>
+    <string name="hard_label">Hard</string>
+    <string name="game_title">Game</string>
+    <string name="no_moves_label">No moves</string>
+    <string name="keypad_title">Keypad</string>
+    <string name="about_title">About Android Boggle</string>
+    <string name="persistent_about_title">About Persistent Boggle</string>
+    <string name="sudoku_about_title">About Android Sudoku</string>
+    <string name="about_text">	Persistent Boggle is a fast paced word finding puzzle. 
 	Starting with a 5x5 grid, the objective is to 
 	find more words of length 3 or more than your 
 	opponent.\n\n
-	Created by Adam Gressen and Vaibhav Mahindroo.
-	</string>
-	<string name="persistent_about_text">
-	Persistent Boggle is a a variation on the
+	Created by Adam Gressen and Vaibhav Mahindroo.</string>
+    <string name="persistent_about_text">	Persistent Boggle is a a variation on the
 	fast paced word finding puzzle game.
 	Starting with a 5x5 grid, the objective is to
-	find words of length 3 or more.
-	</string>
-	<string name="sudoku_about_text">
-	Sudoku is a logic-based number placement puzzle.
+	find words of length 3 or more.</string>
+    <string name="sudoku_about_text">	Sudoku is a logic-based number placement puzzle.
 	Starting with a partially completed 9x9 grid, the
 	objective is to fill the grid so that each
 	row, each column, and each of the 3x3 boxes
 	(also called ) contains the digits
-	1 to 9 exactly once.
-	</string>
-	<string name="persistent_words_title">Used Words</string>
-	<string name="persistent_leaderboard_title">Leaderboard</string>
-	<string name="persistent_game_over_title">Game Over!</string>
-	
-	<string name="trickiest_button">Trickiest Part</string>
-	<string name="motion_button">Motion Detect</string>
-	    
-	<string name="no_google_account">
-	You must have a Google Account registered in order
-	to play Persistent Boggle.
-	</string>
-	<string name="Notification_Game_Ended">
-	    Your Opponent has finished the Game.
-	</string>
-	<string name="Notification_Game_Started">
-	    Your Opponent has started the Game.
-	</string>
-	<string name="savedevasions_title">Saved Evasion</string>
-	
+	1 to 9 exactly once.</string>
+    <string name="persistent_words_title">Used Words</string>
+    <string name="persistent_leaderboard_title">Leaderboard</string>
+    <string name="persistent_game_over_title">Game Over!</string>
+    <string name="trickiest_button">Trickiest Part</string>
+    <string name="motion_button">Motion Detect</string>
+    <string name="no_google_account">	You must have a Google Account registered in order
+	to play Persistent Boggle.</string>
+    <string name="Notification_Game_Ended">	    Your Opponent has finished the Game.</string>
+    <string name="Notification_Game_Started">	    Your Opponent has started the Game.</string>
+    <string name="savedevasions_title">Saved Evasion</string>
+
 </resources>

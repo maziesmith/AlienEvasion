@@ -1,5 +1,6 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import com.google.android.maps.Overlay;
 
 import edu.neu.madcourse.adamgressen.R;
 
-public class SavedEvasions extends MapActivity {
+public class SavedEvasions extends MapActivity implements EvadeInterface {
 
 	//LocationOverlays
 	LinkedList<LocationOverlay> locOverlays;
@@ -26,6 +27,9 @@ public class SavedEvasions extends MapActivity {
 	LinkedList<EnemyOverlay> enOverlays;
 	//List of location positions
 	LinkedList<GeoPoint> locPositions;
+	public LinkedList<GeoPoint> getLocPositions() {
+		return locPositions;
+	}
 	//List of Enemy Positions
 	LinkedList<GeoPoint> enPositions;
 	//Geopoint
@@ -37,6 +41,16 @@ public class SavedEvasions extends MapActivity {
 	//MapView Controller
 	MapController mc;
 
+	// Distance traveled -- in miles
+	private double distance;
+	public double getDist() {
+		DecimalFormat format = new DecimalFormat("#.##");
+		return Double.valueOf(format.format(distance));
+	}
+	// Aliens evaded
+	private int evaded;
+	public int getEvaded() { return evaded; }
+
 	@Override
 	protected void onCreate(Bundle icicle) {
 		// TODO Auto-generated method stub
@@ -47,12 +61,12 @@ public class SavedEvasions extends MapActivity {
 		String name = b.getString("EVASION_NAME");
 
 		StoredEvasion sevasion = getEvasion(name);
-		
+
 		locPositions = new LinkedList<GeoPoint>();
 		locOverlays = new LinkedList<LocationOverlay>();
 		enPositions = new LinkedList<GeoPoint>();
 		enOverlays = new LinkedList<EnemyOverlay>();
-		
+
 		if(sevasion !=null){
 
 
@@ -75,7 +89,7 @@ public class SavedEvasions extends MapActivity {
 			}
 
 		}
-		
+
 		// If there's no network then the map won't display
 		if (!isNetworkAvailable()) {
 			// Ask for another attempt
@@ -89,7 +103,7 @@ public class SavedEvasions extends MapActivity {
 				}
 			}).show();
 		}
-		
+
 		mapView = (MapView) findViewById(R.id.mapview);
 		//mapView.setBuiltInZoomControls(true); // Enables zoom controls
 
@@ -109,14 +123,14 @@ public class SavedEvasions extends MapActivity {
 		StoredEvasion se = new StoredEvasion(name).read(getApplicationContext());
 		return se;
 	}
-	
+
 	// Check if network is available
-		private boolean isNetworkAvailable() {
-			ConnectivityManager connectivityManager 
-			= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-			return activeNetworkInfo != null;
-		}
+	private boolean isNetworkAvailable() {
+		ConnectivityManager connectivityManager 
+		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
+	}
 
 	@Override
 	protected void onPause() {

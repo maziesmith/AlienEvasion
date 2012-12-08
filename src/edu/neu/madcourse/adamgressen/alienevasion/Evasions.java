@@ -46,6 +46,8 @@ public class Evasions extends ListActivity {
 		
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
+		listView.setBackgroundColor(0x000000);
+		
 		
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.alien_evasion_evasions, storedArray));
 		
@@ -63,6 +65,7 @@ public class Evasions extends ListActivity {
 				    	switch(item){
 				    	case 0:
 							
+
 				    		break;
 				    	case 1:
 				    		break;
