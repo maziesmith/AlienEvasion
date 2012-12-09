@@ -152,7 +152,7 @@ public class StoredEvasion {
 		context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).edit().clear().commit();
 		
 		String current = context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
-		Toast.makeText(context, current, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(context, current, Toast.LENGTH_SHORT).show();
 		System.out.println("Saved Game>" + current + "<");
 		
 	}

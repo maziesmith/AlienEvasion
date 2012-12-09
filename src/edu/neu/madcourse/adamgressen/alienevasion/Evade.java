@@ -121,20 +121,22 @@ public class Evade extends MapActivity implements EvadeInterface {
 
 	class Updater extends TimerTask{
 		public void run() {
-			// Increment the stored game time
-			time++;
-			// Increment the timePassed
-			timePassed++;
+			if (timerRunning) {
+				// Increment the stored game time
+				time++;
+				// Increment the timePassed
+				timePassed++;
 
-			// Check if we've hit the time interval
-			if (time % TIME_INTERVAL == 0) {
-				// provide audio feedback
-				soundCheck();
-			}
+				// Check if we've hit the time interval
+				if (time % TIME_INTERVAL == 0) {
+					// provide audio feedback
+					soundCheck();
+				}
 
-			// Check if it's time to speak info
-			if (time % UPDATE_INTERVAL == 0) {
-				speakInfo();
+				// Check if it's time to speak info
+				if (time % UPDATE_INTERVAL == 0) {
+					speakInfo();
+				}
 			}
 		}
 	}
@@ -212,9 +214,8 @@ public class Evade extends MapActivity implements EvadeInterface {
 	public void onPause() {
 		super.onPause();
 
-		timer.cancel();
 		timerRunning = false;
-		
+
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
 		talker.stop();
@@ -242,11 +243,14 @@ public class Evade extends MapActivity implements EvadeInterface {
 		accMan.resume();
 		locMan.resume();
 		gpsMan.resume();
-		
+
 		timer = new Timer();
 		timePassed = 0;
 
-		timer.schedule(updateTask, 0, TIMER_TICK);
+		try {
+			timer.schedule(updateTask, 0, TIMER_TICK);
+		}
+		catch (Exception e) {}
 		timerRunning = true;
 	}
 
@@ -264,8 +268,9 @@ public class Evade extends MapActivity implements EvadeInterface {
 				finished = true;
 
 				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-				
+
 				timer.cancel();
+				timerRunning = false;
 
 				talker.stop();
 				talker.shutdown();
@@ -337,7 +342,7 @@ public class Evade extends MapActivity implements EvadeInterface {
 		evaded += curSpd;
 		// Reset intDist to 0
 		intDist = 0;
-		
+
 		avgSpd = distance / time;
 
 		// Add position to list
@@ -384,7 +389,9 @@ public class Evade extends MapActivity implements EvadeInterface {
 					p.getLongitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6());
 
 			for (int g = 0; g < enPositions.size(); g++) {
-				enOverlays.get(g).enemyPos = newEnPos;
+				enOverlays.get(g).enemyPos = new GeoPoint(
+						enPositions.get(g).getLatitudeE6()+newEnPos.getLatitudeE6(),
+						enPositions.get(g).getLongitudeE6()+newEnPos.getLongitudeE6());
 			}
 		}
 	}
@@ -415,11 +422,13 @@ public class Evade extends MapActivity implements EvadeInterface {
 	private void soundCheck() {
 		if (!past100 && evaded >= 100) {
 			past100 = true;
-			talker.speak("100 aliens evaded.", TextToSpeech.QUEUE_ADD, null);
+			if (Settings.getSound(this))
+				talker.speak("100 aliens evaded.", TextToSpeech.QUEUE_ADD, null);
 		}
 		if (!past500 && evaded >= 500) {
 			past500 = true;
-			talker.speak("500 aliens evaded.", TextToSpeech.QUEUE_ADD, null);
+			if (Settings.getSound(this))
+				talker.speak("500 aliens evaded.", TextToSpeech.QUEUE_ADD, null);
 		}
 		if (avgSpd <= 2) {
 			Sounds.playSound(this, R.raw.hurryup);

@@ -33,10 +33,6 @@ public class GPSManager implements GpsStatus.Listener {
 	public void onGpsStatusChanged(int event) {
 		switch (event) {
 		case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-
-			if (blockMessageShown && SystemClock.elapsedRealtime() - evade.locMan.lastLocTime > TIMEOUT_DELAY) 
-				blockMessageShown = false;
-			
 			// If there's a previous location
 			// and the time is outside of the timeout period
 			if (!blockMessageShown && evade.locMan.lastLoc != null 
