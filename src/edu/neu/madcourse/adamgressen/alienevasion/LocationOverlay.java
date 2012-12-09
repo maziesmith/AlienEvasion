@@ -70,7 +70,7 @@ public class LocationOverlay extends Overlay{
 			canvas.drawText(String.valueOf(evade.getDist())+" miles", //point.x+20, point.y, 
 					0, 20f,
 					textPaint);
-			canvas.drawText(String.valueOf(evade.getEvaded()), 0f, 50f, textPaint);
+			canvas.drawText(String.valueOf(evade.getEvaded()+" aliens evaded"), 0f, 50f, textPaint);
 		}
 
 		return true;
