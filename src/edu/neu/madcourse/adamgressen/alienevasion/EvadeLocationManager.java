@@ -23,6 +23,7 @@ public class EvadeLocationManager implements LocationListener {
 	Long lastLocTime;
 
 	// Constructor
+	public EvadeLocationManager() {}
 	public EvadeLocationManager(Evade evade) {
 		this.evade = evade;
 
@@ -107,6 +108,13 @@ public class EvadeLocationManager implements LocationListener {
 
 		// Request location updates again
 		beginLocationUpdating();
+	}
+	
+	// Checks if GPS is available
+	public static boolean isGPSAvailable(Context context) {
+		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 1.0f, new EvadeLocationManager());
+		return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
 
 	public void onProviderDisabled(String arg0) {}

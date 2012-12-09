@@ -5,9 +5,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.widget.Toast;
 
 public class AchievementItem extends Activity{
-	
+
 	String display;
 	boolean locked = true;
 	public static List<AchievementItem> listAchievements= new LinkedList<AchievementItem>();
@@ -19,24 +20,25 @@ public class AchievementItem extends Activity{
 	static int evaded;
 	static float distance;
 	static long time;
-	
+	static Evade evade;
+
 	public AchievementItem(String display){
 		this.display = display;
 		locked = false;
-		
+
 	}
-	
+
 	public static void checkAchievement(Context context){
-		
-		Evade evade = (Evade)context;
+
+		evade = (Evade)context;
 		evaded = evade.getEvaded();
 		distance = (float) evade.getDist();
 		time = evade.getTime();
-		
+
 		updateTotalAliens(context, evaded);
 		updateTotalDistance(context, (float)distance);
 		updateTotalTime(context, time);
-		
+
 		if((getTotalAliens(context) > 1000)){
 			updateList("Evade 1,000 Aliens");
 		}
@@ -48,7 +50,7 @@ public class AchievementItem extends Activity{
 		}
 		if(getTotalDistance(context) > 50){
 			updateList("Run Your First 50 Miles");
-			
+
 		}
 		if(getTotalTime(context) > 1){
 			updateList("Completed the run for 1 Hour");
@@ -59,33 +61,35 @@ public class AchievementItem extends Activity{
 		if(getTotalTime(context) > 10){
 			updateList("Completed the run for 10 Hour");
 		}
-			
+
 		if(evaded > 1000){
 			updateList("Evade 1000 aliens in a single run");
-			
+
 		}
 		else if(getTotalAliens(context) > 1){
 			updateList("Evade Your First Alien");
 		}
 	}
-	
-	
-	
+
+
+
 	public static void updateList(String display) {
 		AchievementItem a = new AchievementItem(display);
-		if( !listAchievements.contains(a))
-		listAchievements.add(a);
+		if( !listAchievements.contains(a)) {
+			listAchievements.add(a);
+			Toast.makeText(evade, a.display, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	public static float getTotalDistance(Context context){
-		
+
 		return context.getSharedPreferences(ACHIEVEMENT_PREFS, MODE_PRIVATE).getFloat(TOTAL_DISTANCE, 0f);
 	}
-	
+
 	public static long getTotalTime(Context context){
 		return context.getSharedPreferences(ACHIEVEMENT_PREFS, MODE_PRIVATE).getLong(TOTAL_TIME, 0L);
 	}
-	
+
 	public static int getTotalAliens(Context context){
 		return context.getSharedPreferences(TOTAL_ALIENS, MODE_PRIVATE).getInt(TOTAL_ALIENS, 0);
 	}
@@ -94,7 +98,7 @@ public class AchievementItem extends Activity{
 		float prevDistance = getTotalDistance(context);
 		context.getSharedPreferences(ACHIEVEMENT_PREFS, MODE_PRIVATE).edit().putFloat(TOTAL_DISTANCE, prevDistance + distance);
 	}
-	
+
 	public static void updateTotalTime(Context context,long time){
 		long prevTime = getTotalTime(context);
 		context.getSharedPreferences(ACHIEVEMENT_PREFS, MODE_PRIVATE).edit().putLong(TOTAL_TIME, prevTime + time);
@@ -103,6 +107,6 @@ public class AchievementItem extends Activity{
 		int prevAliens = getTotalAliens(context);
 		context.getSharedPreferences(ACHIEVEMENT_PREFS, MODE_PRIVATE).edit().putInt(TOTAL_ALIENS, prevAliens + aliens);
 	}
-	
-	
+
+
 }

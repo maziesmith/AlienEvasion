@@ -19,6 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 import com.google.android.maps.GeoPoint;
@@ -124,6 +125,10 @@ public class Evade extends MapActivity implements EvadeInterface {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+	    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
 		setContentView(R.layout.alien_evasion_evade);
 
 		talker = new TextToSpeech(this, null);
@@ -231,8 +236,6 @@ public class Evade extends MapActivity implements EvadeInterface {
 		
 		talker = new TextToSpeech(this, null);
 
-		Sounds.playMusic(this, R.raw.alien_evasion_main);
-
 		accMan.resume();
 		locMan.resume();
 		gpsMan.resume();
@@ -337,6 +340,8 @@ public class Evade extends MapActivity implements EvadeInterface {
 
 		// Invalidate the map so it's redrawn
 		mapView.invalidate();
+		
+		AchievementItem.checkAchievement(this);
 	}
 
 	// Add enemy overlays to the list
@@ -358,8 +363,8 @@ public class Evade extends MapActivity implements EvadeInterface {
 
 		if (locPositions.size() >= 2) {
 			newEnPos = new GeoPoint(
-					p.getLatitudeE6()-locPositions.get(locPositions.size()-1).getLatitudeE6(),
-					p.getLongitudeE6()-locPositions.get(locPositions.size()-1).getLatitudeE6());
+					p.getLatitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6(),
+					p.getLongitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6());
 
 			for (int g = 0; g < enPositions.size(); g++) {
 				enOverlays.get(g).enemyPos = newEnPos;
@@ -409,11 +414,6 @@ public class Evade extends MapActivity implements EvadeInterface {
 			talker.speak(timeString, TextToSpeech.QUEUE_FLUSH, null);
 			talker.speak("Distance, "+distance+" miles", TextToSpeech.QUEUE_ADD, null);
 		}
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onStop();
 	}
 
 	@Override

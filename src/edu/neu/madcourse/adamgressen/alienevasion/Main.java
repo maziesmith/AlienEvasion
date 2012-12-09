@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import edu.neu.madcourse.adamgressen.R;
 import edu.neu.mobileClass.PhoneCheckAPI;
@@ -29,6 +31,9 @@ public class Main extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		// Set layout
 		setContentView(R.layout.alien_evasion_main);
@@ -52,8 +57,26 @@ public class Main extends Activity implements OnClickListener {
 		exitButton = findViewById(R.id.exit_button);
 		exitButton.setOnClickListener(this);
 		exitButton.getBackground().setAlpha(120);
-		
+
 		PhoneCheckAPI.doAuthorization(this);
+
+		if (!EvadeLocationManager.isGPSAvailable(this)) {
+			new AlertDialog.Builder(this)
+			.setMessage("Please enable GPS to use this application.")
+			.setTitle("GPS")
+			.setCancelable(true)
+			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {  
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.dismiss();
+				}
+			})
+			.setPositiveButton("GPS Settings", new DialogInterface.OnClickListener() {  
+				public void onClick(DialogInterface dialog, int id) {
+					startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
+					dialog.dismiss();
+				}
+			}).show();
+		}
 	}
 
 	@Override

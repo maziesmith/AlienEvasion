@@ -11,6 +11,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -28,6 +30,9 @@ public class Evasions extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+	    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		readStoredEvasions();
 		String currentEvasion = getSavedEvasionName();
@@ -136,6 +141,20 @@ public class Evasions extends ListActivity {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		Sounds.playMusic(this, R.raw.alien_evasion_main);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		Sounds.stop(this);
 	}
 	
 }

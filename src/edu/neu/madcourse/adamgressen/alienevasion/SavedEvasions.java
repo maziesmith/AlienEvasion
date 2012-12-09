@@ -77,7 +77,7 @@ public class SavedEvasions extends MapActivity implements EvadeInterface {
 
 			// Populate location overlays
 			for (int gp = 0; gp < locPositions.size(); gp++) {
-				locOverlays.add(new LocationOverlay(getApplicationContext(),locPositions.get(gp), gp));
+				locOverlays.add(new LocationOverlay(this,locPositions.get(gp), gp));
 			}
 
 			// Get stored enemy positions
@@ -85,7 +85,7 @@ public class SavedEvasions extends MapActivity implements EvadeInterface {
 
 			// Populate enemy overlays
 			for (GeoPoint gp : enPositions) {
-				enOverlays.add(new EnemyOverlay(getApplicationContext(),gp));
+				enOverlays.add(new EnemyOverlay(this,gp));
 			}
 
 		}
@@ -120,7 +120,7 @@ public class SavedEvasions extends MapActivity implements EvadeInterface {
 
 
 	private StoredEvasion getEvasion(String name) {
-		StoredEvasion se = new StoredEvasion(name).read(getApplicationContext());
+		StoredEvasion se = new StoredEvasion(name).read(this);
 		return se;
 	}
 
