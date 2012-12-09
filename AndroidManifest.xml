@@ -115,7 +115,8 @@
             android:icon="@drawable/alien_evasion_logo"
             android:label="@string/alien_evasion_title"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:taskAffinity=".alienevasion.Main" >
+            android:taskAffinity=".alienevasion.Main"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -125,32 +126,38 @@
         <activity
             android:name=".alienevasion.Evade"
             android:label="@string/evade_title"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".alienevasion.Evasions"
             android:label="@string/evasions_title"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".alienevasion.Settings"
             android:label="@string/alien_evasion_settings_title"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".alienevasion.Achievements"
             android:label="@string/achievements_title"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".alienevasion.HowTo"
             android:label="@string/howto_title"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".alienevasion.SavedEvasions"
             android:label="@string/savedevasions_title"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" >
         </activity>
 
         <receiver

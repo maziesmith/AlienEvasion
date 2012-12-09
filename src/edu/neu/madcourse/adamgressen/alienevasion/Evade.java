@@ -384,9 +384,20 @@ public class Evade extends MapActivity implements EvadeInterface {
 		GeoPoint newEnPos;
 
 		if (locPositions.size() >= 2) {
+			/*Point playerPoint = new Point();
+			Projection proj = mapView.getProjection();
+			proj.toPixels(p, playerPoint);
+			
+			Point prevPlayerPoint = new Point();
+			proj.toPixels(locPositions.get(locPositions.size()-2), prevPlayerPoint);
+			
+			Point playerDiff = new Point(
+					playerPoint.x - prevPlayerPoint.x,
+					prevPlayerPoint.y - prevPlayerPoint.y);*/
+			
 			newEnPos = new GeoPoint(
 					p.getLatitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6(),
-					p.getLongitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6());
+					p.getLongitudeE6()-locPositions.get(locPositions.size()-2).getLongitudeE6());
 
 			for (int g = 0; g < enPositions.size(); g++) {
 				enOverlays.get(g).enemyPos = new GeoPoint(
