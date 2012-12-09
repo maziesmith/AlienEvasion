@@ -23,19 +23,18 @@
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <application
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+    <application android:theme="@style/AppTheme" >
         <uses-library
             android:name="com.google.android.maps"
             android:required="true" />
 
         <activity
             android:name=".Main"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:label="@string/app_name" >
-            <intent-filter android:label="@string/app_name">
+            android:taskAffinity=".Main" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -115,8 +114,9 @@
             android:name=".alienevasion.Main"
             android:icon="@drawable/alien_evasion_logo"
             android:label="@string/alien_evasion_title"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-            <intent-filter >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:taskAffinity=".alienevasion.Main" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
