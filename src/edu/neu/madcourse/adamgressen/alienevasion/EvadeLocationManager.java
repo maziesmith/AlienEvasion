@@ -41,13 +41,15 @@ public class EvadeLocationManager implements LocationListener {
 		lastLocTime = SystemClock.elapsedRealtime();
 		lastLoc = location;
 
-		if (!evade.timerRunning) {
-			evade.timer = new Timer();
-			evade.timer.schedule(evade.updateTask, 0, evade.TIMER_TICK);
-			evade.timerRunning = true;
-		}
-		
+
+
 		if (evade != null) {
+			if (!evade.timerRunning) {
+				evade.timer = new Timer();
+				evade.timer.schedule(evade.updateTask, 0, evade.TIMER_TICK);
+				evade.timerRunning = true;
+			}
+
 			evade.gpsMan.pro.hide();
 
 			// Makes it possible to show block message again
