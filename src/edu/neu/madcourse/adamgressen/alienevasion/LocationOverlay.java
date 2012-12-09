@@ -22,6 +22,7 @@ public class LocationOverlay extends Overlay{
 	
 	// Set up paint
 	Paint paint = new Paint();
+	Paint textPaint = new Paint();
 
 	public LocationOverlay(Context context, GeoPoint p, int index) {
 		this.p = p;
@@ -31,9 +32,13 @@ public class LocationOverlay extends Overlay{
 		playerImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.player);
 		
 		paint.setStrokeWidth(4);
-		paint.setTextSize(28);
 		paint.setARGB(80,0,0,255);
-		paint.setStyle(Paint.Style.STROKE);
+		paint.setStyle(Paint.Style.FILL_AND_STROKE);
+		
+		textPaint.setStrokeWidth(4);
+		textPaint.setTextSize(28);
+		textPaint.setARGB(255, 0, 0, 255);
+		textPaint.setStyle(Paint.Style.STROKE);
 	}
 
 	@Override
@@ -61,10 +66,11 @@ public class LocationOverlay extends Overlay{
 
 		if (this.index == evade.getLocPositions().size()-1) {
             canvas.drawBitmap(playerImage, point.x-(playerImage.getWidth()/2), point.y-(playerImage.getHeight()/2), null);
+			//canvas.drawCircle(point.x, point.y, 20, paint);
 			canvas.drawText(String.valueOf(evade.getDist())+" miles", //point.x+20, point.y, 
 					0, 20f,
-					paint);
-			canvas.drawText(String.valueOf(evade.getEvaded()), 0f, 40f, paint);
+					textPaint);
+			canvas.drawText(String.valueOf(evade.getEvaded()), 0f, 50f, textPaint);
 		}
 
 		return true;

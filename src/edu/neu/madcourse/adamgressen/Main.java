@@ -97,7 +97,7 @@ public class Main extends Activity implements OnClickListener {
 					}).show();
 			break;
 		case R.id.alien_button:
-			startActivity(new Intent(this, edu.neu.madcourse.adamgressen.alienevasion.Main.class));
+			startActivity(new Intent(this, FinalProject.class));
 			break;
 		case R.id.trickiest_button:
 			startActivity(new Intent(this, Tricky.class));

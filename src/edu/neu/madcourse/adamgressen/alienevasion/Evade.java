@@ -74,14 +74,14 @@ public class Evade extends MapActivity implements EvadeInterface {
 	AccelerometerManager accMan;
 
 	// Average distance over time -- in mph
-	int avgSpd;
+	double avgSpd;
 	// Time between finding locations -- in seconds
 	long timePassed;
 
 	// Time interval for feedback -- in seconds
-	final int TIME_INTERVAL = 20;
+	final int TIME_INTERVAL = 30;
 	// Time interval for update feedback -- in seconds
-	final int UPDATE_INTERVAL = 10;
+	final int UPDATE_INTERVAL = 60;
 
 	// Date format
 	final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM-dd-yyyy@h@mm@ss@a", Locale.US);
@@ -102,6 +102,8 @@ public class Evade extends MapActivity implements EvadeInterface {
 	}
 	// Timer
 	Timer timer;
+	// Is timer running
+	boolean timerRunning = false;
 	// Delay between timer ticks
 	int TIMER_TICK = 1000;
 	// Elapsed time -- in seconds
@@ -117,46 +119,43 @@ public class Evade extends MapActivity implements EvadeInterface {
 	// TextToSpeech!!
 	TextToSpeech talker;
 
+	class Updater extends TimerTask{
+		public void run() {
+			// Increment the stored game time
+			time++;
+			// Increment the timePassed
+			timePassed++;
+
+			// Check if we've hit the time interval
+			if (time % TIME_INTERVAL == 0) {
+				// provide audio feedback
+				soundCheck();
+			}
+
+			// Check if it's time to speak info
+			if (time % UPDATE_INTERVAL == 0) {
+				speakInfo();
+			}
+		}
+	}
+	TimerTask updateTask = new Updater();
+
 	/**
 	 * In game milestone booleans
 	 * **/
 	boolean past100 = false;
+	boolean past500 = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-	    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		setContentView(R.layout.alien_evasion_evade);
 
 		talker = new TextToSpeech(this, null);
-
-		timer = new Timer();
-		timePassed = 0;
-
-		class Updater extends TimerTask{
-			public void run() {
-				// Increment the stored game time
-				time++;
-				// Increment the timePassed
-				timePassed++;
-
-				// Check if we've hit the time interval
-				if (time % TIME_INTERVAL == 0) {
-					// provide audio feedback
-					soundCheck();
-				}
-
-				// Check if it's time to speak info
-				if (time % UPDATE_INTERVAL == 0) {
-					speakInfo();
-				}
-			}
-		}
-		TimerTask updateTask = new Updater();
-		timer.schedule(updateTask, 0, TIMER_TICK);
 
 		Calendar cal = Calendar.getInstance();
 		startTime = DATE_FORMAT.format(cal.getTime());
@@ -213,8 +212,12 @@ public class Evade extends MapActivity implements EvadeInterface {
 	public void onPause() {
 		super.onPause();
 
-		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+		timer.cancel();
+		timerRunning = false;
 		
+		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+
+		talker.stop();
 		talker.shutdown();
 
 		Sounds.stop(this);
@@ -233,12 +236,18 @@ public class Evade extends MapActivity implements EvadeInterface {
 		super.onResume();
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-		
+
 		talker = new TextToSpeech(this, null);
 
 		accMan.resume();
 		locMan.resume();
 		gpsMan.resume();
+		
+		timer = new Timer();
+		timePassed = 0;
+
+		timer.schedule(updateTask, 0, TIMER_TICK);
+		timerRunning = true;
 	}
 
 	@Override
@@ -253,6 +262,14 @@ public class Evade extends MapActivity implements EvadeInterface {
 				Sounds.playSound(getApplicationContext(), R.raw.gameover);
 				deleteEvasion();
 				finished = true;
+
+				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+				
+				timer.cancel();
+
+				talker.stop();
+				talker.shutdown();
+
 				finish();
 				Evade.super.onBackPressed();
 				return;
@@ -316,12 +333,12 @@ public class Evade extends MapActivity implements EvadeInterface {
 
 		// calculate current speed -- in mph
 		double curSpd = intDist * timePassed / 360;
-
 		// calculate the score -- the number of evaded aliens
 		evaded += curSpd;
-
 		// Reset intDist to 0
 		intDist = 0;
+		
+		avgSpd = distance / time;
 
 		// Add position to list
 		locPositions.add(p);
@@ -340,7 +357,7 @@ public class Evade extends MapActivity implements EvadeInterface {
 
 		// Invalidate the map so it's redrawn
 		mapView.invalidate();
-		
+
 		AchievementItem.checkAchievement(this);
 	}
 
@@ -398,7 +415,14 @@ public class Evade extends MapActivity implements EvadeInterface {
 	private void soundCheck() {
 		if (!past100 && evaded >= 100) {
 			past100 = true;
-			Sounds.playSound(this, R.raw.reward);
+			talker.speak("100 aliens evaded.", TextToSpeech.QUEUE_ADD, null);
+		}
+		if (!past500 && evaded >= 500) {
+			past500 = true;
+			talker.speak("500 aliens evaded.", TextToSpeech.QUEUE_ADD, null);
+		}
+		if (avgSpd <= 2) {
+			Sounds.playSound(this, R.raw.hurryup);
 		}
 	}
 
@@ -410,9 +434,10 @@ public class Evade extends MapActivity implements EvadeInterface {
 			if (time / 60 > 0)
 				timeString += (time / 60) + " minutes ";
 			timeString += (time % 60) + " seconds";
-			
-			talker.speak(timeString, TextToSpeech.QUEUE_FLUSH, null);
-			talker.speak("Distance, "+distance+" miles", TextToSpeech.QUEUE_ADD, null);
+
+			talker.speak(timeString, TextToSpeech.QUEUE_ADD, null);
+			talker.speak("Distance, "+getDist()+" miles.", TextToSpeech.QUEUE_ADD, null);
+			talker.speak(evaded+" aliens evaded.", TextToSpeech.QUEUE_ADD, null);
 		}
 	}
 

@@ -27,7 +27,6 @@ public class GPSManager implements GpsStatus.Listener {
 	private void createProgressDialog() {
 		pro = new ProgressDialog(evade);
 		pro.setMessage("Acquiring GPS Signal");
-		//pro.hide();
 	}
 
 	// When the GPS status changes
@@ -35,13 +34,18 @@ public class GPSManager implements GpsStatus.Listener {
 		switch (event) {
 		case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
 
+			if (blockMessageShown && SystemClock.elapsedRealtime() - evade.locMan.lastLocTime > TIMEOUT_DELAY) 
+				blockMessageShown = false;
+			
 			// If there's a previous location
 			// and the time is outside of the timeout period
-			if (!blockMessageShown && evade.locMan.lastLoc != null && SystemClock.elapsedRealtime() - evade.locMan.lastLocTime > TIMEOUT_DELAY) {
+			if (!blockMessageShown && evade.locMan.lastLoc != null 
+					&& SystemClock.elapsedRealtime() - evade.locMan.lastLocTime > TIMEOUT_DELAY) {
 				// If the time is outside of the timeout period
 				Toast.makeText(evade,
 						"The aliens are blocking your transmissions.",
 						Toast.LENGTH_SHORT).show();
+				evade.timer.cancel();
 				blockMessageShown = true;
 			}
 

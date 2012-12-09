@@ -1,5 +1,7 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.util.Timer;
+
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -32,11 +34,6 @@ public class EvadeLocationManager implements LocationListener {
 
 	// When the location changes
 	public void onLocationChanged(Location location) {
-		evade.gpsMan.pro.hide();
-
-		// Makes it possible to show block message again
-		evade.gpsMan.blockMessageShown = false;
-
 		// Handle a null location
 		if (location == null) return;
 
@@ -44,12 +41,25 @@ public class EvadeLocationManager implements LocationListener {
 		lastLocTime = SystemClock.elapsedRealtime();
 		lastLoc = location;
 
-		// Set GeoPoint
-		evade.p = new GeoPoint(
-				(int) (location.getLatitude() * 1E6), 
-				(int) (location.getLongitude() * 1E6));
+		if (!evade.timerRunning) {
+			evade.timer = new Timer();
+			evade.timer.schedule(evade.updateTask, 0, evade.TIMER_TICK);
+			evade.timerRunning = true;
+		}
+		
+		if (evade != null) {
+			evade.gpsMan.pro.hide();
 
-		evade.handleNewLocation();
+			// Makes it possible to show block message again
+			evade.gpsMan.blockMessageShown = false;
+
+			// Set GeoPoint
+			evade.p = new GeoPoint(
+					(int) (location.getLatitude() * 1E6), 
+					(int) (location.getLongitude() * 1E6));
+
+			evade.handleNewLocation();
+		}
 	}
 
 	// Initialize the location
@@ -109,7 +119,7 @@ public class EvadeLocationManager implements LocationListener {
 		// Request location updates again
 		beginLocationUpdating();
 	}
-	
+
 	// Checks if GPS is available
 	public static boolean isGPSAvailable(Context context) {
 		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);

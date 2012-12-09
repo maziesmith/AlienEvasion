@@ -22,7 +22,7 @@ public class Achievements extends Activity {
 
 		List<String> unlockedach = new LinkedList<String>();
 
-		AchievementItem.updateList("Evade Your First Alien");
+		//AchievementItem.updateList("Evade Your First Alien");
 		for(AchievementItem a : AchievementItem.listAchievements){
 			unlockedach.add(a.display);
 		}

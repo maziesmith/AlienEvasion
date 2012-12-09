@@ -69,23 +69,27 @@ public class SavedEvasions extends MapActivity implements EvadeInterface {
 
 		if(sevasion !=null){
 
-
 			// Get stored location positions
 			locPositions = sevasion.locPositions;
-			// Current position equals the last stored position
-			p = locPositions.getLast();
+			if (!locPositions.isEmpty()) {
+				// Current position equals the last stored position
+				p = locPositions.getLast();
 
-			// Populate location overlays
-			for (int gp = 0; gp < locPositions.size(); gp++) {
-				locOverlays.add(new LocationOverlay(this,locPositions.get(gp), gp));
+				// Populate location overlays
+				for (int gp = 0; gp < locPositions.size(); gp++) {
+					locOverlays.add(new LocationOverlay(this,locPositions.get(gp), gp));
+				}
 			}
+
 
 			// Get stored enemy positions
 			enPositions = sevasion.enPositions;
 
-			// Populate enemy overlays
-			for (GeoPoint gp : enPositions) {
-				enOverlays.add(new EnemyOverlay(this,gp));
+			if (!enPositions.isEmpty()) {
+				// Populate enemy overlays
+				for (GeoPoint gp : enPositions) {
+					enOverlays.add(new EnemyOverlay(this,gp));
+				}
 			}
 
 		}
