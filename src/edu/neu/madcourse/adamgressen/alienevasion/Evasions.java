@@ -59,7 +59,7 @@ public class Evasions extends ListActivity {
 		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, final long id) {
+					final int position, final long id) {
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setTitle("Make your selection");
@@ -67,13 +67,36 @@ public class Evasions extends ListActivity {
 					public void onClick(DialogInterface dialog, int item) {
 						// Do something with the selection
 
+						String fileName = storedEvasions.get(position);
+						
 						switch(item){
 						case 0:
+							int score = getStoredEvasion(fileName);
+							Toast.makeText(context,
+									"Score: " + score, Toast.LENGTH_SHORT).show();
+							finish();
 							break;
 						case 1:
+							deleteEvasion(fileName);
+							Toast.makeText(context,
+									"File Deleted!", Toast.LENGTH_SHORT).show();
+							finish();
 							break;
 						}
 
+					}
+
+					private void deleteEvasion(String fileName) {
+
+						new StoredEvasion(fileName).deleteEvasion(getApplicationContext());
+						
+					}
+
+					private int getStoredEvasion(String fileName) {
+						
+						StoredEvasion se = new StoredEvasion(fileName).read(getApplicationContext());
+						return se.totalEvaded;
+						
 					}
 
 				});

@@ -156,4 +156,22 @@ public class StoredEvasion {
 	public String getSavedEvasionName(Context context){
 		return context.getSharedPreferences(EVASION_PREFS, Context.MODE_PRIVATE).getString(EVASION_CURRENT, "");
 	}
+
+	//Deletes the evasion from the directory
+	public void deleteEvasion(Context context) {
+
+		File dir = context.getDir("AlienEvasion", Context.MODE_PRIVATE); 
+
+		try{
+			for(File file : dir.listFiles()){
+				if(!file.isDirectory() && file.getName().equals(this.name))
+					file.delete();
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
+		
+	}
 }
