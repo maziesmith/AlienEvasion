@@ -119,6 +119,7 @@ public class Evade extends MapActivity implements EvadeInterface {
 	// TextToSpeech!!
 	TextToSpeech talker;
 
+	// Custom timer task class
 	class Updater extends TimerTask{
 		public void run() {
 			if (timerRunning) {
@@ -264,6 +265,10 @@ public class Evade extends MapActivity implements EvadeInterface {
 
 			public void onClick(DialogInterface arg0, int arg1) {
 				Sounds.playSound(getApplicationContext(), R.raw.gameover);
+				// First make sure there's a stored version of this Evasion
+				storeEvasion();
+				// Then delete the stored version
+				// while creating an entry for the Evasions activity
 				deleteEvasion();
 				finished = true;
 
@@ -383,18 +388,7 @@ public class Evade extends MapActivity implements EvadeInterface {
 	private void updateEnemyOverlays() {
 		GeoPoint newEnPos;
 
-		if (locPositions.size() >= 2) {
-			/*Point playerPoint = new Point();
-			Projection proj = mapView.getProjection();
-			proj.toPixels(p, playerPoint);
-			
-			Point prevPlayerPoint = new Point();
-			proj.toPixels(locPositions.get(locPositions.size()-2), prevPlayerPoint);
-			
-			Point playerDiff = new Point(
-					playerPoint.x - prevPlayerPoint.x,
-					prevPlayerPoint.y - prevPlayerPoint.y);*/
-			
+		if (locPositions.size() >= 2) {			
 			newEnPos = new GeoPoint(
 					p.getLatitudeE6()-locPositions.get(locPositions.size()-2).getLatitudeE6(),
 					p.getLongitudeE6()-locPositions.get(locPositions.size()-2).getLongitudeE6());
@@ -507,6 +501,7 @@ public class Evade extends MapActivity implements EvadeInterface {
 		return new StoredEvasion(this).read(this);
 	}
 
+	// Delete an evasion
 	private void deleteEvasion(){
 		new StoredEvasion(this).finishEvasion(this);
 	}

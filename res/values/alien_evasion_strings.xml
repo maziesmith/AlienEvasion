@@ -21,18 +21,19 @@
     <string name="menu_label">Main Menu</string>
     <string name="unlock_title">Unlockables</string>
     <string name="unit">miles</string>
+    <string name="dialog_image">Dialog Image</string>
 
     <string-array name="achievements_list">
         <item>Evade Your First Alien</item>
         <item>Run Your First Mile</item>
         <item>Run Your First 10 Miles</item>
         <item>Run Your First 50 Miles</item>
-        <item>Completed the run for 1 Hour</item>
-        <item>Completed the run for 5 Hour</item>
-        <item>Completed the run for 10 Hour</item>
+        <item>Run for 1 Hour</item>
+        <item>Run for 5 Hour</item>
+        <item>Run for 10 Hour</item>
         <item>Unlock Your First New Alien</item>
         <item>Evade 1,000 Aliens</item>
-        <item>Evade 1000 aliens in a single run</item>
+        <item>Evade 1000 Aliens in a Single Evasion</item>
     </string-array>
 
     <string name="speed_label">Speed</string>
@@ -49,7 +50,7 @@
     <!-- <string name="exit_label">Exit</string> -->
     <!-- <string name="settings_title">Settings</string> -->
     <string name="about_message">Created by Adam Gressen and Vaibhav Mahindroo</string>
-    <string name="alien_evasion_about_title">About Alien Evasion</string>
+    <string name="alien_evasion_about_title">About</string>
     <string name="alien_evasion_music_title">Music</string>
     <string name="alien_evasion_music_summary">Play background music</string>
     <string name="alien_evasion_sound_title">Sound</string>
@@ -84,7 +85,7 @@
 	Phone models used for testing:\n
 	Motorola Droid 2 &amp; HTC One X	</string>
     <string name="howto_title">Rules</string>
-    <string name="howto">    The <bi>Alien Evasion</bi> begins when you press <i>Start Running</i>.\n\n
+    <string name="howto">The <bi>Alien Evasion</bi> begins when you press <i>Start Running</i>.\n\n
     You can also press <i>Start Running</i> to continue to 
     play an <i>Evasion</i> that\'s already in progress.\n\n
     You can view your previous <i>Evasions</i> by pressing<i>Evasions</i> on the main screen.\n\n
@@ -94,23 +95,16 @@
     <string name="app_store_description"><bi>Alien Evasion</bi>\n\n
       You are out for a casual walk in the park when suddenly you see a UFO land! 
       Aliens begin to pour out and they don’t look very friendly. 
-      They take notice of you and what do you do….. RUN!!!!!\n\n
+      They take notice of you and what do you do..... RUN!!!!!\n\n
       Alien Evasion is a game where you run in real life while aliens close in on you. 
-      You have lots of achievements to unlock. From evading your first alien to evading 1000 aliens, 
-      from running for 10 miles to running for 50 miles, and more. 
-      You receive constant feedback about your run, the distance traveled, the time elapsed. 
-      Alien Evasion measures your speed and scores you accordingly.\n\n
-      What’s new about this app is that it lets you track your movement on the map using your phone’s GPS. 
-      You can scroll, zoom in and zoom out on the map to see your location. 
-      You can view your past runs in the Evasions list. The Evasions list is stored with the date and time 
-      so it’s really easy to keep track of your runs. 
-      You can also view the score for each run and delete it from the memory if you so choose.\n\n
+      Unlock lots of achievements and receive constant feedback about your run.\n\n
+      Alien Evasion lets you track your movement on the map using your phone’s GPS. 
+      Scroll, zoom in and zoom out on the map to see your location.
+      View your past runs in the Evasions list.\n\n
       During Evasions the app encourages you to keep running by checking your speed and telling you 
-      that you are doing really well or warning you that you should pick up the pace. 
-      Hurry up! You don’t want the aliens to catch you. 
-      Before playing the game, be sure to check that your GPS is running or the application will prompt you to turn it on.\n\n
-      We have some cool graphic images which we draw on the map to give you a sense of what 
-      the story line is about and the only way to survive is to run.\n\n
-      Don’t feel like running? We’re right there with you. You can play Alien Evasion while you walk, but walk too slowly and you won’t get away!</string>
+      that you are doing really well or warning you that you should pick up the pace.
+      Hurry up! You don’t want the aliens to catch you.\n\n
+      Don’t feel like running? We’re right there with you.
+      You can play Alien Evasion while you walk, but walk too slowly and you won’t get away!</string>
 
 </resources>

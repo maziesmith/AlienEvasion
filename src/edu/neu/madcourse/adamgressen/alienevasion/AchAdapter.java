@@ -1,11 +1,7 @@
 package edu.neu.madcourse.adamgressen.alienevasion;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.zip.Inflater;
-
 import edu.neu.madcourse.adamgressen.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

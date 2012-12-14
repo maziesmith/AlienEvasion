@@ -3,8 +3,12 @@
  ***/
 package edu.neu.madcourse.adamgressen.alienevasion;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +19,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import edu.neu.madcourse.adamgressen.R;
 import edu.neu.mobileClass.PhoneCheckAPI;
 
@@ -24,7 +31,6 @@ public class Main extends Activity implements OnClickListener {
 	View evasionsButton;
 	View achievementsButton;
 	View howtoButton;
-	View ackButton;
 	View exitButton;
 
 	/** Called when the activity is first created. */
@@ -51,9 +57,6 @@ public class Main extends Activity implements OnClickListener {
 		howtoButton = findViewById(R.id.howto_button);
 		howtoButton.setOnClickListener(this);
 		howtoButton.getBackground().setAlpha(120);
-		ackButton = findViewById(R.id.acknowledgements_button);
-		ackButton.setOnClickListener(this);
-		ackButton.getBackground().setAlpha(120);
 		exitButton = findViewById(R.id.exit_button);
 		exitButton.setOnClickListener(this);
 		exitButton.getBackground().setAlpha(120);
@@ -99,24 +102,35 @@ public class Main extends Activity implements OnClickListener {
 			startGame();
 			break;
 		case R.id.evasions_button:
-			startActivity(new Intent(this, Evasions.class));
+			List<String> storedEvasions = Evasions.readStoredEvasions(this);
+			String currentEvasion = Evasions.getSavedEvasionName(this);
+			storedEvasions.remove(currentEvasion);
+
+			// Alert the user if there are no previous evasions
+			if (storedEvasions.isEmpty()) {
+				new AlertDialog.Builder(this)
+				.setTitle("No Evasions")
+				.setMessage("You don't have any previous Evasions.")
+				.setNegativeButton(R.string.start_label, new DialogInterface.OnClickListener() {  
+					public void onClick(DialogInterface dialog, int id) {
+						startGame();
+						dialog.dismiss();
+					}
+				})
+				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.dismiss();
+					}
+				}).create().show();
+			}
+			else
+				startActivity(new Intent(this, Evasions.class));
 			break;
 		case R.id.achievements_button:
 			startActivity(new Intent(this, Achievements.class));
 			break;
 		case R.id.howto_button:
 			startActivity(new Intent(this, HowTo.class));
-			break;
-		case R.id.acknowledgements_button:
-			new AlertDialog.Builder(this)
-			.setMessage(R.string.acknowledgements)
-			.setTitle(R.string.ack_label)
-			.setCancelable(true)
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {  
-				public void onClick(DialogInterface dialog, int id) {  
-					dialog.dismiss();
-				}
-			}).show();
 			break;
 		case R.id.exit_button:
 			finish();
@@ -138,24 +152,71 @@ public class Main extends Activity implements OnClickListener {
 		case R.id.settings:
 			startActivity(new Intent(this, Settings.class));
 			return true;
-		case R.id.about:
+		case R.id.ack:
 			new AlertDialog.Builder(this)
-			.setMessage(R.string.about_message)
-			.setTitle(R.string.alien_evasion_about_title)
-			.setCancelable(true)
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {  
+			.setTitle(R.string.ack_label)
+			.setMessage(R.string.acknowledgements)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
 					dialog.dismiss();
 				}
-			}).show();
+			}).create().show();
+			/*
+			showDialog(this,
+					R.string.ack_label,
+					R.string.acknowledgements,
+					R.drawable.alien_evasion_logo);
+			*/
+			return true;
+		case R.id.about:
+			new AlertDialog.Builder(this)
+			.setTitle(R.string.alien_evasion_about_title)
+			.setMessage(R.string.about_message)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.dismiss();
+				}
+			}).create().show();
+			/*
+			showDialog(this,
+					R.string.alien_evasion_about_title,
+					R.string.about_message,
+					R.drawable.alien_evasion_logo);
+			*/
 			return true;
 		}
 		return false;
 	}
 
+	public static void showDialog(Context context, int title, int text, int imageID) {
+		// Custom dialog
+		final Dialog dialog = new Dialog(context);
+		dialog.setContentView(R.layout.alien_evasion_dialog);
+		dialog.setTitle(title);
+
+		// Set text of custom dialog
+		TextView textView = (TextView) dialog.findViewById(R.id.dialog_text);
+		textView.setText(text);
+
+		// Set image for custom dialog
+		ImageView image = (ImageView) dialog.findViewById(R.id.dialog_image);
+		image.setImageResource(imageID);
+
+		// Set button for custom dialog
+		Button dialogButton = (Button) dialog.findViewById(R.id.dialog_button);
+		dialogButton.setText(android.R.string.ok);
+		dialogButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
+
 	/** Start a new game */
-	private void startGame() {
+	public void startGame() {
 		Sounds.stop(this);
-		startActivity(new Intent(this, Evade.class));
+		Intent evadeIntent = new Intent(this, Evade.class);
+		startActivity(evadeIntent);
 	}
 }
